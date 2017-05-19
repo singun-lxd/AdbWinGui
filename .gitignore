@@ -5,3 +5,4 @@ Debug
 /AdbGui/Ribbon.rc
 /AdbGui/Ribbon.bml
 /AdbGui/Ribbon.h
+/AdbGui/*.aps
