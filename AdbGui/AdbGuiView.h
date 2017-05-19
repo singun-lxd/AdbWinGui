@@ -4,16 +4,14 @@
 
 #pragma once
 
+#include <atlctrls.h>
+
 class CAdbGuiView : public CWindowImpl<CAdbGuiView, CListViewCtrl>
 {
 public:
 	DECLARE_WND_SUPERCLASS(NULL, CListViewCtrl::GetWndClassName())
 
-	BOOL PreTranslateMessage(MSG* pMsg)
-	{
-		pMsg;
-		return FALSE;
-	}
+	BOOL PreTranslateMessage(MSG* pMsg);
 
 	BEGIN_MSG_MAP(CAdbGuiView)
 	END_MSG_MAP()
