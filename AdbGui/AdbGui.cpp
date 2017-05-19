@@ -12,9 +12,6 @@
 #include "Ribbon.h"
 
 #include "resource.h"
-
-#include "AdbGuiView.h"
-#include "aboutdlg.h"
 #include "MainFrm.h"
 
 CAppModule _Module;

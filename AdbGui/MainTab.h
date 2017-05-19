@@ -1,4 +1,4 @@
-// AdbGuiView.h : interface of the CAdbGuiView class
+// MainTab.h : interface of the MainTab class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -6,14 +6,14 @@
 
 #include <atlctrls.h>
 
-class CAdbGuiView : public CWindowImpl<CAdbGuiView, CListViewCtrl>
+class MainTab : public CWindowImpl<MainTab, CListViewCtrl>
 {
 public:
 	DECLARE_WND_SUPERCLASS(NULL, CListViewCtrl::GetWndClassName())
 
 	BOOL PreTranslateMessage(MSG* pMsg);
 
-	BEGIN_MSG_MAP(CAdbGuiView)
+	BEGIN_MSG_MAP(MainTab)
 	END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):

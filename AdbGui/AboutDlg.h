@@ -1,4 +1,4 @@
-// aboutdlg.h : interface of the CAboutDlg class
+// AboutDlg.h : interface of the CAboutDlg class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +23,5 @@ public:
 //	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
 
 	LRESULT OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-
 	LRESULT OnCloseCmd(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 };

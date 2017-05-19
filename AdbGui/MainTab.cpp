@@ -1,11 +1,11 @@
-// AdbGuiView.cpp : implement of the CAdbGuiView class
+// MainTab.cpp : implement of the MainTab class
 //
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "AdbGuiView.h"
+#include "MainTab.h"
 
-BOOL CAdbGuiView::PreTranslateMessage(MSG* pMsg)
+BOOL MainTab::PreTranslateMessage(MSG* pMsg)
 {
 	pMsg;
 	return FALSE;

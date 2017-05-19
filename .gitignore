@@ -1,3 +1,7 @@
 Release
 Debug
 /.vs
+/AdbGui/*.user
+/AdbGui/Ribbon.rc
+/AdbGui/Ribbon.bml
+/AdbGui/Ribbon.h

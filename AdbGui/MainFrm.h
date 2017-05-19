@@ -5,7 +5,7 @@
 #pragma once
 
 #include <atlribbon.h>
-#include "AdbGuiView.h"
+#include "MainTabView.h"
 #include "resource.h"
 
 class CMainFrame : 
@@ -15,7 +15,7 @@ class CMainFrame :
 public:
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME)
 
-	CAdbGuiView m_view;
+	MainTabView m_MainTab;
 	CCommandBarCtrl m_CmdBar;
 
 	//TODO: Declare ribbon controls
