@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "MainFrm.h"
 #include "AboutDlg.h"
+#include "Config\ConfigManager.h"
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
@@ -60,6 +61,9 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	ShowRibbonUI(bRibbonUI);
 	UISetCheck(ID_VIEW_RIBBON, bRibbonUI);
+
+	//CString& strAdbPath = ConfigManager::GetInstance().GetAdbPath();
+	//::MessageBox(m_hWnd, strAdbPath, _T("Notice"), MB_ICONINFORMATION);
 
 	return 0;
 }

@@ -226,7 +226,7 @@ public:
 		if (inTab >= 0 && inTab < GetTabCount())
 		{
 			// Get tab item info
-			char theText[128];
+			TCHAR theText[MAX_PATH];
 
 			GetTabText(inTab, sizeof(theText), theText);
 			theTabText = theText;

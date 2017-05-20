@@ -13,6 +13,12 @@
       <UniqueIdentifier>{8557b6b1-a4d1-4755-8f2a-3bcab369d02b}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{2eef35db-415e-49c5-ad3b-0ab1986d518d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{1ba82934-b2fc-4d84-823c-3a1d8b17d142}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -35,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="ConfigTab.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\ConfigManager.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +76,21 @@
     </ClInclude>
     <ClInclude Include="ConfigTab.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AndroidEnvVar.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AdbPath.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\IConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\AdbPathConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ConfigManager.h">
+      <Filter>Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

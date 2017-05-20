@@ -11,6 +11,11 @@
 
 #include "targetver.h"
 
+#define _WTL_NO_CSTRING
+#define _WTL_NO_WTYPES
+#include <atlstr.h>
+#include <atltypes.h>
+
 #include <atlbase.h>
 #include <atlapp.h>
 
