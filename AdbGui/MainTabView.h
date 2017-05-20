@@ -32,4 +32,5 @@ public:
 protected:
 	void AddMainTab();
 	void AddConfigTab();
+	virtual void OnTabRemoved(int inTabIndex);
 };
