@@ -3,10 +3,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "ConfigTab.h"
+#include "SettingTab.h"
 
-BOOL ConfigTab::PreTranslateMessage(MSG* pMsg)
+BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
-	pMsg;
-	return FALSE;
+	return IsDialogMessage(pMsg);
 }
