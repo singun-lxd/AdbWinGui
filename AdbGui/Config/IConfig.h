@@ -18,6 +18,7 @@ public:
 
 public:
 	virtual T GetConfigValue() = 0;
+	virtual BOOL SetConfigValue(T value) = 0;
 
 protected:
 	INT GetConfigInt(LPCTSTR lpszKeyName, int nDefault)

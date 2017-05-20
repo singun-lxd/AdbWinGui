@@ -20,6 +20,59 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SETTING_TAB DIALOGEX 0, 0, 332, 182
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 9, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    GROUPBOX        "Adb Path",IDC_STATIC,13,11,303,58
+    CONTROL         "Auto",IDC_RADIO_AUTO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,26,29,48,11
+    CONTROL         "Manual",IDC_RADIO_MANUAL,"Button",BS_AUTORADIOBUTTON,26,47,48,11
+    LTEXT           "",IDC_STATIC_PATH,80,31,231,10
+    EDITTEXT        IDC_EDIT_PATH,79,46,228,14,ES_AUTOHSCROLL | ES_READONLY
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 187, 118
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,69,97,50,14
+    CTEXT           "ADB GUI v1.0\n(Android Debug Bridge Graphy User Interface)\n\nsingun(c) Copyright 2017",IDC_STATIC,10,48,166,32
+    ICON            IDR_MAINFRAME,IDC_STATIC,83,23,21,20
+    GROUPBOX        "",IDC_STATIC,7,7,173,85
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_SETTING_TAB, DIALOG
+    BEGIN
+        RIGHTMARGIN, 328
+        BOTTOMMARGIN, 180
+    END
+
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 111
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -128,42 +181,6 @@ IDR_MAINFRAME           ICON                    "res\\AdbGui.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
-//
-
-IDD_ABOUTBOX DIALOGEX 0, 0, 187, 118
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,69,97,50,14
-    CTEXT           "ADB GUI v1.0\n(Android Debug Bridge Graphy User Interface)\n\nsingun(c) Copyright 2017",IDC_STATIC,10,48,166,32
-    ICON            IDR_MAINFRAME,IDC_STATIC,83,23,21,20
-    GROUPBOX        "",IDC_STATIC,7,7,173,85
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_ABOUTBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 180
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 111
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Accelerator
 //
 
@@ -232,6 +249,16 @@ END
 IDD_ABOUTBOX AFX_DIALOG_LAYOUT
 BEGIN
     0
+END
+
+IDD_SETTING_TAB AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 100, 0,
+    0, 0, 100, 0
 END
 
 

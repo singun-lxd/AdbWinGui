@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "MainTabView.h"
 #include "MainTab.h"
-#include "ConfigTab.h"
+#include "SettingTab.h"
 
 BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 {
@@ -16,23 +16,23 @@ BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 void MainTabView::InitTabs()
 {
 	AddMainTab();
-	AddConfigTab();
+	AddSettingTab();
 }
 
 void MainTabView::AddMainTab()
 {
 	MainTab* mainView = new MainTab;
-	mainView->Create(*this, rcDefault, _T("MainTab"), WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, WS_EX_CLIENTEDGE);
+	mainView->Create(*this, rcDefault, _T("MainTab"), WS_CHILD, WS_EX_STATICEDGE);
 
 	AddTab(_T("Main"), *mainView, TRUE, TAB_MAIN, (LPARAM)mainView);
 }
 
-void MainTabView::AddConfigTab()
+void MainTabView::AddSettingTab()
 {
-	ConfigTab*	configView = new ConfigTab;
-	configView->Create(*this, rcDefault, _T("ConfigTab"), WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL, WS_EX_CLIENTEDGE);
+	SettingTab*	configView = new SettingTab;
+	configView->Create(*this);
 
-	AddTab(_T("Config"), *configView, FALSE, TAB_CONFIG, (LPARAM)configView);
+	AddTab(_T("Setting"), *configView, FALSE, TAB_SETTING, (LPARAM)configView);
 }
 
 void MainTabView::OnTabRemoved(int inTabIndex)
@@ -51,9 +51,9 @@ void MainTabView::OnTabRemoved(int inTabIndex)
 
 			break;
 		}
-		case TAB_CONFIG:
+		case TAB_SETTING:
 		{
-			ConfigTab* theWindowPtr = reinterpret_cast<ConfigTab*>(theTabParam);
+			SettingTab* theWindowPtr = reinterpret_cast<SettingTab*>(theTabParam);
 			theWindowPtr->DestroyWindow();
 			delete theWindowPtr;
 

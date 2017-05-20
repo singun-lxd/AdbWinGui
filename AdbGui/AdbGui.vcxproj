@@ -211,7 +211,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MainTab.cpp" />
-    <ClCompile Include="ConfigTab.cpp" />
+    <ClCompile Include="SettingTab.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MainTabView.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -227,7 +227,7 @@
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
     <ClInclude Include="MainTab.h" />
-    <ClInclude Include="ConfigTab.h" />
+    <ClInclude Include="SettingTab.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MainTabView.h" />
     <ClInclude Include="resource.h" />

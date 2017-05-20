@@ -17,9 +17,9 @@ private:
 
 private:
 
-	CSimpleArray<CWindow>		m_Views;			///< An array of views for the tab
+	CSimpleArray<CWindow>	m_Views;			///< An array of views for the tab
 	LONG						m_ActiveTabIndex;	///< The index of the active tab
-	CWindow						m_ActiveTabWindow;	///< The active tab window
+	CWindow					m_ActiveTabWindow;	///< The active tab window
 	CFont						m_HorizFont;		///< Top/Bottom font used by tab control
 	CFont						m_LeftFont;			///< Left font used by tab control
 	CFont						m_RightFont;		///< Right font used by tab control

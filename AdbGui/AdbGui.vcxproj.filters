@@ -39,11 +39,11 @@
     <ClCompile Include="MainTabView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigTab.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Config\ConfigManager.cpp">
       <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingTab.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,9 +74,6 @@
     <ClInclude Include="MainTab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfigTab.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\AndroidEnvVar.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -91,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Config\ConfigManager.h">
       <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingTab.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

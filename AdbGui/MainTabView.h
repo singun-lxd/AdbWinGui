@@ -10,11 +10,10 @@
 class MainTabView : public CTabViewCtrl
 {
 protected:
-
 	enum
 	{
 		TAB_MAIN = 1,
-		TAB_CONFIG = 2,
+		TAB_SETTING = 2,
 	};
 
 public:
@@ -31,6 +30,6 @@ public:
 
 protected:
 	void AddMainTab();
-	void AddConfigTab();
+	void AddSettingTab();
 	virtual void OnTabRemoved(int inTabIndex);
 };

@@ -1,4 +1,4 @@
-// ConfigTab.h : interface of the ConnfigTab class
+// SettingTab.h : interface of the SettingTab class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -14,8 +14,26 @@ public:
 		IDD = IDD_SETTING_TAB
 	};
 
-	BOOL PreTranslateMessage(MSG* pMsg);
+	CButton m_btnRadioAuto;
+	CButton m_btnRadioManual;
+	CStatic m_stcAdbPath;
+	CEdit m_edtAdbPath;
 
+public:
 	BEGIN_MSG_MAP(SettingTab)
+		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		COMMAND_RANGE_HANDLER(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnRadioSelected)
+		//COMMAND_ID_HANDLER(IDC_BUTTON_SEL, OnBtnSelect)
 	END_MSG_MAP()
+
+public:
+	BOOL PreTranslateMessage(MSG* pMsg);
+	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	//LRESULT OnBtnSelect(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+private:
+	void InitControls();
+	void UpdateControlStatus();
+	void SwitchToAutoMode(LPCTSTR lpszePath);
+	void SwitchToManualMode(LPCTSTR lpszePath);
 };
