@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include <atldlgs.h>
 #include "SettingTab.h"
-#include "Config/ConfigManager.h"
 
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
@@ -26,34 +25,22 @@ LRESULT SettingTab::OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 	switch (wID)
 	{
 	case IDC_RADIO_AUTO:
-	{
-		const CString& strAdbPath = cfgManager.UpdateAdbPath();
-		SwitchToAutoMode(strAdbPath);
+		SwitchToAutoMode(cfgManager.UpdateAdbPath());
 		cfgManager.SetAdbPath(_T(""));
-	}
 		break;
 	case IDC_RADIO_MANUAL:
-	{
-		CFileDialog fileDialog(TRUE, _T("exe"), _T("adb.exe"),
-			OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("adb.exe\0adb.exe\0\0"),
-			GetParent());
-		if (fileDialog.DoModal() == IDOK)
-		{
-			LPCTSTR lpszPath = fileDialog.m_ofn.lpstrFile;
-			SwitchToManualMode(lpszPath);
-			cfgManager.SetAdbPath(lpszPath);
-		}
-		else
-		{
-			m_btnRadioAuto.SetCheck(TRUE);
-			m_btnRadioManual.SetCheck(FALSE);
-			SetFocus();	// set focus on the tab to avoid infinite messages
-		}
-	}
+		ShowSelectAdbDialog(cfgManager);
 		break;
 	}
 	return 0;
 }
+
+// LRESULT SettingTab::OnPathClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+// {
+// 	ConfigManager& cfgManager = ConfigManager::GetInstance();
+// 	ShowSelectAdbDialog(cfgManager);
+// 	return 0;
+// }
 
 void SettingTab::InitControls()
 {
@@ -95,4 +82,23 @@ void SettingTab::SwitchToManualMode(LPCTSTR lpszePath)
 	m_stcAdbPath.EnableWindow(FALSE);
 	m_edtAdbPath.EnableWindow(TRUE);
 	m_edtAdbPath.SetWindowText(lpszePath);
+}
+
+void SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
+{
+	CFileDialog fileDialog(TRUE, _T("exe"), _T("adb.exe"),
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("adb.exe\0adb.exe\0\0"),
+		GetParent());
+	if (fileDialog.DoModal() == IDOK)
+	{
+		LPCTSTR lpszPath = fileDialog.m_ofn.lpstrFile;
+		SwitchToManualMode(lpszPath);
+		cfgManager.SetAdbPath(lpszPath);
+	}
+	else
+	{
+		m_btnRadioAuto.SetCheck(TRUE);
+		m_btnRadioManual.SetCheck(FALSE);
+		SetFocus();	// set focus on the tab to avoid infinite messages
+	}
 }
