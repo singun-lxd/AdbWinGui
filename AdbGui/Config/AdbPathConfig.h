@@ -43,7 +43,10 @@ public:
 		}
 		else
 		{
-			m_pAdbPath = new AdbPath;
+			if (m_pAdbPath == NULL)
+			{
+				m_pAdbPath = new AdbPath;
+			}
 			lpszPath = m_pAdbPath->GetAdbExePath();
 			if (lpszPath != NULL && _tcslen(lpszPath) > 0)
 			{
