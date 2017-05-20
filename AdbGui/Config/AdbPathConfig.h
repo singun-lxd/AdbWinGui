@@ -8,7 +8,7 @@
 
 #define ADB_PATH_KEY _T("ADB_PATH")
 
-class AdbPathConfig : public IConfig<CString&>
+class AdbPathConfig : public IConfig<const CString&>
 {
 private:
 	CString m_strAdbPath;
@@ -30,7 +30,7 @@ public:
 	}
 
 public:
-	CString& GetConfigValue()
+	const CString& GetConfigValue()
 	{
 		if (!m_strAdbPath.IsEmpty())
 		{

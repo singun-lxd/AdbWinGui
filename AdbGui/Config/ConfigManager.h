@@ -14,5 +14,5 @@ public:
 
 public:
 	ConfigManager();
-	CString& GetAdbPath();
+	const CString& GetAdbPath();
 };

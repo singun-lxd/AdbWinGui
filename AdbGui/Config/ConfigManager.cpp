@@ -19,7 +19,7 @@ ConfigManager::ConfigManager() : m_configPath(CONFIG_FILE_NAME)
 
 }
 
-CString& ConfigManager::GetAdbPath()
+const CString& ConfigManager::GetAdbPath()
 {
 	return m_configPath.GetConfigValue();
 }
