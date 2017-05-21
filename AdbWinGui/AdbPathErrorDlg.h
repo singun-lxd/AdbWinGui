@@ -7,7 +7,6 @@ class AdbPathErrorDlg : public CTaskDialogImpl<AdbPathErrorDlg>
 public:
 	AdbPathErrorDlg();
 
-    void OnDialogConstructed();
     BOOL OnButtonClicked(int buttonId);
 	int DoModal(HWND hWnd);
 

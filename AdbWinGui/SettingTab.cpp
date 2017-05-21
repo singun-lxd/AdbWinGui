@@ -6,6 +6,7 @@
 #include <atldlgs.h>
 #include "SettingTab.h"
 #include "MessageDefine.h"
+#include "MessageTaskDlg.h"
 
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
@@ -25,7 +26,11 @@ LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lPara
 {
 	ConfigManager& cfgManager = ConfigManager::GetInstance();
 	BOOL bRet = ShowSelectAdbDialog(cfgManager);
-	if (bRet == FALSE)
+	if (bRet == TRUE)
+	{
+		SwitchRadioButton(FALSE);
+	}
+	else
 	{
 		GetParent().PostMessage(MSG_MAIN_NOTIFY_EXIT);
 	}
@@ -39,8 +44,7 @@ LRESULT SettingTab::OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 	switch (wID)
 	{
 	case IDC_RADIO_AUTO:
-		SwitchToAutoMode(cfgManager.UpdateAdbPath());
-		cfgManager.SetAdbPath(_T(""));
+		AutoUpdateAdbPath(cfgManager);
 		break;
 	case IDC_RADIO_MANUAL:
 		ShowSelectAdbDialog(cfgManager);
@@ -108,6 +112,31 @@ void SettingTab::SwitchToManualMode(LPCTSTR lpszePath)
 	m_edtAdbPath.SetWindowText(lpszePath);
 }
 
+void SettingTab::SwitchRadioButton(BOOL bAuto)
+{
+	CheckRadioButton(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, bAuto ? IDC_RADIO_AUTO : IDC_RADIO_MANUAL);
+	SetFocus();	// set focus on the tab to avoid infinite messages
+}
+
+void SettingTab::AutoUpdateAdbPath(ConfigManager& cfgManager)
+{
+	const CString& strPath = cfgManager.AutoAdbPath();
+	if (!strPath.IsEmpty())
+	{
+		SwitchToAutoMode(strPath);
+		cfgManager.SetAdbPath(_T(""));
+	}
+	else
+	{
+		SwitchRadioButton(FALSE);
+
+		CString strMsg;
+		strMsg.LoadString(IDS_ADB_PATH_ERROR);
+		MessageTaskDlg msgDlg;
+		msgDlg.DoModal(m_hWnd, strMsg, MB_ICONEXCLAMATION);
+	}
+}
+
 BOOL SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
 {
 	CFileDialog fileDialog(TRUE, _T("exe"), _T("adb.exe"),
@@ -122,9 +151,7 @@ BOOL SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
 	}
 	else
 	{
-		m_btnRadioAuto.SetCheck(TRUE);
-		m_btnRadioManual.SetCheck(FALSE);
-		SetFocus();	// set focus on the tab to avoid infinite messages
+		SwitchRadioButton(TRUE);
 		return FALSE;
 	}
 }

@@ -107,6 +107,9 @@
     <ClInclude Include="MessageDefine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Config\ConfigKeyDefine.h">
+      <Filter>Config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc">

@@ -13,11 +13,6 @@ AdbPathErrorDlg::AdbPathErrorDlg()
 		TDF_USE_COMMAND_LINKS);
 }
 
-void AdbPathErrorDlg::OnDialogConstructed()
-{
-	SetButtonElevationRequiredState(em_Button_Select, true);
-}
-
 BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
 {
 	switch (buttonId)
@@ -25,7 +20,7 @@ BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
 	case em_Button_Select:
 		m_nClickedId = IDOK;
 		break;
-	case em_Button_Exit:
+	default:
 		m_nClickedId = IDCANCEL;
 		break;
 	}

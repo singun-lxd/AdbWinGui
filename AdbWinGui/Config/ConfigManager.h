@@ -17,6 +17,6 @@ public:
 	ConfigManager(LPCTSTR lpszFileName);
 	AdbPathConfig::PathMode GetAdbPathMode();
 	const CString& GetAdbPath();
-	const CString& UpdateAdbPath();
+	const CString& AutoAdbPath();
 	void SetAdbPath(const CString& strPath);
 };

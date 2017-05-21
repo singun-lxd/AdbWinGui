@@ -37,9 +37,11 @@ public:
 
 	BOOL CheckAdbExists()
 	{
-		if (::PathFileExists(ADB_EXE))
+		::GetModuleFileName(NULL, m_szAdbExePath, MAX_PATH);
+		::PathRemoveFileSpec(m_szAdbExePath);
+		::PathAppend(m_szAdbExePath, ADB_EXE);
+		if (::PathFileExists(m_szAdbExePath))
 		{
-			_tcscpy_s(m_szAdbExePath, ADB_EXE);
 			return TRUE;
 		}
 		LPTSTR szPath = GetPathValue();

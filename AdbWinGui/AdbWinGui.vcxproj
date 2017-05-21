@@ -230,6 +230,7 @@
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AdbPathErrorDlg.h" />
     <ClInclude Include="Config\AdbPathConfig.h" />
+    <ClInclude Include="Config\ConfigKeyDefine.h" />
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
     <ClInclude Include="MainTab.h" />

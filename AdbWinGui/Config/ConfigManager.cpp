@@ -32,9 +32,9 @@ const CString& ConfigManager::GetAdbPath()
 	return m_configPath.GetConfigValue();
 }
 
-const CString& ConfigManager::UpdateAdbPath()
+const CString& ConfigManager::AutoAdbPath()
 {
-	return m_configPath.UpdateAdbPath();
+	return m_configPath.AutoAdbPath();
 }
 
 void ConfigManager::SetAdbPath(const CString& strPath)

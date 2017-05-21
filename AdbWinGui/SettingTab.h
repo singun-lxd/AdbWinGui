@@ -41,5 +41,7 @@ private:
 	void CheckSettingValid();
 	void SwitchToAutoMode(LPCTSTR lpszePath);
 	void SwitchToManualMode(LPCTSTR lpszePath);
+	void SwitchRadioButton(BOOL bAuto);
+	void AutoUpdateAdbPath(ConfigManager& cfgManager);
 	BOOL ShowSelectAdbDialog(ConfigManager& cfgManager);
 };

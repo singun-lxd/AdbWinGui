@@ -4,10 +4,8 @@
 #include <wtypes.h>
 #include <atlstr.h>
 #include "IConfig.h"
+#include "ConfigKeyDefine.h"
 #include "..\Utils\AdbPath.h"
-
-#define PATH_MODE_KEY		_T("PATH_MODE")
-#define ADB_PATH_KEY		_T("ADB_PATH")
 
 class AdbPathConfig : public IConfig<const CString&>
 {
@@ -24,7 +22,7 @@ private:
 	AdbPath* m_pAdbPath;
 
 public:
-	AdbPathConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName)
+	AdbPathConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName, MAIN_SECTION)
 	{
 		m_pAdbPath = NULL;
 	}
@@ -49,15 +47,7 @@ public:
 
 		if (m_emPathMode == em_PathModeAuto)
 		{
-			if (m_pAdbPath == NULL)
-			{
-				m_pAdbPath = new AdbPath;
-			}
-			LPCTSTR lpszPath = m_pAdbPath->GetAdbExePath();
-			if (lpszPath != NULL && _tcslen(lpszPath) > 0)
-			{
-				m_strAdbPath = lpszPath;
-			}
+			AutoUpdateAdbPath();
 		}
 		else
 		{
@@ -68,6 +58,19 @@ public:
 			}
 		}
 		return m_strAdbPath;
+	}
+
+	void AutoUpdateAdbPath()
+	{
+		if (m_pAdbPath == NULL)
+		{
+			m_pAdbPath = new AdbPath;
+		}
+		LPCTSTR lpszPath = m_pAdbPath->GetAdbExePath();
+		if (lpszPath != NULL && _tcslen(lpszPath) > 0)
+		{
+			m_strAdbPath = lpszPath;
+		}
 	}
 
 	BOOL SetConfigValue(const CString& value)
@@ -92,10 +95,15 @@ public:
 		return bRet;
 	}
 
-	const CString& UpdateAdbPath()
+	const CString& AutoAdbPath()
 	{
 		m_strAdbPath.Empty();
-		return GetConfigValue();
+		AutoUpdateAdbPath();
+		if (!m_strAdbPath.IsEmpty())
+		{
+			m_emPathMode = em_PathModeAuto;
+		}
+		return m_strAdbPath;
 	}
 
 	PathMode GetAdbPathMode()

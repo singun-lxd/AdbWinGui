@@ -271,10 +271,10 @@ STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "AdbWinGui"
     IDS_NOT_ASK_ME          "Do not ask me any more"
-    IDS_ADB_PATH_INVALID    "Can not recognize Adb.exe path, please specify a full path."
+    IDS_ADB_PATH_INVALID    "Can not recognize adb.exe path, please specify a full path."
     IDS_SELECT_ADB_PATH     "Select adb.exe File Path"
     IDS_EXIT_ADBWINGUI      "Exit AdbWinGui"
-    IDS_ADB_PATH_ERROR      "Adb Path Error"
+    IDS_ADB_PATH_ERROR      "Searching adb.exe path failed"
 END
 
 STRINGTABLE
