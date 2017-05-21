@@ -6,11 +6,39 @@
 #include "MainTabView.h"
 #include "MainTab.h"
 #include "SettingTab.h"
+#include "AdbPathErrorDlg.h"
+#include "MessageDefine.h"
 
 BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 {
 	pMsg;
 	return FALSE;
+}
+
+LRESULT MainTabView::OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	GetParent().PostMessage(WM_CLOSE);
+
+	return 0;
+}
+
+LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
+{
+	if (uMsg == MSG_MAIN_ADB_ERROR)
+	{
+		AdbPathErrorDlg dlg;
+		int nRet = dlg.DoModal(GetParent());
+		if (nRet == IDOK)
+		{
+			HWND hWndSetting = (HWND)lParam;
+			::PostMessage(hWndSetting, MSG_SETTING_SELECT_ADB, 0, 0);
+		}
+		else
+		{
+			GetParent().PostMessage(WM_CLOSE);
+		}
+	}
+	return 0;
 }
 
 void MainTabView::InitTabs()
@@ -29,7 +57,7 @@ void MainTabView::AddMainTab()
 
 void MainTabView::AddSettingTab()
 {
-	SettingTab*	configView = new SettingTab;
+	SettingTab* configView = new SettingTab;
 	configView->Create(*this);
 
 	AddTab(_T("Setting"), *configView, FALSE, TAB_SETTING, (LPARAM)configView);

@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include <atldlgs.h>
 #include "SettingTab.h"
+#include "MessageDefine.h"
 
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
@@ -15,8 +16,21 @@ LRESULT SettingTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 {
 	InitControls();
 	UpdateControlStatus();
+	CheckSettingValid();
 
 	return FALSE;
+}
+
+LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	ConfigManager& cfgManager = ConfigManager::GetInstance();
+	BOOL bRet = ShowSelectAdbDialog(cfgManager);
+	if (bRet == FALSE)
+	{
+		GetParent().PostMessage(MSG_MAIN_NOTIFY_EXIT);
+	}
+
+	return 0;
 }
 
 LRESULT SettingTab::OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
@@ -68,6 +82,16 @@ void SettingTab::UpdateControlStatus()
 	}
 }
 
+void SettingTab::CheckSettingValid()
+{
+	const CString& strAdbPath = ConfigManager::GetInstance().GetAdbPath();
+	if (strAdbPath.IsEmpty())
+	{
+		CWindow hWnd = GetParent();
+		hWnd.PostMessage(MSG_MAIN_ADB_ERROR, 0, (LPARAM)m_hWnd);
+	}
+}
+
 void SettingTab::SwitchToAutoMode(LPCTSTR lpszePath)
 {
 	m_stcAdbPath.SetWindowText(lpszePath);
@@ -84,21 +108,23 @@ void SettingTab::SwitchToManualMode(LPCTSTR lpszePath)
 	m_edtAdbPath.SetWindowText(lpszePath);
 }
 
-void SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
+BOOL SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
 {
 	CFileDialog fileDialog(TRUE, _T("exe"), _T("adb.exe"),
-		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("adb.exe\0adb.exe\0\0"),
+		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, _T("adb.exe\0adb.exe\0\0"),
 		GetParent());
 	if (fileDialog.DoModal() == IDOK)
 	{
 		LPCTSTR lpszPath = fileDialog.m_ofn.lpstrFile;
 		SwitchToManualMode(lpszPath);
 		cfgManager.SetAdbPath(lpszPath);
+		return TRUE;
 	}
 	else
 	{
 		m_btnRadioAuto.SetCheck(TRUE);
 		m_btnRadioManual.SetCheck(FALSE);
 		SetFocus();	// set focus on the tab to avoid infinite messages
+		return FALSE;
 	}
 }

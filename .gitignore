@@ -1,8 +1,8 @@
 Release
 Debug
 /.vs
-/AdbGui/*.user
-/AdbGui/Ribbon.rc
-/AdbGui/Ribbon.bml
-/AdbGui/Ribbon.h
-/AdbGui/*.aps
+/AdbWinGui/*.user
+/AdbWinGui/Ribbon.rc
+/AdbWinGui/Ribbon.bml
+/AdbWinGui/Ribbon.h
+/AdbWinGui/*.aps

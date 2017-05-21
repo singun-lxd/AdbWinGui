@@ -1,0 +1,6 @@
+#pragma once
+
+#define MSG_MAIN_ADB_ERROR		WM_USER + 100
+#define MSG_MAIN_NOTIFY_EXIT		WM_USER + 101
+
+#define MSG_SETTING_SELECT_ADB	WM_USER + 200

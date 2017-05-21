@@ -7,6 +7,7 @@
 #include <atlribbon.h>
 #include "MainTabView.h"
 #include "resource.h"
+#include "MessageDefine.h"
 
 class CMainFrame : 
 	public CRibbonFrameWindowImpl<CMainFrame>, 
@@ -15,7 +16,7 @@ class CMainFrame :
 public:
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME)
 
-	MainTabView m_MainTab;
+	MainTabView m_MainTabView;
 	CCommandBarCtrl m_CmdBar;
 
 	//TODO: Declare ribbon controls

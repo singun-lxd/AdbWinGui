@@ -5,6 +5,11 @@
 #define IDD_ABOUTBOX                    100
 #define IDD_SETTING_TAB                 101
 #define IDR_MAINFRAME                   128
+#define IDS_NOT_ASK_ME                  129
+#define IDS_ADB_PATH_INVALID            130
+#define IDS_SELECT_ADB_PATH             131
+#define IDS_EXIT_ADBWINGUI              132
+#define IDS_ADB_PATH_ERROR              133
 #define IDC_RADIO_AUTO                  1000
 #define IDC_RADIO_MANUAL                1001
 #define IDC_EDIT_PATH                   1002
