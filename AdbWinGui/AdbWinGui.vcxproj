@@ -105,11 +105,11 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>AdbGui.h</HeaderFileName>
-      <InterfaceIdentifierFileName>AdbGui_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>AdbGui_p.c</ProxyFileName>
+      <HeaderFileName>AdbWinGui.h</HeaderFileName>
+      <InterfaceIdentifierFileName>AdbWinGui_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>AdbWinGui_p.c</ProxyFileName>
       <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/AdbGui.tlb</TypeLibraryName>
+      <TypeLibraryName>$(IntDir)/AdbWinGui.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
   </ItemDefinitionGroup>
@@ -137,11 +137,11 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>AdbGui.h</HeaderFileName>
-      <InterfaceIdentifierFileName>AdbGui_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>AdbGui_p.c</ProxyFileName>
+      <HeaderFileName>AdbWinGui.h</HeaderFileName>
+      <InterfaceIdentifierFileName>AdbWinGui_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>AdbWinGui_p.c</ProxyFileName>
       <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/AdbGui.tlb</TypeLibraryName>
+      <TypeLibraryName>$(IntDir)/AdbWinGui.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
   </ItemDefinitionGroup>
@@ -167,11 +167,11 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>AdbGui.h</HeaderFileName>
-      <InterfaceIdentifierFileName>AdbGui_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>AdbGui_p.c</ProxyFileName>
+      <HeaderFileName>AdbWinGui.h</HeaderFileName>
+      <InterfaceIdentifierFileName>AdbWinGui_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>AdbWinGui_p.c</ProxyFileName>
       <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/AdbGui.tlb</TypeLibraryName>
+      <TypeLibraryName>$(IntDir)/AdbWinGui.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
   </ItemDefinitionGroup>
@@ -196,17 +196,17 @@
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <HeaderFileName>AdbGui.h</HeaderFileName>
-      <InterfaceIdentifierFileName>AdbGui_i.c</InterfaceIdentifierFileName>
-      <ProxyFileName>AdbGui_p.c</ProxyFileName>
+      <HeaderFileName>AdbWinGui.h</HeaderFileName>
+      <InterfaceIdentifierFileName>AdbWinGui_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>AdbWinGui_p.c</ProxyFileName>
       <GenerateStublessProxies>true</GenerateStublessProxies>
-      <TypeLibraryName>$(IntDir)/AdbGui.tlb</TypeLibraryName>
+      <TypeLibraryName>$(IntDir)/AdbWinGui.tlb</TypeLibraryName>
       <DllDataFileName />
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
-    <ClCompile Include="AdbGui.cpp" />
+    <ClCompile Include="AdbWinGui.cpp" />
     <ClCompile Include="Config\ConfigManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -239,10 +239,11 @@
     <ClInclude Include="Utils\AndroidEnvVar.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AdbGui.rc" />
+    <ResourceCompile Include="AdbWinGui.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\AdbGui.ico" />
+    <Image Include="res\AdbWinGui.ico" />
     <Image Include="res\toolbar.bmp" />
   </ItemGroup>
   <ItemGroup>

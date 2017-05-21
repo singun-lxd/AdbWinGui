@@ -24,7 +24,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AdbGui.cpp">
+    <ClCompile Include="AdbWinGui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainFrm.cpp">
@@ -94,12 +94,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="AdbGui.rc">
+    <ResourceCompile Include="AdbWinGui.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\AdbWinGui.ico">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\AdbGui.ico">

@@ -42,8 +42,8 @@ CAPTION "About"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,69,97,50,14
-    CTEXT           "ADB GUI v1.0\n(Android Debug Bridge Graphy User Interface)\n\nsingun(c) Copyright 2017",IDC_STATIC,10,48,166,32
-    ICON            IDR_MAINFRAME,IDC_STATIC,83,23,21,20
+    CTEXT           "AdbWinGui v1.0\n(Android Debug Bridge Windows GUI)\n\nsingun(c) Copyright 2017",IDC_STATIC,10,48,166,32
+    ICON            IDR_MAINFRAME,IDC_STATIC,83,23,20,20
     GROUPBOX        "",IDC_STATIC,7,7,173,85
 END
 
@@ -269,7 +269,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "ADB GUI"
+    IDR_MAINFRAME           "AdbWinGui"
 END
 
 STRINGTABLE

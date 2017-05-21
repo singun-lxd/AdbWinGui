@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ 生成的包含文件。
-// 供 AdbGui.rc 使用
+// 供 AdbWinGui.rc 使用
 //
 #define IDD_ABOUTBOX                    100
 #define IDD_SETTING_TAB                 101
