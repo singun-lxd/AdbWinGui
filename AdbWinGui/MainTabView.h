@@ -47,5 +47,4 @@ public:
 protected:
 	void AddMainTab();
 	void AddSettingTab();
-	void CalcViewRect(CRect* pRect);
 };

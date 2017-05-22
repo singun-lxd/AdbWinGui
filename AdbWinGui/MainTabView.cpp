@@ -106,8 +106,6 @@ void MainTabView::AddMainTab()
 	m_arrWnd.Add(mainView);
 
 	AddPage(*mainView, _T("Main"), TAB_MAIN);
-
-	//AddTab(_T("Main"), *mainView, TRUE, TAB_MAIN, (LPARAM)mainView);
 }
 
 void MainTabView::AddSettingTab()
@@ -117,52 +115,4 @@ void MainTabView::AddSettingTab()
 	m_arrWnd.Add(configView);
 
 	AddPage(*configView, _T("Setting"), TAB_SETTING);
-	//AddTab(_T("Setting"), *configView, FALSE, TAB_SETTING, (LPARAM)configView);
-}
-
-void MainTabView::CalcViewRect(CRect* pRect)
-{
-	const LONG TABVIEW_BORDER = 3;
-	const LONG TABVIEW_EDGE = 5;
-
-	GetClientRect((*pRect));
-
-	if (pRect->Height() > 0 && pRect->Width() > 0)
-	{
-		// Calculate the Height (or Width) of the tab . . .
-		// cause it could be Multiline
-		CRect theTabRect;
-		m_tab.GetItemRect(0, &theTabRect);
-
-		LONG theRowCount = m_tab.GetRowCount();
-		LONG theEdgeWidth = (theTabRect.Width() * theRowCount) + TABVIEW_EDGE;
-		LONG theEdgeHeight = (theTabRect.Height() * theRowCount) + TABVIEW_EDGE;
-
-		// Set the size based on the style
-		DWORD dwStyle = GetStyle();
-		if ((dwStyle & TCS_BOTTOM) && !(dwStyle & TCS_VERTICAL)) {		// Bottom
-			(*pRect).top += TABVIEW_BORDER;
-			(*pRect).left += TABVIEW_BORDER;
-			(*pRect).right -= TABVIEW_BORDER;
-			(*pRect).bottom -= theEdgeHeight;
-		}
-		else if ((dwStyle & TCS_RIGHT) && (dwStyle & TCS_VERTICAL)) {	// Right
-			(*pRect).top += TABVIEW_BORDER;
-			(*pRect).left += TABVIEW_BORDER;
-			(*pRect).right -= theEdgeWidth;
-			(*pRect).bottom -= TABVIEW_BORDER;
-		}
-		else if (dwStyle & TCS_VERTICAL) {								// Left
-			(*pRect).top += TABVIEW_BORDER;
-			(*pRect).left += theEdgeWidth;
-			(*pRect).right -= TABVIEW_BORDER;
-			(*pRect).bottom -= TABVIEW_BORDER;
-		}
-		else {															// Top
-			(*pRect).top += theEdgeHeight;
-			(*pRect).left += TABVIEW_BORDER;
-			(*pRect).right -= TABVIEW_BORDER;
-			(*pRect).bottom -= TABVIEW_BORDER;
-		}
-	}
 }
