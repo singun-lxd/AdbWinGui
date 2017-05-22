@@ -22,6 +22,9 @@
     <Filter Include="Tabs">
       <UniqueIdentifier>{79d1bf35-278a-4795-9f4a-a27d11b234a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dialogs">
+      <UniqueIdentifier>{8df0aabf-e29e-40ac-b693-5bf40f4d1936}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,17 +45,17 @@
     <ClCompile Include="Config\ConfigManager.cpp">
       <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="MessageTaskDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AdbPathErrorDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainTab.cpp">
       <Filter>Tabs</Filter>
     </ClCompile>
     <ClCompile Include="SettingTab.cpp">
       <Filter>Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="AdbPathErrorDlg.cpp">
+      <Filter>Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageTaskDlg.cpp">
+      <Filter>Dialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,12 +98,6 @@
     <ClInclude Include="Config\ConfigManager.h">
       <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="MessageTaskDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AdbPathErrorDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessageDefine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -112,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="SettingTab.h">
       <Filter>Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageTaskDlg.h">
+      <Filter>Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="AdbPathErrorDlg.h">
+      <Filter>Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
