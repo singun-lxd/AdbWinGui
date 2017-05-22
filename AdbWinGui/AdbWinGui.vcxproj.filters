@@ -77,9 +77,6 @@
     <ClInclude Include="Ribbon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TabViewCtrl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MainTabView.h">
       <Filter>Header Files</Filter>
     </ClInclude>

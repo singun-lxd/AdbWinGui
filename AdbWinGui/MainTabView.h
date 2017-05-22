@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include <atlcrack.h>
 #include <atlctrls.h>
 #include <atlctrlx.h>
 #include "resource.h"
-#include "TabViewCtrl.h"
 #include "MessageDefine.h"
 
 class MainTabView : public CTabViewImpl<MainTabView>
