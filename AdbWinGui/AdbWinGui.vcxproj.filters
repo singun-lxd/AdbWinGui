@@ -19,6 +19,9 @@
     <Filter Include="Config">
       <UniqueIdentifier>{1ba82934-b2fc-4d84-823c-3a1d8b17d142}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tabs">
+      <UniqueIdentifier>{79d1bf35-278a-4795-9f4a-a27d11b234a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -33,23 +36,23 @@
     <ClCompile Include="AboutDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainTab.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainTabView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Config\ConfigManager.cpp">
       <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="SettingTab.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MessageTaskDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AdbPathErrorDlg.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainTab.cpp">
+      <Filter>Tabs</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingTab.cpp">
+      <Filter>Tabs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +80,6 @@
     <ClInclude Include="MainTabView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainTab.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\AndroidEnvVar.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -95,9 +95,6 @@
     <ClInclude Include="Config\ConfigManager.h">
       <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="SettingTab.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MessageTaskDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -109,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="Config\ConfigKeyDefine.h">
       <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="MainTab.h">
+      <Filter>Tabs</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingTab.h">
+      <Filter>Tabs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
