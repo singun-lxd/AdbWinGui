@@ -10,6 +10,7 @@
 #define IDS_SELECT_ADB_PATH             131
 #define IDS_EXIT_ADBWINGUI              132
 #define IDS_ADB_PATH_ERROR              133
+#define IDS_DOWNLOAD_ADB                134
 #define IDC_RADIO_AUTO                  1000
 #define IDC_RADIO_MANUAL                1001
 #define IDC_EDIT_PATH                   1002

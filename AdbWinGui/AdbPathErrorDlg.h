@@ -8,6 +8,7 @@ public:
 	AdbPathErrorDlg();
 
     BOOL OnButtonClicked(int buttonId);
+	void OnHyperlinkClicked(LPCTSTR pszHREF);
 	int DoModal(HWND hWnd);
 
 private:

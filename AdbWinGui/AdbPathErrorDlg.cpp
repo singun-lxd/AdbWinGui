@@ -10,7 +10,7 @@ AdbPathErrorDlg::AdbPathErrorDlg()
 	SetMainIcon(TD_ERROR_ICON);
 
 	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION | 
-		TDF_USE_COMMAND_LINKS);
+		TDF_USE_COMMAND_LINKS | TDF_ENABLE_HYPERLINKS);
 }
 
 BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
@@ -26,6 +26,11 @@ BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
 	}
 
 	return TRUE;
+}
+
+void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
+{
+	::ShellExecute(NULL, _T("open"), pszHREF, NULL, NULL, SW_SHOWNORMAL);
 }
 
 int AdbPathErrorDlg::DoModal(HWND hWnd)
@@ -44,6 +49,11 @@ int AdbPathErrorDlg::DoModal(HWND hWnd)
 	};
 
 	SetButtons(buttons, _countof(buttons));
+
+	CString strFooter;
+	strFooter.LoadString(IDS_DOWNLOAD_ADB);
+	SetFooterText(strFooter);
+	SetFooterIcon(TD_INFORMATION_ICON);
 
 	CTaskDialogImpl::DoModal(hWnd);
 

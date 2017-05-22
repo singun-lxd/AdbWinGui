@@ -28,9 +28,9 @@ public:
 	BEGIN_MSG_MAP_EX(MainTabView)
 		CHAIN_MSG_MAP(CTabViewImpl<MainTabView>)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-	ALT_MSG_MAP(1)   // tab control
 		MESSAGE_HANDLER(MSG_MAIN_NOTIFY_EXIT, OnNotifyExit)
 		MESSAGE_HANDLER(MSG_MAIN_ADB_ERROR, OnAdbError)
+	ALT_MSG_MAP(1)   // tab control
 	END_MSG_MAP()
 
 public:
