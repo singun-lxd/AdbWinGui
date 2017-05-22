@@ -46,7 +46,7 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	CreateSimpleStatusBar();
 
-	m_hWndClient = m_MainTabView.Create(m_hWnd, rcDefault, _T("MainTabView"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | TCS_BOTTOM, WS_EX_CLIENTEDGE);
+	m_hWndClient = m_MainTabView.Create(m_hWnd, rcDefault, _T("MainTabView"), WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
 	m_MainTabView.InitTabs();
 
 	UIAddToolBar(hWndToolBar);
