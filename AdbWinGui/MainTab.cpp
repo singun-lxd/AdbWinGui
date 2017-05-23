@@ -32,6 +32,7 @@ BOOL MainTab::PreTranslateMessage(MSG* pMsg)
 
 LRESULT MainTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	DlgResize_Init(false, false, WS_CHILD);
 	PrepareAdb();
 	return 0;
 }

@@ -23,9 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <atlctrls.h>
+#include <atlframe.h>
 #include "resource.h"
 
-class MainTab : public CDialogImpl<MainTab>
+class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>
 {
 public:
 	enum {
@@ -35,7 +36,12 @@ public:
 public:
 	BEGIN_MSG_MAP(MainTab)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
+
+	BEGIN_DLGRESIZE_MAP(MainTab)
+		DLGRESIZE_CONTROL(IDC_STATIC_PATH, DLSZ_CENTER_X | DLSZ_CENTER_Y)
+	END_DLGRESIZE_MAP()
 
 public:
 	BOOL PreTranslateMessage(MSG* pMsg);

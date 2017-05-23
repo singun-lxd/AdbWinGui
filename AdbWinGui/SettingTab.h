@@ -23,11 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <atlctrls.h>
+#include <atlframe.h>
 #include "resource.h"
 #include "Config/ConfigManager.h"
 #include "MessageDefine.h"
 
-class SettingTab : public CDialogImpl<SettingTab>
+class SettingTab : public CDialogImpl<SettingTab>, public CDialogResize<SettingTab>
 {
 public:
 	enum {
@@ -45,7 +46,14 @@ public:
 		MESSAGE_HANDLER(MSG_SETTING_SELECT_ADB, OnShowSelectAdbDialog)
 		COMMAND_RANGE_HANDLER(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnRadioSelected)
 		//COMMAND_ID_HANDLER(IDC_EDIT_PATH, OnPathClick)
+		CHAIN_MSG_MAP(CDialogResize<SettingTab>)
 	END_MSG_MAP()
+	
+	BEGIN_DLGRESIZE_MAP(MainTab)
+		DLGRESIZE_CONTROL(IDC_FRAME_PATH, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_STATIC_PATH, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_EDIT_PATH, DLSZ_SIZE_X)
+	END_DLGRESIZE_MAP()
 
 public:
 	BOOL PreTranslateMessage(MSG* pMsg);

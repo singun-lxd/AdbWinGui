@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include <atldlgs.h>
 #include "SettingTab.h"
 #include "MessageDefine.h"
 #include "MessageTaskDlg.h"
@@ -33,6 +32,7 @@ BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 
 LRESULT SettingTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
+	DlgResize_Init(false, false, WS_CHILD);
 	InitControls();
 	UpdateControlStatus();
 	CheckSettingValid();

@@ -29,7 +29,7 @@ IDD_SETTING_TAB DIALOGEX 0, 0, 332, 182
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Adb Path",IDC_STATIC,13,11,303,58
+    GROUPBOX        "Adb Path",IDC_FRAME_PATH,13,11,303,58
     CONTROL         "Auto",IDC_RADIO_AUTO,"Button",BS_AUTORADIOBUTTON | WS_GROUP,26,29,48,11
     CONTROL         "Manual",IDC_RADIO_MANUAL,"Button",BS_AUTORADIOBUTTON,26,47,48,11
     LTEXT           "",IDC_STATIC_PATH,80,31,231,10
@@ -43,17 +43,17 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,69,104,50,14
     CTEXT           "AdbWinGui v1.0\n(Android Debug Bridge Windows GUI)",IDC_STATIC,10,43,166,20
-    ICON            IDR_MAINFRAME,IDC_STATIC,83,18,21,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,83,18,20,20
     GROUPBOX        "",IDC_STATIC,7,7,173,95
-    LTEXT           "View Source on Github",IDC_STATIC_GITHUB,58,87,72,8
+    CTEXT           "View Source on Github",IDC_STATIC_GITHUB,53,87,80,8
     CTEXT           "singun(c) Copyright 2017\nPublished under GPL License",IDC_STATIC,43,68,101,20
 END
 
 IDD_MAIN_TAB DIALOGEX 0, 0, 185, 93
-STYLE DS_SETFONT | WS_CHILD
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "TODO: Layout Window View",IDC_STATIC,44,42,97,8
+    LTEXT           "TODO: Layout Window View",IDC_STATIC_PATH,44,42,97,8
 END
 
 
@@ -267,7 +267,7 @@ END
 IDD_SETTING_TAB AFX_DIALOG_LAYOUT
 BEGIN
     0,
-    0, 0, 100, 0,
+    0, 0, 100, 100,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 100, 0,
@@ -276,7 +276,8 @@ END
 
 IDD_MAIN_TAB AFX_DIALOG_LAYOUT
 BEGIN
-    0
+    0,
+    100, 100, 0, 0
 END
 
 
