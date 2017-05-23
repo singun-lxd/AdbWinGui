@@ -4,7 +4,7 @@
 
     <Application.Commands>
 
-        <!-- AdbGui.rc Commands -->
+        <!-- AdbWinGui.rc Commands -->
         <Command Name="wtl_FILE_NEW" Symbol="ID_FILE_NEW" Id="0xE100"/>
         <Command Name="wtl_FILE_OPEN" Symbol="ID_FILE_OPEN" Id="0xE101"/>
         <Command Name="wtl_FILE_CLOSE" Symbol="ID_FILE_CLOSE" Id="0xE102"/>

@@ -164,7 +164,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About AdbGui",               ID_APP_ABOUT
+        MENUITEM "&About AdbWinGui",               ID_APP_ABOUT
     END
 END
 
@@ -176,7 +176,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\AdbGui.ico"
+IDR_MAINFRAME           ICON                    "res\\AdbWinGui.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -225,12 +225,12 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "FileDescription", "AdbGui Module"
+            VALUE "FileDescription", "AdbWiGui Module"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "AdbGui"
+            VALUE "InternalName", "AdbWinGui"
             VALUE "LegalCopyright", "Copyright 2017"
-            VALUE "OriginalFilename", "AdbGui.exe"
-            VALUE "ProductName", "AdbGui Module"
+            VALUE "OriginalFilename", "AdbWinGui.exe"
+            VALUE "ProductName", "AdbWinGui Module"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
