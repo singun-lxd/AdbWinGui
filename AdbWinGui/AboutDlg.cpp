@@ -21,11 +21,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include <atlctrls.h>
+#include <atlctrlx.h>
 #include "AboutDlg.h"
 
 LRESULT CAboutDlg::OnInitDialog(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	CenterWindow(GetParent());
+
+	m_hplGithub.SetHyperLinkExtendedStyle(HLINK_UNDERLINED);
+	m_hplGithub.SetHyperLink(_T("https://github.com/singun-lxd/AdbWinGui"));
+	m_hplGithub.SubclassWindow(GetDlgItem(IDC_STATIC_GITHUB));
+
 	return TRUE;
 }
 

@@ -36,15 +36,17 @@ BEGIN
     EDITTEXT        IDC_EDIT_PATH,79,46,228,13,ES_AUTOHSCROLL | ES_READONLY
 END
 
-IDD_ABOUTBOX DIALOGEX 0, 0, 187, 118
+IDD_ABOUTBOX DIALOGEX 0, 0, 187, 125
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,69,97,50,14
-    CTEXT           "AdbWinGui v1.0\n(Android Debug Bridge Windows GUI)\n\nsingun(c) Copyright 2017",IDC_STATIC,10,48,166,32
-    ICON            IDR_MAINFRAME,IDC_STATIC,83,23,20,20
-    GROUPBOX        "",IDC_STATIC,7,7,173,85
+    DEFPUSHBUTTON   "OK",IDOK,69,104,50,14
+    CTEXT           "AdbWinGui v1.0\n(Android Debug Bridge Windows GUI)",IDC_STATIC,10,43,166,20
+    ICON            IDR_MAINFRAME,IDC_STATIC,83,18,21,20
+    GROUPBOX        "",IDC_STATIC,7,7,173,95
+    LTEXT           "View Source on Github",IDC_STATIC_GITHUB,58,87,72,8
+    CTEXT           "singun(c) Copyright 2017\nPublished under GPL License",IDC_STATIC,43,68,101,20
 END
 
 
@@ -67,7 +69,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 180
         TOPMARGIN, 7
-        BOTTOMMARGIN, 111
+        BOTTOMMARGIN, 118
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -164,7 +166,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About AdbWinGui",               ID_APP_ABOUT
+        MENUITEM "&About AdbWinGui",            ID_APP_ABOUT
     END
 END
 
