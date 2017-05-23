@@ -210,6 +210,7 @@
   <ItemGroup>
     <ClCompile Include="AboutDlg.cpp" />
     <ClCompile Include="AdbPathErrorDlg.cpp" />
+    <ClCompile Include="AdbPreparingDlg.cpp" />
     <ClCompile Include="AdbWinGui.cpp" />
     <ClCompile Include="Config\ConfigManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -232,6 +233,7 @@
   <ItemGroup>
     <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="AdbPathErrorDlg.h" />
+    <ClInclude Include="AdbPreparingDlg.h" />
     <ClInclude Include="Config\AdbPathConfig.h" />
     <ClInclude Include="Config\ConfigKeyDefine.h" />
     <ClInclude Include="Config\ConfigManager.h" />

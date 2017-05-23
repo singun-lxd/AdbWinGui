@@ -31,6 +31,29 @@ AdbPathErrorDlg::AdbPathErrorDlg()
 		TDF_USE_COMMAND_LINKS | TDF_ENABLE_HYPERLINKS);
 }
 
+void AdbPathErrorDlg::OnCreated()
+{
+	CString strContent;
+	strContent.LoadString(IDS_ADB_PATH_INVALID);
+	SetContentText(strContent);
+	CString strCmdSelect, strCmdExit;
+	strCmdSelect.LoadString(IDS_SELECT_ADB_PATH);
+	strCmdExit.LoadString(IDS_EXIT_ADBWINGUI);
+
+	const TASKDIALOG_BUTTON buttons[] =
+	{
+		{ em_Button_Select, strCmdSelect },
+		{ em_Button_Exit, strCmdExit },
+	};
+
+	SetButtons(buttons, _countof(buttons));
+
+	CString strFooter;
+	strFooter.LoadString(IDS_DOWNLOAD_ADB);
+	SetFooterText(strFooter);
+	SetFooterIcon(TD_INFORMATION_ICON);
+}
+
 BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
 {
 	switch (buttonId)
@@ -53,26 +76,6 @@ void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
 
 int AdbPathErrorDlg::DoModal(HWND hWnd)
 {
-	CString strContent;
-	strContent.LoadString(IDS_ADB_PATH_INVALID);
-	SetContentText(strContent);
-	CString strCmdSelect, strCmdExit;
-	strCmdSelect.LoadString(IDS_SELECT_ADB_PATH);
-	strCmdExit.LoadString(IDS_EXIT_ADBWINGUI);
-
-	const TASKDIALOG_BUTTON buttons[] =
-	{
-		{ em_Button_Select, strCmdSelect },
-		{ em_Button_Exit, strCmdExit },
-	};
-
-	SetButtons(buttons, _countof(buttons));
-
-	CString strFooter;
-	strFooter.LoadString(IDS_DOWNLOAD_ADB);
-	SetFooterText(strFooter);
-	SetFooterIcon(TD_INFORMATION_ICON);
-
 	CTaskDialogImpl::DoModal(hWnd);
 
 	return m_nClickedId;

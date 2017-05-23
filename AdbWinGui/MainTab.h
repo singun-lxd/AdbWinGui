@@ -23,19 +23,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <atlctrls.h>
+#include "resource.h"
 
-class MainTab : public CWindowImpl<MainTab, CListViewCtrl>
+class MainTab : public CDialogImpl<MainTab>
 {
 public:
-	DECLARE_WND_SUPERCLASS(NULL, CListViewCtrl::GetWndClassName())
+	enum {
+		IDD = IDD_MAIN_TAB
+	};
 
-	BOOL PreTranslateMessage(MSG* pMsg);
-
+public:
 	BEGIN_MSG_MAP(MainTab)
+		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 	END_MSG_MAP()
 
-// Handler prototypes (uncomment arguments if needed):
-//	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-//	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-//	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
+public:
+	BOOL PreTranslateMessage(MSG* pMsg);
+	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+private:
+	void PrepareAdb();
 };

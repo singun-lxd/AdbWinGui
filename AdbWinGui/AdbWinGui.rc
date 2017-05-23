@@ -39,7 +39,7 @@ END
 IDD_ABOUTBOX DIALOGEX 0, 0, 187, 125
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
-FONT 8, "MS Shell Dlg", 0, 0, 0x0
+FONT 9, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,69,104,50,14
     CTEXT           "AdbWinGui v1.0\n(Android Debug Bridge Windows GUI)",IDC_STATIC,10,43,166,20
@@ -47,6 +47,13 @@ BEGIN
     GROUPBOX        "",IDC_STATIC,7,7,173,95
     LTEXT           "View Source on Github",IDC_STATIC_GITHUB,58,87,72,8
     CTEXT           "singun(c) Copyright 2017\nPublished under GPL License",IDC_STATIC,43,68,101,20
+END
+
+IDD_MAIN_TAB DIALOGEX 0, 0, 185, 93
+STYLE DS_SETFONT | WS_CHILD
+FONT 9, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    LTEXT           "TODO: Layout Window View",IDC_STATIC,44,42,97,8
 END
 
 
@@ -70,6 +77,10 @@ BEGIN
         RIGHTMARGIN, 180
         TOPMARGIN, 7
         BOTTOMMARGIN, 118
+    END
+
+    IDD_MAIN_TAB, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -263,6 +274,11 @@ BEGIN
     0, 0, 100, 0
 END
 
+IDD_MAIN_TAB AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -278,6 +294,7 @@ BEGIN
     IDS_EXIT_ADBWINGUI      "Exit AdbWinGui"
     IDS_ADB_PATH_ERROR      "Searching adb.exe path failed"
     IDS_DOWNLOAD_ADB        "Download adb from <a href=""https://developer.android.com/studio/releases/platform-tools.html"">developer.android.com</a>"
+    IDS_ADB_PREPARING       "Preparing adb, please wait..."
 END
 
 STRINGTABLE

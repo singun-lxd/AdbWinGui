@@ -18,8 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define MSG_MAIN_ADB_ERROR		WM_USER + 100
-#define MSG_MAIN_NOTIFY_EXIT		WM_USER + 101
-#define MSG_MAIN_PREPARE_ADB		WM_USER + 102
+#include <atldlgs.h>
+#include <windef.h>
 
-#define MSG_SETTING_SELECT_ADB	WM_USER + 200
+class AdbPreparingDlg : public CTaskDialogImpl<AdbPreparingDlg>
+{
+public:
+	AdbPreparingDlg();
+
+	void OnCreated();
+	BOOL OnButtonClicked(int buttonId);
+	int DoModal();
+	void Close();
+	BOOL IsShowing();
+
+protected:
+	int m_nReturn;
+	CString m_strTitle;
+};

@@ -25,7 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainTab.h"
 #include "SettingTab.h"
 #include "AdbPathErrorDlg.h"
-#include "MessageDefine.h"
 
 BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 {
@@ -51,6 +50,11 @@ LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOO
 {
 	if (uMsg == MSG_MAIN_ADB_ERROR)
 	{
+		if (m_dlgPreparing.IsShowing())
+		{
+			// cancel preparing dialog
+			m_dlgPreparing.Close();
+		}
 		AdbPathErrorDlg dlg;
 		int nRet = dlg.DoModal(GetParent());
 		if (nRet == IDOK)
@@ -66,6 +70,26 @@ LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOO
 	return 0;
 }
 
+LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	if (m_dlgPreparing.IsShowing())
+	{
+		return 0;
+	}
+	if (uMsg == MSG_MAIN_PREPARE_ADB)
+	{
+		int nRet = m_dlgPreparing.DoModal();
+		if (nRet == IDCANCEL)
+		{
+			// todo dialog canceled
+		}
+		else
+		{
+			// todo dialog finished
+		}
+	}
+	return 0;
+}
 
 bool MainTabView::CreateTabControl()
 {
@@ -120,7 +144,7 @@ void MainTabView::DestroyTabs()
 void MainTabView::AddMainTab()
 {
 	MainTab* mainView = new MainTab;
-	mainView->Create(*this, rcDefault, _T("MainTab"), WS_CHILD, WS_EX_STATICEDGE);
+	mainView->Create(*this);
 	m_arrWnd.Add(mainView);
 
 	AddPage(*mainView, _T("Main"), TAB_MAIN);

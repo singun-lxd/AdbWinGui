@@ -25,6 +25,7 @@ class AdbPathErrorDlg : public CTaskDialogImpl<AdbPathErrorDlg>
 public:
 	AdbPathErrorDlg();
 
+	void OnCreated();
     BOOL OnButtonClicked(int buttonId);
 	void OnHyperlinkClicked(LPCTSTR pszHREF);
 	int DoModal(HWND hWnd);

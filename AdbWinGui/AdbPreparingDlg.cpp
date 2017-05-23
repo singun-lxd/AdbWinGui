@@ -16,27 +16,45 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// MainTab.cpp : implement of the MainTab class
-//
-/////////////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
-#include "MainTab.h"
-#include "MessageDefine.h"
+#include "resource.h"
+#include "AdbPreparingDlg.h"
 
-BOOL MainTab::PreTranslateMessage(MSG* pMsg)
+AdbPreparingDlg::AdbPreparingDlg()
 {
-	pMsg;
-	return FALSE;
+	SetWindowTitle(IDR_MAINFRAME);
+	SetMainInstructionText(IDS_ADB_PREPARING);
+	SetMainIcon(TD_INFORMATION_ICON);
+	SetCommonButtons(TDCBF_CANCEL_BUTTON);
+
+	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION |
+		TDF_SHOW_MARQUEE_PROGRESS_BAR);
 }
 
-LRESULT MainTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+void AdbPreparingDlg::OnCreated()
 {
-	PrepareAdb();
-	return 0;
+	SetProgressBarMarquee(TRUE, 1);
 }
 
-void MainTab::PrepareAdb()
+BOOL AdbPreparingDlg::OnButtonClicked(int buttonId)
 {
-	//GetParent().PostMessage(MSG_MAIN_PREPARE_ADB);
+	m_nReturn = buttonId;
+	return TRUE;
 }
+
+int AdbPreparingDlg::DoModal()
+{
+	CTaskDialogImpl::DoModal();
+	return m_nReturn;
+}
+
+void AdbPreparingDlg::Close()
+{
+	ClickButton(IDCANCEL);
+}
+
+BOOL AdbPreparingDlg::IsShowing()
+{
+	return m_hWnd != NULL;
+}
+

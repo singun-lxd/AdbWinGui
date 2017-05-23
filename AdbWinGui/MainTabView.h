@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atlctrlx.h>
 #include "resource.h"
 #include "MessageDefine.h"
+#include "AdbPreparingDlg.h"
 
 class MainTabView : public CTabViewImpl<MainTabView>
 {
@@ -37,6 +38,7 @@ protected:
 		TAB_SETTING = 2,
 	};
 	CSimpleArray<CWindow*> m_arrWnd;
+	AdbPreparingDlg m_dlgPreparing;
 
 public:
 	DECLARE_WND_SUPERCLASS(NULL, CTabViewImpl<MainTabView>::GetWndClassName())
@@ -48,6 +50,7 @@ public:
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(MSG_MAIN_NOTIFY_EXIT, OnNotifyExit)
 		MESSAGE_HANDLER(MSG_MAIN_ADB_ERROR, OnAdbError)
+		MESSAGE_HANDLER(MSG_MAIN_PREPARE_ADB, OnPrepareAdb)
 	ALT_MSG_MAP(1)   // tab control
 	END_MSG_MAP()
 
@@ -55,6 +58,7 @@ public:
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnAdbError(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnPrepareAdb(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 
 public:
 	bool CreateTabControl();
