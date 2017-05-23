@@ -56,7 +56,7 @@ LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOO
 			m_dlgPreparing.Close();
 		}
 		AdbPathErrorDlg dlg;
-		int nRet = dlg.DoModal(GetParent());
+		int nRet = dlg.DoModal();
 		if (nRet == IDOK)
 		{
 			HWND hWndSetting = (HWND)lParam;

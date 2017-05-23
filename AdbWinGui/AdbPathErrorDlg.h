@@ -28,7 +28,7 @@ public:
 	void OnCreated();
     BOOL OnButtonClicked(int buttonId);
 	void OnHyperlinkClicked(LPCTSTR pszHREF);
-	int DoModal(HWND hWnd);
+	int DoModal();
 
 private:
 	int m_nClickedId;

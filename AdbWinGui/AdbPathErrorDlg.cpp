@@ -74,9 +74,9 @@ void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
 	::ShellExecute(NULL, _T("open"), pszHREF, NULL, NULL, SW_SHOWNORMAL);
 }
 
-int AdbPathErrorDlg::DoModal(HWND hWnd)
+int AdbPathErrorDlg::DoModal()
 {
-	CTaskDialogImpl::DoModal(hWnd);
+	CTaskDialogImpl::DoModal();
 
 	return m_nClickedId;
 }
