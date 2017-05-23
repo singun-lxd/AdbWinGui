@@ -25,6 +25,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AboutDlg.h"
 #include "Config\ConfigManager.h"
 
+#define MIN_WINDOW_WIDTH		640
+#define MIN_WINDOW_HEIGHT	480
+
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
 	if (CRibbonFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
@@ -93,6 +96,16 @@ LRESULT CMainFrame::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*
 
 	bHandled = FALSE;
 	return 1;
+}
+
+LRESULT CMainFrame::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	MINMAXINFO* lpMMI = (MINMAXINFO*) lParam;
+	// set min window size
+	lpMMI->ptMinTrackSize.x = MIN_WINDOW_WIDTH;
+	lpMMI->ptMinTrackSize.y = MIN_WINDOW_HEIGHT;
+
+	return 0;
 }
 
 LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
