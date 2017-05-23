@@ -253,7 +253,6 @@
     <ResourceCompile Include="AdbWinGui.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\AdbGui.ico" />
     <Image Include="res\AdbWinGui.ico" />
     <Image Include="res\toolbar.bmp" />
   </ItemGroup>

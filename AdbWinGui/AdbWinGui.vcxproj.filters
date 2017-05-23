@@ -126,9 +126,6 @@
     <Image Include="res\AdbWinGui.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\AdbGui.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Ribbon.xml" />
