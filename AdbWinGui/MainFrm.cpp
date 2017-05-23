@@ -23,7 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "MainFrm.h"
 #include "AboutDlg.h"
-#include "Config\ConfigManager.h"
 
 #define MIN_WINDOW_WIDTH		640
 #define MIN_WINDOW_HEIGHT	480
