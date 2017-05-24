@@ -48,9 +48,10 @@ int AdbPreparingDlg::DoModal()
 	return m_nReturn;
 }
 
-void AdbPreparingDlg::Close()
+BOOL AdbPreparingDlg::EndDialog(int nRetCode)
 {
-	ClickButton(IDCANCEL);
+	m_nReturn = nRetCode;
+	return ::EndDialog(this->m_hWnd, nRetCode);
 }
 
 BOOL AdbPreparingDlg::IsShowing()

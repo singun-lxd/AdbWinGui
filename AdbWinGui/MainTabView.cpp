@@ -53,7 +53,7 @@ LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOO
 		if (m_dlgPreparing.IsShowing())
 		{
 			// cancel preparing dialog
-			m_dlgPreparing.Close();
+			m_dlgPreparing.EndDialog(IDOK);
 		}
 		AdbPathErrorDlg dlg;
 		int nRet = dlg.DoModal();
@@ -62,7 +62,7 @@ LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOO
 			HWND hWndSetting = (HWND)lParam;
 			::PostMessage(hWndSetting, MSG_SETTING_SELECT_ADB, 0, 0);
 		}
-		else
+		else if (nRet == IDCANCEL)
 		{
 			GetParent().PostMessage(WM_CLOSE);
 		}
@@ -81,6 +81,7 @@ LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*
 		int nRet = m_dlgPreparing.DoModal();
 		if (nRet == IDCANCEL)
 		{
+			return 0;
 			// todo dialog canceled
 		}
 		else

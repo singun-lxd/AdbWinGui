@@ -29,7 +29,7 @@ public:
 	void OnCreated();
 	BOOL OnButtonClicked(int buttonId);
 	int DoModal();
-	void Close();
+	BOOL EndDialog(int nRetCode);
 	BOOL IsShowing();
 
 protected:
