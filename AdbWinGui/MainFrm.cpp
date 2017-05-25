@@ -81,6 +81,7 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	ShowRibbonUI(bRibbonUI);
 	UISetCheck(ID_VIEW_RIBBON, bRibbonUI);
+	InitRibbonUI();
 
 	return 0;
 }
@@ -152,5 +153,26 @@ LRESULT CMainFrame::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 {
 	CAboutDlg dlg;
 	dlg.DoModal();
+	return 0;
+}
+
+void CMainFrame::InitRibbonUI()
+{
+	HBITMAP hbm = DefRibbonQueryImage(IDB_DEVICE);
+	m_bmpDevice.Attach(hbm);
+	m_glyDevices.SetItemImage(0, hbm);
+// 	m_glyDevices.SetItemImage(1, hbm);
+// 	m_glyDevices.SetItemImage(2, hbm);
+// 	m_glyDevices.SetItemImage(3, hbm);
+	m_glyDevices.SetItemText(0, _T("test_device"));
+// 	m_glyDevices.SetItemText(1, _T("fuck2"));
+// 	m_glyDevices.SetItemText(2, _T("fuck3"));
+// 	m_glyDevices.SetItemText(3, _T("fuck4"));
+	m_glyDevices.Resize(1);
+	m_glyDevices.InvalidateItems();
+}
+
+LRESULT CMainFrame::OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled)
+{
 	return 0;
 }

@@ -3,7 +3,7 @@
 <Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
 
     <Application.Commands>
-
+      
         <!-- AdbWinGui.rc Commands -->
         <Command Name="wtl_FILE_NEW" Symbol="ID_FILE_NEW" Id="0xE100"/>
         <Command Name="wtl_FILE_OPEN" Symbol="ID_FILE_OPEN" Id="0xE101"/>
@@ -40,12 +40,16 @@
         <Command Name="wtl_VIEW_STATUS_BAR" Symbol="ID_VIEW_STATUS_BAR" Id="0xE801"/>
         <Command Name="wtl_VIEW_RIBBON" Symbol="ID_VIEW_RIBBON" Id="0xE804"/>
 
+        <Command Name="wtl_ADB_DEVICES" Symbol="ID_VIEW_DEVICES" Id="0xE200"/>
+
 
         <!-- Tabs -->
         <Command Name="TabHome" Symbol="ID_TAB_HOME"
                  LabelTitle="Home" />
 
         <!-- Groups -->
+        <Command Name="GroupDevice" Symbol="ID_GROUP_DEVICE"
+                 LabelTitle="Device" />
         <Command Name="GroupClipboard" Symbol="ID_GROUP_CLIPBOARD"
                  LabelTitle="Clipboard" />
         <Command Name="GroupView" Symbol="ID_GROUP_VIEW"
@@ -122,12 +126,24 @@
                     <Tab.ScalingPolicy>
                         <ScalingPolicy>
                             <ScalingPolicy.IdealSizes>
+                                <Scale Group="GroupDevice" Size="Large"/>
                                 <Scale Group="GroupClipboard" Size="Medium"/>
                                 <Scale Group="GroupView" Size="Large"/>
                             </ScalingPolicy.IdealSizes>
                         </ScalingPolicy>
                     </Tab.ScalingPolicy>
 
+                    <Group CommandName="GroupDevice" SizeDefinition="OneInRibbonGallery">
+                      <InRibbonGallery CommandName="wtl_ADB_DEVICES"
+                                       Type="Items"
+                                       ItemHeight="32"
+                                       ItemWidth="32"
+                                       TextPosition="Bottom"
+                                       MaxColumns="4"
+                                       MaxRows="1"
+                                       MinColumnsMedium="1"/>
+                    </Group>
+                  
                     <Group CommandName="GroupClipboard" SizeDefinition="ThreeButtons">
                         <Button CommandName="wtl_EDIT_PASTE"/>
                         <Button CommandName="wtl_EDIT_CUT"/>

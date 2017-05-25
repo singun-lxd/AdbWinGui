@@ -23,8 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <atlribbon.h>
-#include "MainTabView.h"
 #include "resource.h"
+#include "ribbon.h"
+#include "MainTabView.h"
 #include "MessageDefine.h"
 
 class CMainFrame : 
@@ -37,10 +38,14 @@ public:
 	MainTabView m_MainTabView;
 	CCommandBarCtrl m_CmdBar;
 
-	//TODO: Declare ribbon controls
+	// Declare ribbon controls
+	CRibbonItemGalleryCtrl<ID_VIEW_DEVICES, 10> m_glyDevices;
+	CBitmap m_bmpDevice;
 
 	// Ribbon control map
 	BEGIN_RIBBON_CONTROL_MAP(CMainFrame)
+		//RIBBON_CONTROL(m_btnCopy)
+		RIBBON_CONTROL(m_glyDevices)
 	END_RIBBON_CONTROL_MAP()
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
@@ -62,6 +67,7 @@ public:
 		COMMAND_ID_HANDLER(ID_VIEW_STATUS_BAR, OnViewStatusBar)
 		COMMAND_ID_HANDLER(ID_VIEW_RIBBON, OnViewRibbon)
 		COMMAND_ID_HANDLER(ID_APP_ABOUT, OnAppAbout)
+		RIBBON_GALLERY_CONTROL_HANDLER(ID_VIEW_DEVICES, OnRibbonGalleryCtrl)
 		REFLECT_NOTIFICATIONS()
 		CHAIN_MSG_MAP(CRibbonFrameWindowImpl<CMainFrame>)
 	END_MSG_MAP()
@@ -81,4 +87,7 @@ public:
 	LRESULT OnViewStatusBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnViewRibbon(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+
+	void InitRibbonUI();
+	LRESULT OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled);
 };

@@ -13,6 +13,7 @@
 #define IDS_DOWNLOAD_ADB                134
 #define IDS_ADB_PREPARING               135
 #define IDD_MAIN_TAB                    205
+#define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000
 #define IDC_RADIO_MANUAL                1001
 #define IDC_EDIT_PATH                   1002
@@ -25,7 +26,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        207
+#define _APS_NEXT_RESOURCE_VALUE        208
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           101
