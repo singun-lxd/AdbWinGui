@@ -19,15 +19,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <string>
+#include <sstream>
 #include <wtypes.h>
+#include <tchar.h>
 
 namespace std
 {
 
 #ifdef _UNICODE
-#define		tstring		wstring
+#define		tstring			wstring
+#define		tstringstream	wstringstream
+#define		tregex			wregex
+#define		tsmatch			wsmatch
 #else
-#define		tstring		strinng
+#define		tstring			string
+#define		tstringstream	stringstream
+#define		tregex			regex
+#define		tsmatch			std::smatch
 #endif
 
 }

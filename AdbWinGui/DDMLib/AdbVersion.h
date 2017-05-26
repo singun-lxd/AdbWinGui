@@ -35,6 +35,8 @@ private:
 
 public:
 	bool operator == (const AdbVersion&);
+	bool operator > (const AdbVersion&);
+	bool operator < (const AdbVersion&);
 
 	static AdbVersion* ParseFrom(const TCHAR* input);
 };

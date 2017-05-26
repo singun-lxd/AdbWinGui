@@ -16,8 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <regex>
 #include "AdbVersion.h"
 
+#define ADB_VERSION_PATTERN	_T("^.*(\\d+)\\.(\\d+)\\.(\\d+).*")
 AdbVersion* const AdbVersion::UNKNOWN = new AdbVersion(-1, -1, -1);
 
 AdbVersion::AdbVersion(int major, int minor, int micro) :
@@ -25,23 +27,69 @@ AdbVersion::AdbVersion(int major, int minor, int micro) :
 	m_Minor(minor),
 	m_Micro(micro)
 {
-
 }
 
 bool AdbVersion::operator==(const AdbVersion& o)
 {
 	if (m_Major != o.m_Major) {
-		return m_Major - o.m_Major;
+		return false;
 	}
 
 	if (m_Minor != o.m_Minor) {
-		return m_Minor - o.m_Minor;
+		return false;
 	}
 
-	return m_Micro - o.m_Micro;
+	return m_Micro - o.m_Micro == 0;
+}
+
+bool AdbVersion::operator>(const AdbVersion& o)
+{
+	if (m_Major < o.m_Major) {
+		return false;
+	}
+
+	if (m_Minor < o.m_Minor) {
+		return false;
+	}
+
+	return m_Micro - o.m_Micro > 0;
+}
+
+bool AdbVersion::operator<(const AdbVersion& o)
+{
+	if (m_Major > o.m_Major) {
+		return false;
+	}
+
+	if (m_Minor > o.m_Minor) {
+		return false;
+	}
+
+	return m_Micro - o.m_Micro < 0;
 }
 
 AdbVersion* AdbVersion::ParseFrom(const TCHAR* input)
 {
+	std::tregex rxAdb(ADB_VERSION_PATTERN, std::tregex::icase);
+	std::tsmatch results;
+	std::tstring parseLine(input);
+	if (std::regex_match(parseLine, results, rxAdb) && results.size() == 4)
+	{
+		if (results[0].matched)
+		{
+			std::tstringstream tss;
+			int major = 0, minor = 0, micro = 0;
+			tss << results[1].str();
+			tss >> major;
+			tss.clear();
+			tss << results[2].str();
+			tss >> minor;
+			tss.clear();
+			tss << results[3].str();
+			tss >> micro;
+			tss.clear();
+			return new AdbVersion(major, minor, micro);
+		}
+	}
 	return UNKNOWN;
 }

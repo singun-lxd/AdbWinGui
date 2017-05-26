@@ -143,6 +143,9 @@
     <ClInclude Include="DDMLib\AdbVersion.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
+    <ClInclude Include="DDMLib\Utils.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc">
