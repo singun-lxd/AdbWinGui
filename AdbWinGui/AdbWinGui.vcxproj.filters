@@ -25,6 +25,9 @@
     <Filter Include="Dialogs">
       <UniqueIdentifier>{8df0aabf-e29e-40ac-b693-5bf40f4d1936}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DDMLib">
+      <UniqueIdentifier>{01cebd88-aedd-44b3-8032-ced923c058bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -59,6 +62,15 @@
     </ClCompile>
     <ClCompile Include="AdbPreparingDlg.cpp">
       <Filter>Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\AndroidDebugBridge.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\DeviceMonitor.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\AdbVersion.cpp">
+      <Filter>DDMLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +130,18 @@
     </ClInclude>
     <ClInclude Include="AdbPreparingDlg.h">
       <Filter>Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\AndroidDebugBridge.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\DeviceMonnitor.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\CommonDefine.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\AdbVersion.h">
+      <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
