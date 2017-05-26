@@ -41,7 +41,8 @@
         <Command Name="wtl_VIEW_RIBBON" Symbol="ID_VIEW_RIBBON" Id="0xE804"/>
 
         <Command Name="wtl_ADB_DEVICES" Symbol="ID_VIEW_DEVICES" Id="0xE200"/>
-
+        <Command Name="wtl_ADB_DEVICES_LIST" Symbol="ID_DEVICE_DEVICELIST" Id="0xE201"/>
+        <Command Name="wtl_ADB_DEVICES_REFRESH" Symbol="ID_DEVICE_REFRESH" Id="0xE202"/>
 
         <!-- Tabs -->
         <Command Name="TabHome" Symbol="ID_TAB_HOME"
@@ -141,7 +142,19 @@
                                        TextPosition="Bottom"
                                        MaxColumns="4"
                                        MaxRows="1"
-                                       MinColumnsMedium="1"/>
+                                       MinColumnsMedium="1">
+                        <InRibbonGallery.MenuLayout>
+                          <FlowMenuLayout Rows="3"
+                                            Columns="4"
+                                            Gripper="Corner"/>
+                        </InRibbonGallery.MenuLayout>
+                        <InRibbonGallery.MenuGroups>
+                          <MenuGroup>
+                            <Button CommandName="wtl_ADB_DEVICES_LIST"></Button>
+                            <Button CommandName="wtl_ADB_DEVICES_REFRESH"></Button>
+                          </MenuGroup>
+                        </InRibbonGallery.MenuGroups>            
+                      </InRibbonGallery>
                     </Group>
                   
                     <Group CommandName="GroupClipboard" SizeDefinition="ThreeButtons">

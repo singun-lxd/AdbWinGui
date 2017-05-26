@@ -177,6 +177,12 @@ BEGIN
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
     END
+    POPUP "&Device"
+    BEGIN
+        MENUITEM "&Device List...",             ID_DEVICE_DEVICELIST
+        MENUITEM SEPARATOR
+        MENUITEM "&Refresh",                    ID_DEVICE_REFRESH
+    END
     POPUP "&Help"
     BEGIN
         MENUITEM "&About AdbWinGui",            ID_APP_ABOUT
