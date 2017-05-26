@@ -150,6 +150,12 @@ END
 
 IDR_MAINFRAME MENU
 BEGIN
+    POPUP "&Device"
+    BEGIN
+        MENUITEM "&Device List...",             ID_DEVICE_DEVICELIST
+        MENUITEM SEPARATOR
+        MENUITEM "&Refresh",                    ID_DEVICE_REFRESH
+    END
     POPUP "&File"
     BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
@@ -176,12 +182,6 @@ BEGIN
         MENUITEM "&Ribbon",                     ID_VIEW_RIBBON
         MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
         MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
-    END
-    POPUP "&Device"
-    BEGIN
-        MENUITEM "&Device List...",             ID_DEVICE_DEVICELIST
-        MENUITEM SEPARATOR
-        MENUITEM "&Refresh",                    ID_DEVICE_REFRESH
     END
     POPUP "&Help"
     BEGIN
@@ -389,6 +389,12 @@ END
 STRINGTABLE
 BEGIN
     ATL_IDS_MRU_FILE        "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    ID_DEVICE_DEVICELIST    "Show all devices and details"
+    ID_DEVICE_REFRESH       "Refresh device list"
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources
