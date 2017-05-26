@@ -61,7 +61,6 @@ void AndroidDebugBridge::CheckAdbVersion()
 
 AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 {
-	AdbVersion* pVersion = NULL;
 	std::packaged_task<AdbVersion*()> taskVer([&adb]() -> AdbVersion*
 	{
 		SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
@@ -114,14 +113,16 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 
 		return pVersion;
 	});
+	
+	AdbVersion* pRet = NULL;
 	std::future<AdbVersion*> futureVer = taskVer.get_future();
 	std::thread(std::move(taskVer)).detach();
 	std::future_status status = futureVer.wait_for(std::chrono::seconds(5));
 	if (status == std::future_status::ready)
 	{
-		pVersion = futureVer.get();
+		pRet = futureVer.get();
 	}
-	return pVersion;
+	return pRet;
 }
 
 AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TCHAR* szLocation, bool forceNewBridge)
