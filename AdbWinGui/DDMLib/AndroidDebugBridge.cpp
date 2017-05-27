@@ -20,7 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <future>
 #include <thread>
 #include "AndroidDebugBridge.h"
-#include "Utils.h"
+#include "StringUtils.h"
+#include "Process.h"
 
 #define MIN_ADB_VERSION _T("1.0.20")
 
@@ -63,30 +64,10 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 {
 	std::packaged_task<AdbVersion*()> taskVer([&adb]() -> AdbVersion*
 	{
-		SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
-		HANDLE hRead, hWrite;
-		if (!::CreatePipe(&hRead, &hWrite, &sa, 0))
-		{
-			return NULL;
-		}
-
-		// run adb process
-		STARTUPINFO si = { sizeof(STARTUPINFO) };
-		::GetStartupInfo(&si);
-		si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-		si.wShowWindow = SW_HIDE;
-		si.hStdError = hWrite;
-		si.hStdOutput = hWrite;
-
-		PROCESS_INFORMATION pi;
-		if (!::CreateProcess(NULL, const_cast<LPTSTR>(adb.c_str()), NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
-		{
-			::CloseHandle(hRead);
-			::CloseHandle(hWrite);
-			return NULL;
-		}
-
-		::CloseHandle(hWrite);
+		HANDLE hRead = NULL, hWrite = NULL;
+		Process procAdb(adb.c_str());
+		procAdb.Start(&hRead, &hWrite);
+		procAdb.CloseWrite();
 
 		// read process output
 		const int BUFFER_SIZE = 1024;
@@ -97,13 +78,12 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 		{
 			tss << buff;
 		}
-		::CloseHandle(hRead);
 
 		// parse adb version results
 		AdbVersion* pVersion = NULL;
 		std::tstring line;
 		while (std::getline(tss, line)) {
-			Utils::TrimString(line);
+			StringUtils::TrimString(line);
 			pVersion = AdbVersion::ParseFrom(line.c_str());
 			if (pVersion != AdbVersion::UNKNOWN)
 			{

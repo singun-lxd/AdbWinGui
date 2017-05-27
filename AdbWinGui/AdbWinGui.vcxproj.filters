@@ -143,7 +143,10 @@
     <ClInclude Include="DDMLib\AdbVersion.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
-    <ClInclude Include="DDMLib\Utils.h">
+    <ClInclude Include="DDMLib\StringUtils.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\Process.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>

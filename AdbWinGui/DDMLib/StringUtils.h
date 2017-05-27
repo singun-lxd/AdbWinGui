@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 
-class Utils
+class StringUtils
 {
 public:
 	static void StringToWstring(const std::string& strIn, std::wstring& strOut)
