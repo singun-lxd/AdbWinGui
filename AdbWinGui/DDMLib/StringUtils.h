@@ -23,24 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class StringUtils
 {
 public:
-	static void StringToWstring(const std::string& strIn, std::wstring& strOut)
-	{
-		std::wstringstream wss;
-		wss << strIn.c_str();
-		strOut = wss.str();
-	}
-
-	static void WstringToString(const std::wstring strIn, std::string& strOut)
-	{
-		size_t outLen = strIn.size();
-		size_t converted = 0;
-		setlocale(LC_CTYPE, "");
-		char *pOut = new char[outLen];
-		wcstombs_s(&converted, pOut, outLen, strIn.c_str(), _TRUNCATE);
-		strOut = pOut;
-		delete[] pOut;
-	}
-
 	template <class T>
 	static std::basic_string<T>& TrimString(std::basic_string<T>& s)
 	{

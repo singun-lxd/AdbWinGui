@@ -251,8 +251,10 @@
     <ClInclude Include="DDMLib\AndroidDebugBridge.h" />
     <ClInclude Include="DDMLib\DeviceMonnitor.h" />
     <ClInclude Include="DDMLib\CommonDefine.h" />
-    <ClInclude Include="DDMLib\Process.h" />
     <ClInclude Include="DDMLib\StringUtils.h" />
+    <ClInclude Include="DDMLib\System\FileReader.h" />
+    <ClInclude Include="DDMLib\System\FileReadWrite.h" />
+    <ClInclude Include="DDMLib\System\Process.h" />
     <ClInclude Include="MainTab.h" />
     <ClInclude Include="MessageDefine.h" />
     <ClInclude Include="MessageTaskDlg.h" />

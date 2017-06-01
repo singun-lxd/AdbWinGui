@@ -28,6 +28,9 @@
     <Filter Include="DDMLib">
       <UniqueIdentifier>{01cebd88-aedd-44b3-8032-ced923c058bb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DDMLib\System">
+      <UniqueIdentifier>{074f9e60-23ad-4a1d-a53e-d7ddd5b20e5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -146,8 +149,14 @@
     <ClInclude Include="DDMLib\StringUtils.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
-    <ClInclude Include="DDMLib\Process.h">
-      <Filter>DDMLib</Filter>
+    <ClInclude Include="DDMLib\System\FileReader.h">
+      <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\System\FileReadWrite.h">
+      <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\System\Process.h">
+      <Filter>DDMLib\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

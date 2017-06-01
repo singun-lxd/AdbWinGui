@@ -21,7 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include "AndroidDebugBridge.h"
 #include "StringUtils.h"
-#include "Process.h"
+#include "System/Process.h"
+#include "System/FileReader.h"
 
 #define MIN_ADB_VERSION _T("1.0.20")
 
@@ -64,20 +65,15 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 {
 	std::packaged_task<AdbVersion*()> taskVer([&adb]() -> AdbVersion*
 	{
-		HANDLE hRead = NULL, hWrite = NULL;
 		Process procAdb(adb.c_str());
-		procAdb.Start(&hRead, &hWrite);
+		procAdb.OpenReadWrite();
+		procAdb.Start();
 		procAdb.CloseWrite();
 
 		// read process output
 		const int BUFFER_SIZE = 1024;
-		std::tstringstream tss;
-		CHAR buff[BUFFER_SIZE] = { 0 };
-		DWORD dwRead = 0;
-		while (::ReadFile(hRead, buff, BUFFER_SIZE, &dwRead, NULL))
-		{
-			tss << buff;
-		}
+		CharFileReader frProcess(procAdb.GetRead(), BUFFER_SIZE);
+		std::tstringstream& tss = frProcess.ReadData();
 
 		// parse adb version results
 		AdbVersion* pVersion = NULL;
@@ -90,6 +86,7 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 				break;
 			}
 		}
+		procAdb.CloseRead();
 
 		return pVersion;
 	});
