@@ -40,7 +40,7 @@ AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 {
 	m_bStarted = false;
 	m_pDeviceMonitor = NULL;
-	m_AdbLocation = szLocation;
+	m_strAdbLocation = szLocation;
 
 	CheckAdbVersion();
 }
@@ -50,7 +50,7 @@ void AndroidDebugBridge::CheckAdbVersion()
 	// default is bad check
 	m_bVersionCheck = false;
 
-	if (m_AdbLocation.empty()) {
+	if (m_strAdbLocation.empty()) {
 		return;
 	}
 
@@ -58,7 +58,7 @@ void AndroidDebugBridge::CheckAdbVersion()
 	{
 		s_pCurVersion = AdbVersion::ParseFrom(MIN_ADB_VERSION);
 	}
-	AdbVersion* pVersion = GetAdbVersion(m_AdbLocation.c_str());
+	AdbVersion* pVersion = GetAdbVersion(m_strAdbLocation.c_str());
 	if (pVersion != NULL && *pVersion > *s_pCurVersion)
 	{
 		// version check succeed
@@ -112,7 +112,7 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, bool forceNewBridge)
 {
 	if (s_pThis != NULL) {
-		if (!s_pThis->m_AdbLocation.empty() && s_pThis->m_AdbLocation.compare(szLocation) == 0 &&
+		if (!s_pThis->m_strAdbLocation.empty() && s_pThis->m_strAdbLocation.compare(szLocation) == 0 &&
 			!forceNewBridge) {
 			return *s_pThis;
 		}
@@ -178,10 +178,41 @@ const IDevice* AndroidDebugBridge::getDevices()
 
 bool AndroidDebugBridge::Start()
 {
+	if (m_strAdbLocation.empty() && s_nAdbServerPort != 0 && (!m_bVersionCheck || !StartAdb())) {
+		return false;
+	}
+	m_bStarted = true;
+
+	// now that the bridge is connected, we start the underlying services.
+	m_pDeviceMonitor = new DeviceMonitor(this);
+	m_pDeviceMonitor->Start();
 	return true;
 }
 
 bool AndroidDebugBridge::Stop()
+{
+	if (!m_bStarted) {
+		return false;
+	}
+	// kill the monitoring services
+	if (m_pDeviceMonitor != NULL) {
+		m_pDeviceMonitor->Stop();
+		delete m_pDeviceMonitor;
+		m_pDeviceMonitor = NULL;
+	}
+
+	if (!StopAdb()) {
+		return false;
+	}
+	return true;
+}
+
+bool AndroidDebugBridge::StartAdb()
+{
+	return true;
+}
+
+bool AndroidDebugBridge::StopAdb()
 {
 	return true;
 }

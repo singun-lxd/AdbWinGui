@@ -22,3 +22,76 @@ DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 {
 
 }
+
+DeviceMonitor::~DeviceMonitor()
+{
+	m_pServer = NULL;
+	if (m_pDeviceListMonitorTask != NULL)
+	{
+		delete m_pDeviceListMonitorTask;
+		m_pDeviceListMonitorTask = NULL;
+	}
+}
+
+void DeviceMonitor::Start()
+{
+	m_pDeviceListMonitorTask = new DeviceListMonitorTask(m_pServer, new DeviceListUpdateListener(this));
+	std::thread tdMonitor(std::bind(&DeviceListMonitorTask::Run, m_pDeviceListMonitorTask));
+	tdMonitor.detach();
+}
+
+void DeviceMonitor::Stop()
+{
+	m_bQuit = true;
+
+	if (m_pDeviceListMonitorTask != NULL) {
+		m_pDeviceListMonitorTask->Stop();
+	}
+}
+
+DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener) : 
+	m_pBridge(pBridge), m_pListener(pListener)
+{
+}
+
+DeviceMonitor::DeviceListMonitorTask::~DeviceListMonitorTask()
+{
+	// need to free listener
+	if (m_pListener != NULL)
+	{
+		delete m_pListener;
+	}
+}
+
+void DeviceMonitor::DeviceListMonitorTask::Run()
+{
+	do
+	{
+		// todo run monitor
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+	} while (m_bQuit);
+}
+
+void DeviceMonitor::DeviceListMonitorTask::Stop()
+{
+	m_bQuit = true;
+}
+
+DeviceMonitor::DeviceListUpdateListener::DeviceListUpdateListener(DeviceMonitor* pMonitor) :
+	m_pMonitor(pMonitor)
+{
+}
+
+DeviceMonitor::DeviceListUpdateListener::~DeviceListUpdateListener()
+{
+}
+
+void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
+{
+
+}
+
+void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices)
+{
+
+}

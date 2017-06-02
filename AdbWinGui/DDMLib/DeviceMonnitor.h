@@ -17,15 +17,61 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
+
+#include <map>
+#include "CommonDefine.h"
 #include "AndroidDebugBridge.h"
+#include "IDevice.h"
 
 class AndroidDebugBridge;	// define class
 
 class DeviceMonitor
 {
 private:
+	class DeviceListMonitorTask
+	{
+	public:
+		interface UpdateListener
+		{
+			virtual void ConnectionError(int errorCode) = 0;
+			virtual void DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices) = 0;
+		};
+	private:
+		AndroidDebugBridge* const m_pBridge;
+		UpdateListener* const m_pListener;
+
+		bool m_bQuit = false;
+	public:
+		DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener);
+		~DeviceListMonitorTask();
+
+		void Run();
+		void Stop();
+	};
+
+	class DeviceListUpdateListener : public DeviceListMonitorTask::UpdateListener
+	{
+	private:
+		DeviceMonitor* const m_pMonitor;
+	public:
+		DeviceListUpdateListener(DeviceMonitor* pMonitor);
+		~DeviceListUpdateListener();
+
+		virtual void ConnectionError(int errorCode);
+		virtual void DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices);
+	};
+
+private:
 	AndroidDebugBridge* m_pServer;
+	DeviceListMonitorTask* m_pDeviceListMonitorTask;
 
 public:
 	DeviceMonitor(AndroidDebugBridge* pServer);
+	~DeviceMonitor();
+
+	bool m_bQuit = false;
+
+	void Start();
+	void Stop();
+
 };

@@ -37,7 +37,7 @@ private:
 	static int s_nAdbServerPort;
 	static SocketAddress s_addSocket;
 
-	std::tstring m_AdbLocation;
+	std::tstring m_strAdbLocation;
 
 	bool m_bVersionCheck;
 	bool m_bStarted;
@@ -61,4 +61,8 @@ public:
 
 	bool Start();
 	bool Stop();
+
+private:
+	bool StartAdb();
+	bool StopAdb();
 };
