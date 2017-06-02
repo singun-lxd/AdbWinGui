@@ -54,7 +54,8 @@ void DeviceMonitor::Stop()
 {
 	m_bQuit = true;
 
-	if (m_pDeviceListMonitorTask != NULL) {
+	if (m_pDeviceListMonitorTask != NULL)
+	{
 		m_pDeviceListMonitorTask->Stop();
 	}
 }

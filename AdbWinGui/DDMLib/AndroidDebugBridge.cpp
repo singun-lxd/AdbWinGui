@@ -90,7 +90,8 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 		// parse adb version results
 		AdbVersion* pVersion = NULL;
 		std::tstring line;
-		while (std::getline(tss, line)) {
+		while (std::getline(tss, line))
+		{
 			StringUtils::TrimString(line);
 			pVersion = AdbVersion::ParseFrom(line.c_str());
 			if (pVersion != AdbVersion::UNKNOWN)
@@ -116,12 +117,15 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 
 AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, bool forceNewBridge)
 {
-	if (s_pThis != NULL) {
+	if (s_pThis != NULL)
+	{
 		if (!s_pThis->m_strAdbLocation.empty() && s_pThis->m_strAdbLocation.compare(szLocation) == 0 &&
-			!forceNewBridge) {
+			!forceNewBridge)
+		{
 			return *s_pThis;
 		}
-		else {
+		else
+		{
 			// stop the current server
 			s_pThis->Stop();
 		}
@@ -133,7 +137,8 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 
 void AndroidDebugBridge::DisconnectBridge()
 {
-	if (s_pThis != NULL) {
+	if (s_pThis != NULL)
+	{
 		s_pThis->Stop();
 	}
 }
@@ -145,7 +150,8 @@ AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 
 void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 {
-	if (s_bInitialized) {
+	if (s_bInitialized)
+	{
 		return;
 	}
 
@@ -154,7 +160,8 @@ void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 
 void AndroidDebugBridge::Init(bool clientSupport)
 {
-	if (s_bInitialized) {
+	if (s_bInitialized)
+	{
 		return;
 	}
 	s_bInitialized = true;
@@ -190,7 +197,8 @@ const IDevice* AndroidDebugBridge::GetDevices()
 
 bool AndroidDebugBridge::Start()
 {
-	if (m_strAdbLocation.empty() && s_nAdbServerPort != 0 && (!m_bVersionCheck || !StartAdb())) {
+	if (m_strAdbLocation.empty() && s_nAdbServerPort != 0 && (!m_bVersionCheck || !StartAdb()))
+	{
 		return false;
 	}
 	m_bStarted = true;
@@ -203,17 +211,20 @@ bool AndroidDebugBridge::Start()
 
 bool AndroidDebugBridge::Stop()
 {
-	if (!m_bStarted) {
+	if (!m_bStarted)
+	{
 		return false;
 	}
 	// kill the monitoring services
-	if (m_pDeviceMonitor != NULL) {
+	if (m_pDeviceMonitor != NULL)
+	{
 		m_pDeviceMonitor->Stop();
 		delete m_pDeviceMonitor;
 		m_pDeviceMonitor = NULL;
 	}
 
-	if (!StopAdb()) {
+	if (!StopAdb())
+	{
 		return false;
 	}
 
