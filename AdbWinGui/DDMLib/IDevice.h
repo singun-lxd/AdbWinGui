@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 interface IDevice : public IShellEnabledDevice
 {
 public:
-	static const TString s_arrDevState[STATE_COUT];
+	static const TString const s_arrDevState[STATE_COUT];
 	enum DeviceState
 	{
 		UNKNOWN = -1,
@@ -38,5 +38,5 @@ public:
 	};
 
 public:
-	static DeviceState GetState(TString state);
+	static DeviceState GetState(const TString state);
 };

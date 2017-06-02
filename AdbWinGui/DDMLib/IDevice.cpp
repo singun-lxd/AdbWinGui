@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "IDevice.h"
 
-const TString IDevice::s_arrDevState[STATE_COUT] = {
+const TString const IDevice::s_arrDevState[STATE_COUT] = {
 	_T("bootloader"),
 	_T("offline"),
 	_T("device"),
@@ -26,7 +26,7 @@ const TString IDevice::s_arrDevState[STATE_COUT] = {
 	_T("unauthorized"),
 };
 
-IDevice::DeviceState IDevice::GetState(TString state)
+IDevice::DeviceState IDevice::GetState(const TString state)
 {
 	for (int i = 0; i < STATE_COUT; i++)
 	{
