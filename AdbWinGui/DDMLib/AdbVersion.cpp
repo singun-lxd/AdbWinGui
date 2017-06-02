@@ -29,43 +29,65 @@ AdbVersion::AdbVersion(int major, int minor, int micro) :
 {
 }
 
-bool AdbVersion::operator==(const AdbVersion& o)
+bool AdbVersion::operator == (const AdbVersion& o)
 {
-	if (m_Major != o.m_Major) {
+	if (m_Major != o.m_Major)
+	{
 		return false;
 	}
 
-	if (m_Minor != o.m_Minor) {
+	if (m_Minor != o.m_Minor)
+	{
 		return false;
 	}
 
-	return m_Micro - o.m_Micro == 0;
+	return m_Micro == o.m_Micro;
 }
 
-bool AdbVersion::operator>(const AdbVersion& o)
+bool AdbVersion::operator > (const AdbVersion& o)
 {
-	if (m_Major < o.m_Major) {
-		return false;
+	if (m_Major > o.m_Major)
+	{
+		return true;
 	}
-
-	if (m_Minor < o.m_Minor) {
-		return false;
+	else if (m_Major == o.m_Major)
+	{
+		if (m_Minor > o.m_Minor)
+		{
+			return true;
+		}
+		else if (m_Minor == o.m_Minor)
+		{
+			if (m_Micro > o.m_Micro)
+			{
+				return true;
+			}
+		}
 	}
-
-	return m_Micro - o.m_Micro > 0;
+	return false;
 }
 
-bool AdbVersion::operator<(const AdbVersion& o)
+bool AdbVersion::operator < (const AdbVersion& o)
 {
-	if (m_Major > o.m_Major) {
-		return false;
+	if (m_Major < o.m_Major)
+	{
+		return true;
 	}
-
-	if (m_Minor > o.m_Minor) {
-		return false;
+	else if (m_Major == o.m_Major)
+	{
+		if (m_Minor < o.m_Minor)
+		{
+			return true;
+		}
+		else if (m_Minor == o.m_Minor)
+		{
+			if (m_Micro < o.m_Micro)
+			{
+				return true;
+			}
+		}
 	}
-
-	return m_Micro - o.m_Micro < 0;
+	return false;
 }
 
 AdbVersion* AdbVersion::ParseFrom(const TString input)
