@@ -23,11 +23,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "StringUtils.h"
 #include "System/Process.h"
 #include "System/StreamReader.h"
+#include "../Utils/AndroidEnvVar.h"
 
-#define MIN_ADB_VERSION _T("1.0.20")
+#define MIN_ADB_VERSION    _T("1.0.20")
+#define DEFAULT_ADB_HOST   _T("127.0.0.1")
+#define DEFAULT_ADB_PORT   5037
 
-AdbVersion* AndroidDebugBridge::s_pCurVersion;
+AdbVersion* AndroidDebugBridge::s_pCurVersion = NULL;
 AndroidDebugBridge* AndroidDebugBridge::s_pThis = NULL;
+bool AndroidDebugBridge::s_bInitialized = false;
+bool AndroidDebugBridge::s_bClientSupport = false;
+int AndroidDebugBridge::s_nAdbServerPort = 0;
+SocketAddress AndroidDebugBridge::s_addSocket;
 
 AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 {
@@ -122,6 +129,46 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 {
 	return *s_pThis;
+}
+
+void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
+{
+	if (s_bInitialized) {
+		return;
+	}
+
+	Init(clientSupport);
+}
+
+void AndroidDebugBridge::Init(bool clientSupport)
+{
+	if (s_bInitialized) {
+		return;
+	}
+	s_bInitialized = true;
+	s_bClientSupport = clientSupport;
+
+	// Determine port and instantiate socket address.
+	InitAdbSocketAddr();
+}
+
+void AndroidDebugBridge::InitAdbSocketAddr()
+{
+	s_nAdbServerPort = GetAdbServerPort();
+	s_addSocket.SetSocketAddress(DEFAULT_ADB_HOST);
+	s_addSocket.SetSocketPort(s_nAdbServerPort);
+}
+
+int AndroidDebugBridge::GetAdbServerPort()
+{
+	AndroidEnvVar envVar;
+	int nPort = envVar.GetAdbServerPort();
+	if (nPort <= 0 || nPort >= 65535)
+	{
+		// invalid port, use default
+		return DEFAULT_ADB_PORT;
+	}
+	return nPort;
 }
 
 const IDevice* AndroidDebugBridge::getDevices()

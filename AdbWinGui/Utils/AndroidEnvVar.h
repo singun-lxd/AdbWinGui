@@ -21,10 +21,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <wtypes.h>
 #include <tchar.h>
 
-#define ENV_BUFFER_SIZE	4096
+#define ENV_BUFFER_SIZE		4096
 
-#define ANDROID_ENV		_T("ANDROID_HOME")
-#define PATH_ENV			_T("PATH")
+#define ANDROID_ENV			_T("ANDROID_HOME")
+#define PATH_ENV				_T("PATH")
+#define SERVER_PORT_ENV		_T("ANDROID_ADB_SERVER_PORT")
 
 class AndroidEnvVar
 {
@@ -55,5 +56,16 @@ public:
 			return m_szBuffer;
 		}
 		return NULL;
+	}
+
+	INT GetAdbServerPort()
+	{
+		int nRet = -1;
+		DWORD dwRet = ::GetEnvironmentVariable(SERVER_PORT_ENV, m_szBuffer, MAX_PATH);
+		if (dwRet > 0)
+		{
+			nRet = _ttoi(m_szBuffer);
+		}
+		return nRet;
 	}
 };

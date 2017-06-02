@@ -22,14 +22,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DeviceMonnitor.h"
 #include "AdbVersion.h"
 #include "IDevice.h"
+#include "System\SocketAddress.h"
 
 class DeviceMonitor;	// define class
 
 class AndroidDebugBridge
 {
 private:
-	static AndroidDebugBridge* s_pThis;
 	static AdbVersion* s_pCurVersion;
+	static AndroidDebugBridge* s_pThis;
+	static bool s_bInitialized;
+	static bool s_bClientSupport;
+
+	static int s_nAdbServerPort;
+	static SocketAddress s_addSocket;
+
 	std::tstring m_AdbLocation;
 
 	bool m_bVersionCheck;
@@ -44,6 +51,11 @@ private:
 public:
 	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
 	static AndroidDebugBridge& GetBridge();
+
+	static void InitIfNeeded(bool clientSupport);
+	static void Init(bool clientSupport);
+	static void InitAdbSocketAddr();
+	static int GetAdbServerPort();
 
 	const IDevice* getDevices();
 

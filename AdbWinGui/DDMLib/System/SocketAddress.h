@@ -21,8 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../CommonDefine.h"
 #include "ConvertUtils.h"
 
+#define IP_BUFFER_SIZE 20
+
 struct SocketAddress : public SOCKADDR_IN
 {
+private:
+	TCHAR m_szBuffer[IP_BUFFER_SIZE];
+
 public:
 	SocketAddress()
 	{
@@ -38,11 +43,22 @@ public:
 
 	void SetSocketAddress(const TString addr)
 	{
-		sin_addr.s_addr = InetPton(sin_family, addr, this);
+		InetPton(sin_family, addr, &sin_addr);
 	}
 
 	void SetSocketPort(unsigned short uPort)
 	{
 		sin_port = htons(uPort);
+	}
+
+	const TString GetSocketAddress()
+	{
+		const TCHAR* szIp = InetNtop(sin_family, &sin_addr, m_szBuffer, IP_BUFFER_SIZE);
+		return szIp;
+	}
+
+	unsigned short GetSocketPort()
+	{
+		return ntohs(sin_port);
 	}
 };

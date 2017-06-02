@@ -20,6 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <string>
 #include <sstream>
+#include <winsock2.h>
+#include <WS2tcpip.h>
+#include <windows.h>
 #include <wtypes.h>
 #include <tchar.h>
 
