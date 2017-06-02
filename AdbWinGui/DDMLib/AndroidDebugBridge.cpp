@@ -45,6 +45,11 @@ AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 	CheckAdbVersion();
 }
 
+AndroidDebugBridge::~AndroidDebugBridge()
+{
+	Stop();
+}
+
 void AndroidDebugBridge::CheckAdbVersion()
 {
 	// default is bad check
@@ -126,6 +131,13 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 	return *s_pThis;
 }
 
+void AndroidDebugBridge::DisconnectBridge()
+{
+	if (s_pThis != NULL) {
+		s_pThis->Stop();
+	}
+}
+
 AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 {
 	return *s_pThis;
@@ -171,7 +183,7 @@ int AndroidDebugBridge::GetAdbServerPort()
 	return nPort;
 }
 
-const IDevice* AndroidDebugBridge::getDevices()
+const IDevice* AndroidDebugBridge::GetDevices()
 {
 	return NULL;
 }
@@ -204,6 +216,8 @@ bool AndroidDebugBridge::Stop()
 	if (!StopAdb()) {
 		return false;
 	}
+
+	m_bStarted = false;
 	return true;
 }
 

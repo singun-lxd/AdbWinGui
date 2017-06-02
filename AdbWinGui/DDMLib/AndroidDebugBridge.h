@@ -45,11 +45,13 @@ private:
 
 private:
 	AndroidDebugBridge(const TString szLocation);
+	~AndroidDebugBridge();
 	void CheckAdbVersion();
 
 	static AdbVersion* GetAdbVersion(const TString adb);
 public:
 	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
+	static void DisconnectBridge();
 	static AndroidDebugBridge& GetBridge();
 
 	static void InitIfNeeded(bool clientSupport);
@@ -57,7 +59,7 @@ public:
 	static void InitAdbSocketAddr();
 	static int GetAdbServerPort();
 
-	const IDevice* getDevices();
+	const IDevice* GetDevices();
 
 	bool Start();
 	bool Stop();
