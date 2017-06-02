@@ -64,7 +64,7 @@ public:
 	bool Start();
 	bool Stop();
 
-private:
+public:
 	bool StartAdb();
 	bool StopAdb();
 };

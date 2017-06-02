@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CommonDefine.h"
 #include "AndroidDebugBridge.h"
 #include "IDevice.h"
+#include "System\SocketClient.h"
 
 class AndroidDebugBridge;	// define class
 
@@ -39,6 +40,11 @@ private:
 	private:
 		AndroidDebugBridge* const m_pBridge;
 		UpdateListener* const m_pListener;
+
+		SocketClient* m_pAdbConnection = NULL;
+		bool m_bMonitoring = false;
+		int m_nConnectionAttempt = 0;
+		int m_nRestartAttemptCount = 0;
 
 		bool m_bQuit = false;
 	public:
@@ -71,7 +77,12 @@ public:
 
 	bool m_bQuit = false;
 
+	const IDevice* GetDevices();
+	AndroidDebugBridge* GetServer();
+
 	void Start();
 	void Stop();
 
+public:
+	static SocketClient* OpenAdbConnection();
 };

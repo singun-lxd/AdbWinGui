@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 {
-
+	m_pServer = pServer;
 }
 
 DeviceMonitor::~DeviceMonitor()
@@ -31,6 +31,16 @@ DeviceMonitor::~DeviceMonitor()
 		delete m_pDeviceListMonitorTask;
 		m_pDeviceListMonitorTask = NULL;
 	}
+}
+
+const IDevice* DeviceMonitor::GetDevices()
+{
+	return NULL;
+}
+
+AndroidDebugBridge* DeviceMonitor::GetServer()
+{
+	return m_pServer;
 }
 
 void DeviceMonitor::Start()
@@ -49,6 +59,11 @@ void DeviceMonitor::Stop()
 	}
 }
 
+SocketClient* DeviceMonitor::OpenAdbConnection()
+{
+	return NULL;
+}
+
 DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener) : 
 	m_pBridge(pBridge), m_pListener(pListener)
 {
@@ -61,14 +76,45 @@ DeviceMonitor::DeviceListMonitorTask::~DeviceListMonitorTask()
 	{
 		delete m_pListener;
 	}
+
+	if (m_pAdbConnection != NULL)
+	{
+		delete m_pAdbConnection;
+		m_pAdbConnection = NULL;
+	}
 }
 
 void DeviceMonitor::DeviceListMonitorTask::Run()
 {
 	do
 	{
-		// todo run monitor
-		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		if (m_pAdbConnection == NULL)
+		{
+			m_pAdbConnection = OpenAdbConnection();
+			if (m_pAdbConnection == NULL)
+			{
+				m_nConnectionAttempt++;
+				if (m_nConnectionAttempt > 10)
+				{
+					if (!m_pBridge->StartAdb())
+					{
+						m_nRestartAttemptCount++;
+					}
+					else
+					{
+						m_nRestartAttemptCount = 0;
+					}
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+			else
+			{
+				m_nConnectionAttempt = 0;
+			}			
+		}
+
+		// todo run monitor here
+
 	} while (m_bQuit);
 }
 
