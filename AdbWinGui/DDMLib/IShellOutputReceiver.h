@@ -20,23 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 
-class AdbVersion
+interface IShellOutputReceiver
 {
-public:
-	static AdbVersion* const UNKNOWN;
+	virtual void AddOutput(byte* pData, int offset, int length) = 0;
 
-public:
-	const int m_Major;
-	const int m_Minor;
-	const int m_Micro;
+	virtual void Flush() = 0;
 
-private:
-	AdbVersion(int major, int minor, int micro);
-
-public:
-	bool operator == (const AdbVersion&);
-	bool operator > (const AdbVersion&);
-	bool operator < (const AdbVersion&);
-
-	static AdbVersion* ParseFrom(const TString input);
+	virtual bool IsCancelled() = 0;
 };

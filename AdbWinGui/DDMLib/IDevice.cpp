@@ -16,27 +16,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "IDevice.h"
 
-#include "CommonDefine.h"
-
-class AdbVersion
-{
-public:
-	static AdbVersion* const UNKNOWN;
-
-public:
-	const int m_Major;
-	const int m_Minor;
-	const int m_Micro;
-
-private:
-	AdbVersion(int major, int minor, int micro);
-
-public:
-	bool operator == (const AdbVersion&);
-	bool operator > (const AdbVersion&);
-	bool operator < (const AdbVersion&);
-
-	static AdbVersion* ParseFrom(const TString input);
+const TString IDevice::s_arrDevState[STATE_COUT] = {
+	_T("bootloader"),
+	_T("offline"),
+	_T("device"),
+	_T("recovery"),
+	_T("unauthorized"),
 };
+
+IDevice::DeviceState IDevice::GetState(TString state)
+{
+	for (int i = 0; i < STATE_COUT; i++)
+	{
+		if (_tcscmp(s_arrDevState[i], state) == 0) {
+			return static_cast<DeviceState>(i);
+		}
+	}
+	return UNKNOWN;
+}
+

@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 AdbVersion* AndroidDebugBridge::s_pCurVersion;
 AndroidDebugBridge* AndroidDebugBridge::s_pThis = NULL;
 
-AndroidDebugBridge::AndroidDebugBridge(const TCHAR* szLocation)
+AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 {
 	m_bStarted = false;
 	m_pDeviceMonitor = NULL;
@@ -51,7 +51,7 @@ void AndroidDebugBridge::CheckAdbVersion()
 	{
 		s_pCurVersion = AdbVersion::ParseFrom(MIN_ADB_VERSION);
 	}
-	AdbVersion* pVersion = GetAdbVersion(m_AdbLocation);
+	AdbVersion* pVersion = GetAdbVersion(m_AdbLocation.c_str());
 	if (pVersion != NULL && *pVersion > *s_pCurVersion)
 	{
 		// version check succeed
@@ -61,11 +61,11 @@ void AndroidDebugBridge::CheckAdbVersion()
 	return;
 }
 
-AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
+AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 {
 	std::packaged_task<AdbVersion*()> taskVer([&adb]() -> AdbVersion*
 	{
-		Process procAdb(adb.c_str());
+		Process procAdb(adb);
 		procAdb.OpenReadWrite();
 		procAdb.Start();
 		procAdb.CloseWrite();
@@ -102,7 +102,7 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 	return pRet;
 }
 
-AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TCHAR* szLocation, bool forceNewBridge)
+AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, bool forceNewBridge)
 {
 	if (s_pThis != NULL) {
 		if (!s_pThis->m_AdbLocation.empty() && s_pThis->m_AdbLocation.compare(szLocation) == 0 &&
@@ -122,6 +122,11 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TCHAR* szLocation, bo
 AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 {
 	return *s_pThis;
+}
+
+const IDevice* AndroidDebugBridge::getDevices()
+{
+	return NULL;
 }
 
 bool AndroidDebugBridge::Start()

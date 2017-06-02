@@ -227,6 +227,9 @@
     <ClCompile Include="DDMLib\DeviceMonitor.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="DDMLib\IDevice.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="MainTab.cpp" />
     <ClCompile Include="MessageTaskDlg.cpp" />
     <ClCompile Include="SettingTab.cpp" />
@@ -251,6 +254,9 @@
     <ClInclude Include="DDMLib\AndroidDebugBridge.h" />
     <ClInclude Include="DDMLib\DeviceMonnitor.h" />
     <ClInclude Include="DDMLib\CommonDefine.h" />
+    <ClInclude Include="DDMLib\IDevice.h" />
+    <ClInclude Include="DDMLib\IShellEnabledDevice.h" />
+    <ClInclude Include="DDMLib\IShellOutputReceiver.h" />
     <ClInclude Include="DDMLib\StringUtils.h" />
     <ClInclude Include="DDMLib\System\StreamReader.h" />
     <ClInclude Include="DDMLib\System\FileReadWrite.h" />

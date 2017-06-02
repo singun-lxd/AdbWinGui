@@ -27,11 +27,13 @@ namespace std
 {
 
 #ifdef _UNICODE
+#define		TString			WCHAR*
 #define		tstring			wstring
 #define		tstringstream	wstringstream
 #define		tregex			wregex
 #define		tsmatch			wsmatch
 #else
+#define		TString			CHAR*
 #define		tstring			string
 #define		tstringstream	stringstream
 #define		tregex			regex

@@ -18,25 +18,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <future>
 #include "CommonDefine.h"
+#include "IShellOutputReceiver.h"
 
-class AdbVersion
+interface IShellEnabledDevice
 {
-public:
-	static AdbVersion* const UNKNOWN;
+	virtual void GetName(std::tstring& name) = 0;
 
-public:
-	const int m_Major;
-	const int m_Minor;
-	const int m_Micro;
+	template<class _Rep, class _Per>
+	void ExecuteShellCommand(const std::tstring& command, const IShellOutputReceiver& receiver,
+		const std::chrono::duration<_Rep, _Per>& maxTimeToOutputResponse) {};
 
-private:
-	AdbVersion(int major, int minor, int micro);
-
-public:
-	bool operator == (const AdbVersion&);
-	bool operator > (const AdbVersion&);
-	bool operator < (const AdbVersion&);
-
-	static AdbVersion* ParseFrom(const TString input);
+	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) = 0;
 };

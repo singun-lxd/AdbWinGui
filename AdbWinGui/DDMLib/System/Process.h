@@ -32,9 +32,9 @@ private:
 	PROCESS_INFORMATION m_pi;
 
 public:
-	Process(LPCTSTR lpszCmdLine)
+	Process(const TString szCmdLine)
 	{
-		m_strCmdLine = lpszCmdLine;
+		m_strCmdLine = szCmdLine;
 
 		m_si = { sizeof(STARTUPINFO) };
 		::ZeroMemory(&m_pi, sizeof(PROCESS_INFORMATION));

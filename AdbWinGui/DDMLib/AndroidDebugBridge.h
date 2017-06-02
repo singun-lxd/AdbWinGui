@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CommonDefine.h"
 #include "DeviceMonnitor.h"
 #include "AdbVersion.h"
+#include "IDevice.h"
 
 class DeviceMonitor;	// define class
 
@@ -36,13 +37,15 @@ private:
 	DeviceMonitor* m_pDeviceMonitor;
 
 private:
-	AndroidDebugBridge(const TCHAR* szLocation);
+	AndroidDebugBridge(const TString szLocation);
 	void CheckAdbVersion();
 
-	static AdbVersion* GetAdbVersion(const std::tstring& adb);
+	static AdbVersion* GetAdbVersion(const TString adb);
 public:
-	static AndroidDebugBridge& CreateBridge(const TCHAR* szLocation, bool forceNewBridge = false);
+	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
 	static AndroidDebugBridge& GetBridge();
+
+	const IDevice* getDevices();
 
 	bool Start();
 	bool Stop();

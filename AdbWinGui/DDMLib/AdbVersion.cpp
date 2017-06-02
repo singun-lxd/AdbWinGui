@@ -68,7 +68,7 @@ bool AdbVersion::operator<(const AdbVersion& o)
 	return m_Micro - o.m_Micro < 0;
 }
 
-AdbVersion* AdbVersion::ParseFrom(const TCHAR* input)
+AdbVersion* AdbVersion::ParseFrom(const TString input)
 {
 	std::tregex rxAdb(ADB_VERSION_PATTERN, std::tregex::icase);
 	std::tsmatch results;

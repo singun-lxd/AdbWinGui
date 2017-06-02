@@ -19,24 +19,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "CommonDefine.h"
+#include "IShellEnabledDevice.h"
 
-class AdbVersion
+#define STATE_COUT  5
+
+interface IDevice : public IShellEnabledDevice
 {
 public:
-	static AdbVersion* const UNKNOWN;
+	static const TString s_arrDevState[STATE_COUT];
+	enum DeviceState {
+		UNKNOWN = -1,
+		BOOTLOADER = 0,
+		OFFLINE,
+		ONLINE,
+		RECOVERY,
+		UNAUTHORIZED,
+	};
 
 public:
-	const int m_Major;
-	const int m_Minor;
-	const int m_Micro;
-
-private:
-	AdbVersion(int major, int minor, int micro);
-
-public:
-	bool operator == (const AdbVersion&);
-	bool operator > (const AdbVersion&);
-	bool operator < (const AdbVersion&);
-
-	static AdbVersion* ParseFrom(const TString input);
+	static DeviceState GetState(TString state);
 };

@@ -75,6 +75,9 @@
     <ClCompile Include="DDMLib\AdbVersion.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
+    <ClCompile Include="DDMLib\IDevice.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -157,6 +160,15 @@
     </ClInclude>
     <ClInclude Include="DDMLib\System\StreamReader.h">
       <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\IShellEnabledDevice.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\IShellOutputReceiver.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\IDevice.h">
+      <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
