@@ -30,7 +30,8 @@ IDevice::DeviceState IDevice::GetState(TString state)
 {
 	for (int i = 0; i < STATE_COUT; i++)
 	{
-		if (_tcscmp(s_arrDevState[i], state) == 0) {
+		if (_tcscmp(s_arrDevState[i], state) == 0)
+		{
 			return static_cast<DeviceState>(i);
 		}
 	}

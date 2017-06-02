@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SettingTab.h"
 #include "MessageDefine.h"
 #include "MessageTaskDlg.h"
-#include "DDMLib\AndroidDebugBridge.h"
+#include "DDMLib/AndroidDebugBridge.h"
 
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {

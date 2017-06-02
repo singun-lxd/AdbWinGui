@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atlstr.h>
 #include "IConfig.h"
 #include "ConfigKeyDefine.h"
-#include "..\Utils\AdbPath.h"
+#include "../Utils/AdbPath.h"
 
 class AdbPathConfig : public IConfig<const CString&>
 {

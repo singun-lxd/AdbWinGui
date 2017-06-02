@@ -27,7 +27,8 @@ interface IDevice : public IShellEnabledDevice
 {
 public:
 	static const TString s_arrDevState[STATE_COUT];
-	enum DeviceState {
+	enum DeviceState
+	{
 		UNKNOWN = -1,
 		BOOTLOADER = 0,
 		OFFLINE,
