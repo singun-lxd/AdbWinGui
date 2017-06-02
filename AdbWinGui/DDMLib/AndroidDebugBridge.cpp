@@ -124,12 +124,12 @@ AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 	return *s_pThis;
 }
 
-boolean AndroidDebugBridge::Start()
+bool AndroidDebugBridge::Start()
 {
 	return true;
 }
 
-boolean AndroidDebugBridge::Stop()
+bool AndroidDebugBridge::Stop()
 {
 	return true;
 }

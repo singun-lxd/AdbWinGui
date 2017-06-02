@@ -44,6 +44,6 @@ public:
 	static AndroidDebugBridge& CreateBridge(const TCHAR* szLocation, bool forceNewBridge = false);
 	static AndroidDebugBridge& GetBridge();
 
-	boolean Start();
-	boolean Stop();
+	bool Start();
+	bool Stop();
 };
