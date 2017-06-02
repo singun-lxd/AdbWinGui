@@ -149,13 +149,13 @@
     <ClInclude Include="DDMLib\StringUtils.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
-    <ClInclude Include="DDMLib\System\FileReader.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
     <ClInclude Include="DDMLib\System\FileReadWrite.h">
       <Filter>DDMLib\System</Filter>
     </ClInclude>
     <ClInclude Include="DDMLib\System\Process.h">
+      <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\System\StreamReader.h">
       <Filter>DDMLib\System</Filter>
     </ClInclude>
   </ItemGroup>

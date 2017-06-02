@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "FileReadWrite.h"
 
 template<class T>
-class FileReader
+class StreamReader
 {
 private:
 	FileReadWrite m_fRead;
@@ -31,14 +31,14 @@ private:
 	std::tstringstream m_tss;
 
 public:
-	FileReader(FileReadWrite fRead, int buffSize)
+	StreamReader(FileReadWrite fRead, int buffSize)
 	{
 		m_fRead = fRead;
 		m_nBuffSize = buffSize;
 		m_pBuff = new T[buffSize];
 	}
 
-	~FileReader()
+	~StreamReader()
 	{
 		if (m_pBuff != NULL)
 		{
@@ -47,7 +47,7 @@ public:
 		}
 	}
 
-	void Reset()
+	void Clear()
 	{
 		m_tss.clear();
 	}
@@ -75,6 +75,6 @@ public:
 // 	}
 };
 
-typedef	 FileReader<CHAR>     CharFileReader;
-typedef	 FileReader<WCHAR>    WCharFileReader;
-typedef	 FileReader<TCHAR>    TCharFileReader;
+typedef	 StreamReader<CHAR>     CharStreamReader;
+typedef	 StreamReader<WCHAR>    WCharStreamReader;
+typedef	 StreamReader<TCHAR>    TCharStreamReader;

@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AndroidDebugBridge.h"
 #include "StringUtils.h"
 #include "System/Process.h"
-#include "System/FileReader.h"
+#include "System/StreamReader.h"
 
 #define MIN_ADB_VERSION _T("1.0.20")
 
@@ -72,7 +72,7 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const std::tstring& adb)
 
 		// read process output
 		const int BUFFER_SIZE = 1024;
-		CharFileReader frProcess(procAdb.GetRead(), BUFFER_SIZE);
+		CharStreamReader frProcess(procAdb.GetRead(), BUFFER_SIZE);
 		std::tstringstream& tss = frProcess.ReadData();
 
 		// parse adb version results

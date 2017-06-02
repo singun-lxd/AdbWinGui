@@ -252,7 +252,7 @@
     <ClInclude Include="DDMLib\DeviceMonnitor.h" />
     <ClInclude Include="DDMLib\CommonDefine.h" />
     <ClInclude Include="DDMLib\StringUtils.h" />
-    <ClInclude Include="DDMLib\System\FileReader.h" />
+    <ClInclude Include="DDMLib\System\StreamReader.h" />
     <ClInclude Include="DDMLib\System\FileReadWrite.h" />
     <ClInclude Include="DDMLib\System\Process.h" />
     <ClInclude Include="MainTab.h" />
