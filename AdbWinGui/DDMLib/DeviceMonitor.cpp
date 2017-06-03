@@ -17,6 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "DeviceMonnitor.h"
+#include "AdbHelper.h"
+
+#define ADB_TRACK_DEVICES_COMMAND	"host:track-devices"
 
 DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 {
@@ -62,7 +65,14 @@ void DeviceMonitor::Stop()
 
 SocketClient* DeviceMonitor::OpenAdbConnection()
 {
-	return NULL;
+	SocketClient* pClient = SocketClient::Open(AndroidDebugBridge::GetSocketAddress());
+	pClient->SetTcpNoDelay(TRUE);
+	return pClient;
+}
+
+void DeviceMonitor::ReleaseConnection()
+{
+	SocketClient::Release();
 }
 
 DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener) : 
@@ -106,7 +116,7 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 						m_nRestartAttemptCount = 0;
 					}
 				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
 			else
 			{
@@ -114,9 +124,62 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 			}			
 		}
 
-		// todo run monitor here
+		if (m_pAdbConnection != NULL && !m_bMonitoring) {
+			m_bMonitoring = SendDeviceListMonitoringRequest();
+		}
 
-	} while (m_bQuit);
+		if (m_bMonitoring) {
+// 			int length = readLength(mAdbConnection, mLengthBuffer);
+// 
+// 			if (length >= 0) {
+// 				// read the incoming message
+// 				processIncomingDeviceData(length);
+// 
+// 				// flag the fact that we have build the list at least once.
+// 				m_bInitialDeviceListDone = true;
+// 			}
+		}
+	} while (!m_bQuit);
+}
+
+bool DeviceMonitor::DeviceListMonitorTask::SendDeviceListMonitoringRequest()
+{
+ 	const byte* request = AdbHelper::FormAdbRequest(ADB_TRACK_DEVICES_COMMAND);
+
+ 	bool bWrite = AdbHelper::Write(m_pAdbConnection, request);
+	if (bWrite)
+	{
+		delete[] request;
+		return false;
+	}
+// 	AdbResponse resp = AdbHelper.readAdbResponse(mAdbConnection, false);
+// 	if (!resp.okay)
+// 	{
+// 		// request was refused by adb!
+// 		return false;
+// 	}
+	delete[] request;
+	return true;
+}
+
+bool DeviceMonitor::DeviceListMonitorTask::IsMonitoring()
+{
+	return m_bMonitoring;
+}
+
+bool DeviceMonitor::DeviceListMonitorTask::HasInitialDeviceList()
+{
+	return m_bInitialDeviceListDone;
+}
+
+int DeviceMonitor::DeviceListMonitorTask::GetConnectionAttemptCount()
+{
+	return m_nConnectionAttempt;
+}
+
+int DeviceMonitor::DeviceListMonitorTask::GetRestartAttemptCount()
+{
+	return m_nRestartAttemptCount;
 }
 
 void DeviceMonitor::DeviceListMonitorTask::Stop()

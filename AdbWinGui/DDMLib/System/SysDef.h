@@ -18,24 +18,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "SysDef.h"
-#include "SocketAddress.h"
+#include <string>
+#include <sstream>
+#include <vector>
+#include <winsock2.h>
+#include <WS2tcpip.h>
+#include <windows.h>
+#include <wtypes.h>
+#include <tchar.h>
 
-class SocketClient
+namespace std
 {
-private:
-	static WSADATA s_wsaData;
-	static BOOL s_bStartUp;
-	SOCKET m_sockClient;
 
-private:
-	SocketClient();
-public:
-	~SocketClient();
-	static SocketClient* Open();
-	static SocketClient* Open(const SocketAddress& addSocket);
-	static void Release();
-	void SetTcpNoDelay(BOOL bNoDelay);
-	BOOL Connect(const SocketAddress& addSocket);
-	INT Write(const BYTE* bData, INT nLen = -1);
-};
+#ifdef _UNICODE
+#define		TString			WCHAR*
+#define		tstring			wstring
+#define		tstringstream	wstringstream
+#define		tregex			wregex
+#define		tsmatch			wsmatch
+#else
+#define		TString			CHAR*
+#define		tstring			string
+#define		tstringstream	stringstream
+#define		tregex			regex
+#define		tsmatch			std::smatch
+#endif
+
+}
+

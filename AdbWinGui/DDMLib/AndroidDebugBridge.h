@@ -18,11 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <vector>
 #include "CommonDefine.h"
 #include "DeviceMonnitor.h"
 #include "AdbVersion.h"
 #include "IDevice.h"
 #include "System/SocketAddress.h"
+#include "System/Process.h"
 
 class DeviceMonitor;	// define class
 
@@ -53,18 +55,23 @@ public:
 	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
 	static void DisconnectBridge();
 	static AndroidDebugBridge& GetBridge();
+	static bool GetClientSupport();
+	static const SocketAddress& GetSocketAddress();
 
 	static void InitIfNeeded(bool clientSupport);
 	static void Init(bool clientSupport);
 	static void InitAdbSocketAddr();
+	static void Terminate();
 	static int GetAdbServerPort();
 
-	const IDevice* GetDevices();
+	const IDevice* GetDevices() const;
 
 	bool Start();
 	bool Stop();
 
 public:
 	bool StartAdb();
+	void GetAdbLaunchCommand(const TString option, std::vector<std::tstring>& vecCommand);
+	int GrabProcessOutput(Process& process, std::vector<std::tstring>* pOutput);
 	bool StopAdb();
 };

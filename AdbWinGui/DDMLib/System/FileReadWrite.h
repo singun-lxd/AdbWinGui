@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "CommonDefine.h"
+#include "SysDef.h"
 
 class FileReadWrite
 {
@@ -51,7 +51,7 @@ public:
 		return *this;
 	}
 
-	BOOL IsAvailable()
+	BOOL IsAvailable() const
 	{
 		return m_pHandle != NULL;
 	}
@@ -61,7 +61,7 @@ public:
 		m_pHandle = pHandle;
 	}
 
-	HANDLE* Get()
+	HANDLE* Get() const
 	{
 		return m_pHandle;
 	}

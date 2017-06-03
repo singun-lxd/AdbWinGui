@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../CommonDefine.h"
+#include "SysDef.h"
 #include "ConvertUtils.h"
 
 #define IP_BUFFER_SIZE 20
@@ -26,17 +26,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 struct SocketAddress : public SOCKADDR_IN
 {
 private:
-	TCHAR m_szBuffer[IP_BUFFER_SIZE];
+	mutable TCHAR m_szBuffer[IP_BUFFER_SIZE];
+
+private:
+	void Init()
+	{
+		sin_family = AF_INET;
+		memset(sin_zero, 0x00, 8);
+	}
 
 public:
 	SocketAddress()
 	{
-		sin_family = AF_INET;
+		Init();
 	}
 
 	SocketAddress(const TString addr, unsigned short uPort)
 	{
-		sin_family = AF_INET;
+		Init();
 		SetSocketAddress(addr);
 		SetSocketPort(uPort);
 	}
@@ -51,13 +58,13 @@ public:
 		sin_port = htons(uPort);
 	}
 
-	const TString GetSocketAddress()
+	const TString GetSocketAddress() const
 	{
 		const TCHAR* szIp = InetNtop(sin_family, &sin_addr, m_szBuffer, IP_BUFFER_SIZE);
 		return szIp;
 	}
 
-	unsigned short GetSocketPort()
+	unsigned short GetSocketPort() const
 	{
 		return ntohs(sin_port);
 	}

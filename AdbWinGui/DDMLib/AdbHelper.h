@@ -18,24 +18,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "SysDef.h"
-#include "SocketAddress.h"
+#include "CommonDefine.h"
+#include "System\SocketClient.h"
 
-class SocketClient
+class AdbHelper
 {
-private:
-	static WSADATA s_wsaData;
-	static BOOL s_bStartUp;
-	SOCKET m_sockClient;
-
-private:
-	SocketClient();
 public:
-	~SocketClient();
-	static SocketClient* Open();
-	static SocketClient* Open(const SocketAddress& addSocket);
-	static void Release();
-	void SetTcpNoDelay(BOOL bNoDelay);
-	BOOL Connect(const SocketAddress& addSocket);
-	INT Write(const BYTE* bData, INT nLen = -1);
+	static const byte* FormAdbRequest(const char* req);
+	static bool Write(SocketClient* client, const byte* data);
+	static bool Write(SocketClient* chan, const byte* data, int length, int timeout);
 };

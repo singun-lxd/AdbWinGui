@@ -108,8 +108,9 @@ void SettingTab::UpdateControlStatus()
 void SettingTab::CheckSettingValid()
 {
 	const CString& strAdbPath = ConfigManager::GetInstance().GetAdbPath();
-	//AndroidDebugBridge& adb = AndroidDebugBridge::CreateBridge(strAdbPath);
-	//adb.Init(false);
+	//AndroidDebugBridge::Init(false); 
+	//AndroidDebugBridge::CreateBridge(strAdbPath);
+	//AndroidDebugBridge::Terminate();
 	if (strAdbPath.IsEmpty())
 	{
 		CWindow hWnd = GetParent();

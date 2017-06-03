@@ -81,6 +81,12 @@
     <ClCompile Include="DDMLib\System\SocketClient.cpp">
       <Filter>DDMLib\System</Filter>
     </ClCompile>
+    <ClCompile Include="DDMLib\AdbHelper.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\DdmPreferences.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -181,6 +187,15 @@
     </ClInclude>
     <ClInclude Include="DDMLib\System\SocketClient.h">
       <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\System\SysDef.h">
+      <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\AdbHelper.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\DdmPreferences.h">
+      <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

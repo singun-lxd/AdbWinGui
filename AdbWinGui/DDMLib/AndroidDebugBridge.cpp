@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "System/Process.h"
 #include "System/StreamReader.h"
 #include "../Utils/AndroidEnvVar.h"
+#include "DdmPreferences.h"
 
 #define MIN_ADB_VERSION    _T("1.0.20")
 #define DEFAULT_ADB_HOST   _T("127.0.0.1")
@@ -148,6 +149,16 @@ AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 	return *s_pThis;
 }
 
+bool AndroidDebugBridge::GetClientSupport()
+{
+	return s_bClientSupport;
+}
+
+const SocketAddress& AndroidDebugBridge::GetSocketAddress()
+{
+	return s_addSocket;
+}
+
 void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 {
 	if (s_bInitialized)
@@ -178,6 +189,12 @@ void AndroidDebugBridge::InitAdbSocketAddr()
 	s_addSocket.SetSocketPort(s_nAdbServerPort);
 }
 
+void AndroidDebugBridge::Terminate()
+{
+	s_bInitialized = false;
+	DeviceMonitor::ReleaseConnection();
+}
+
 int AndroidDebugBridge::GetAdbServerPort()
 {
 	AndroidEnvVar envVar;
@@ -190,14 +207,14 @@ int AndroidDebugBridge::GetAdbServerPort()
 	return nPort;
 }
 
-const IDevice* AndroidDebugBridge::GetDevices()
+const IDevice* AndroidDebugBridge::GetDevices() const
 {
 	return NULL;
 }
 
 bool AndroidDebugBridge::Start()
 {
-	if (m_strAdbLocation.empty() && s_nAdbServerPort != 0 && (!m_bVersionCheck || !StartAdb()))
+	if (!m_strAdbLocation.empty() && s_nAdbServerPort != 0 && (!m_bVersionCheck || !StartAdb()))
 	{
 		return false;
 	}
@@ -234,7 +251,78 @@ bool AndroidDebugBridge::Stop()
 
 bool AndroidDebugBridge::StartAdb()
 {
-	return true;
+	if (m_strAdbLocation.empty())
+	{
+		return false;
+	}
+	if (s_nAdbServerPort == 0)
+	{
+		return false;
+	}
+	std::vector<std::tstring> vecCommand;
+	GetAdbLaunchCommand(_T("start-server"), vecCommand);
+	Process procServer(vecCommand);
+	if (DdmPreferences::GetUseAdbHost())
+	{
+		const TString adbHostValue = DdmPreferences::GetAdbHostValue();
+		if (adbHostValue != NULL && _tcslen(adbHostValue) != 0) {
+			//TODO : check that the String is a valid IP address
+// 			Map<String, String> env = processBuilder.environment();
+// 			env.put("ADBHOST", adbHostValue);
+		}
+	}
+	procServer.OpenReadWrite();
+	procServer.Start();
+	procServer.CloseWrite();
+
+	int status = GrabProcessOutput(procServer, NULL);
+	if (status != 0)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+void AndroidDebugBridge::GetAdbLaunchCommand(const TString option, std::vector<std::tstring>& vecCommand)
+{
+	vecCommand.clear();
+	vecCommand.push_back(m_strAdbLocation.c_str());
+	if (s_nAdbServerPort != DEFAULT_ADB_PORT)
+	{
+		vecCommand.push_back(_T("-P"));
+		std::tstringstream tss;
+		tss << s_nAdbServerPort;
+		vecCommand.push_back(tss.str());
+	}
+	vecCommand.push_back(option);
+}
+
+int AndroidDebugBridge::GrabProcessOutput(Process& process, std::vector<std::tstring>* pOutput)
+{
+	bool waitForReaders = (pOutput != NULL);
+	if (waitForReaders)
+	{
+		std::thread tdReadOutput([&process, &pOutput] {
+			// read process output
+			const int BUFFER_SIZE = 1024;
+			CharStreamReader frProcess(process.GetRead(), BUFFER_SIZE);
+			std::tstringstream& tss = frProcess.ReadData();
+
+			std::tstring line;
+			while (std::getline(tss, line))
+			{
+				StringUtils::TrimString(line);
+				(*pOutput).push_back(line);
+			}
+			process.CloseRead();
+		});
+		tdReadOutput.join();
+	}
+	DWORD dwRet = process.Join();
+	return static_cast<int>(dwRet);
 }
 
 bool AndroidDebugBridge::StopAdb()

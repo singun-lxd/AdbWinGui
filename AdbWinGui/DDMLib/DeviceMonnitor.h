@@ -45,6 +45,7 @@ private:
 		bool m_bMonitoring = false;
 		int m_nConnectionAttempt = 0;
 		int m_nRestartAttemptCount = 0;
+		bool m_bInitialDeviceListDone = false;
 
 		bool m_bQuit = false;
 	public:
@@ -52,6 +53,11 @@ private:
 		~DeviceListMonitorTask();
 
 		void Run();
+		bool SendDeviceListMonitoringRequest();
+		bool IsMonitoring();
+		bool HasInitialDeviceList();
+		int GetConnectionAttemptCount();
+		int GetRestartAttemptCount();
 		void Stop();
 	};
 
@@ -85,4 +91,5 @@ public:
 
 public:
 	static SocketClient* OpenAdbConnection();
+	static void ReleaseConnection();
 };

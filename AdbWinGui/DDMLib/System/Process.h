@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../CommonDefine.h"
+#include "SysDef.h"
 #include "FileReadWrite.h"
 
 class Process
@@ -31,13 +31,36 @@ private:
 	STARTUPINFO m_si;
 	PROCESS_INFORMATION m_pi;
 
+private:
+	void Init()
+	{
+		m_si = { sizeof(STARTUPINFO) };
+		::ZeroMemory(&m_pi, sizeof(PROCESS_INFORMATION));
+	}
+
 public:
 	Process(const TString szCmdLine)
 	{
 		m_strCmdLine = szCmdLine;
 
-		m_si = { sizeof(STARTUPINFO) };
-		::ZeroMemory(&m_pi, sizeof(PROCESS_INFORMATION));
+		Init();
+	}
+
+	Process(const std::vector<std::tstring>& vecCmdLine)
+	{
+		std::tstringstream tss;
+		size_t count = vecCmdLine.size();
+		for (size_t i = 0; i < count; i++)
+		{
+			tss << vecCmdLine[i];
+			if (i < count -1)
+			{
+				tss << _T(" ");
+			}
+		}
+		m_strCmdLine = tss.str();
+
+		Init();
 	}
 
 	~Process()
@@ -92,16 +115,19 @@ public:
 		return TRUE;
 	}
 
-	void Join()
+	DWORD Join()
 	{
+		DWORD dwRet = 0;
 		if (m_pi.hProcess != NULL)
 		{
 			::WaitForSingleObject(m_pi.hProcess, INFINITE);
+			::GetExitCodeProcess(m_pi.hProcess, &dwRet);
 			::CloseHandle(m_pi.hProcess);
 			::CloseHandle(m_pi.hThread);
 			m_pi.hProcess = NULL;
 			m_pi.hThread = NULL;
 		}
+		return dwRet;
 	}
 
 	BOOL Kill(UINT uExitCode)

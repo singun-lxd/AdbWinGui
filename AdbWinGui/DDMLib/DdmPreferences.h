@@ -18,24 +18,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "SysDef.h"
-#include "SocketAddress.h"
+#include "CommonDefine.h"
 
-class SocketClient
+class DdmPreferences
 {
 private:
-	static WSADATA s_wsaData;
-	static BOOL s_bStartUp;
-	SOCKET m_sockClient;
+	static int s_nTimeOut;
+	static bool s_bUseAdbHost;
+	static std::tstring s_strAdbHostValue;
 
 private:
-	SocketClient();
+	DdmPreferences();
+	static void Init();
+
 public:
-	~SocketClient();
-	static SocketClient* Open();
-	static SocketClient* Open(const SocketAddress& addSocket);
-	static void Release();
-	void SetTcpNoDelay(BOOL bNoDelay);
-	BOOL Connect(const SocketAddress& addSocket);
-	INT Write(const BYTE* bData, INT nLen = -1);
+	static int GetTimeOut();
+	static void SetTimeOut(int timeOut);
+	static bool GetUseAdbHost();
+	static void SetUseAdbHost(bool useAdbHost);
+	static const TString GetAdbHostValue();
+	static void SetAdbHostValue(const TString adbHostValue);
 };
