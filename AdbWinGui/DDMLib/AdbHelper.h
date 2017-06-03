@@ -23,8 +23,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class AdbHelper
 {
+private:
+	AdbHelper();
+
 public:
-	static const byte* FormAdbRequest(const char* req);
-	static bool Write(SocketClient* client, const byte* data);
-	static bool Write(SocketClient* chan, const byte* data, int length, int timeout);
+	struct AdbResponse
+	{
+		bool okay; // first 4 bytes in response were "OKAY"?
+		std::string message; // diagnostic string if #okay is false
+	};
+public:
+	static const char* FormAdbRequest(const char* req);	// need delete return string
+	static AdbResponse* ReadAdbResponse(SocketClient* client, bool readDiagString);	// need delete return object
+	static bool Read(SocketClient* client, char* data, int length);
+	static bool Read(SocketClient* client, char* data, int length, int timeout);
+	static bool Write(SocketClient* client, const char* data, int length = -1);
+	static bool Write(SocketClient* chan, const char* data, int length, int timeout);
+	static bool IsOkay(char* reply);
 };

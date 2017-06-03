@@ -38,6 +38,7 @@ private:
 			virtual void DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices) = 0;
 		};
 	private:
+		char m_szBuffer[5] = { 0 };
 		AndroidDebugBridge* const m_pBridge;
 		UpdateListener* const m_pListener;
 
@@ -54,6 +55,9 @@ private:
 
 		void Run();
 		bool SendDeviceListMonitoringRequest();
+		void ProcessIncomingDeviceData(int length);
+		static void ParseDeviceListResponse(const char* result,
+			std::map<std::tstring, IDevice::DeviceState>& list);
 		bool IsMonitoring();
 		bool HasInitialDeviceList();
 		int GetConnectionAttemptCount();
@@ -92,4 +96,7 @@ public:
 public:
 	static SocketClient* OpenAdbConnection();
 	static void ReleaseConnection();
+
+	static int ReadLength(SocketClient* socket, char* buffer, int length);
+	static char* Read(SocketClient* socket, char* buffer, int length);
 };

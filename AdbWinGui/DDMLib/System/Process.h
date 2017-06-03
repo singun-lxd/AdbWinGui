@@ -48,7 +48,7 @@ public:
 
 	Process(const std::vector<std::tstring>& vecCmdLine)
 	{
-		std::tstringstream tss;
+		std::tostringstream tss;
 		size_t count = vecCmdLine.size();
 		for (size_t i = 0; i < count; i++)
 		{

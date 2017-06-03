@@ -59,6 +59,7 @@ public:
 		DWORD dwRead = 0;
 		while (::ReadFile(m_fRead, m_pBuff, m_nBuffSize, &dwRead, NULL))
 		{
+			// read and convert to tchar stream
 			m_tss << m_pBuff;
 		}
 

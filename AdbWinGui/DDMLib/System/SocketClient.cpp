@@ -71,7 +71,7 @@ void SocketClient::SetTcpNoDelay(BOOL bNoDelay)
 BOOL SocketClient::Connect(const SocketAddress& addSocket)
 {
 	m_sockClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	INT nRet = connect(m_sockClient, (struct sockaddr*)&addSocket, sizeof(addSocket));
+	INT nRet = connect(m_sockClient, (SOCKADDR*)&addSocket, sizeof(addSocket));
 	if (nRet == SOCKET_ERROR)
 	{
 		m_sockClient = 0;
@@ -80,11 +80,26 @@ BOOL SocketClient::Connect(const SocketAddress& addSocket)
 	return TRUE;
 }
 
-INT SocketClient::Write(const BYTE* bData, INT nLen)
+INT SocketClient::Read(CHAR* cData, INT nLen)
+{
+	int nRet = recv(m_sockClient, cData, nLen, 0);
+	if (nRet == SOCKET_ERROR)
+	{
+		// recv error
+	}
+	return nLen;
+}
+
+INT SocketClient::Write(const CHAR* cData, INT nLen)
 {
 	if (nLen <= 0)
 	{
-		nLen = strlen(reinterpret_cast<const char*>(bData));
+		nLen = strlen(cData);
+	}
+	int nRet = send(m_sockClient, cData, nLen, 0);
+	if (nRet == SOCKET_ERROR)
+	{
+		// send error
 	}
 	return nLen;
 }

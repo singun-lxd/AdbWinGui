@@ -31,18 +31,26 @@ namespace std
 {
 
 #ifdef _UNICODE
-#define		TString			WCHAR*
-#define		tstring			wstring
-#define		tstringstream	wstringstream
-#define		tregex			wregex
-#define		tsmatch			wsmatch
+#define		TString				WCHAR*
+#define		tstring				wstring
+#define		tstringstream		wstringstream
+#define		tistringstream		wistringstream
+#define		tostringstream		wostringstream
+#define		tregex				wregex
+#define		tsmatch				wsmatch
 #else
-#define		TString			CHAR*
-#define		tstring			string
-#define		tstringstream	stringstream
-#define		tregex			regex
-#define		tsmatch			std::smatch
+#define		TString				CHAR*
+#define		tstring				string
+#define		tstringstream		stringstream
+#define		tistringstream		istringstream
+#define		tostringstream		ostringstream
+#define		tregex				regex
+#define		tsmatch				std::smatch
 #endif
 
 }
+
+#ifndef _countof
+	#define _countof(_Array) (sizeof(_Array) / sizeof(_Array[0]))
+#endif
 

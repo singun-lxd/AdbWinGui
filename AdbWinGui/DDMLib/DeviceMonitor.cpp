@@ -75,6 +75,34 @@ void DeviceMonitor::ReleaseConnection()
 	SocketClient::Release();
 }
 
+int DeviceMonitor::ReadLength(SocketClient* socket, char* buffer, int length)
+{
+	int len = -1;
+	char* msg = Read(socket, buffer, length);
+	if (msg != NULL)
+	{
+		std::istringstream iss(msg);
+		iss >> std::hex >> len;
+	}
+	return len;
+}
+
+char* DeviceMonitor::Read(SocketClient* socket, char* buffer, int length)
+{
+	int readCount = 0;
+	while (readCount < length)
+	{
+		int count;
+		count = socket->Read(buffer, length);
+		readCount += count;
+		if (count < 0)
+		{
+			return NULL;
+		}
+	}
+	return buffer;
+}
+
 DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener) : 
 	m_pBridge(pBridge), m_pListener(pListener)
 {
@@ -129,37 +157,85 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 		}
 
 		if (m_bMonitoring) {
-// 			int length = readLength(mAdbConnection, mLengthBuffer);
-// 
-// 			if (length >= 0) {
-// 				// read the incoming message
-// 				processIncomingDeviceData(length);
-// 
-// 				// flag the fact that we have build the list at least once.
-// 				m_bInitialDeviceListDone = true;
-// 			}
+			int length = ReadLength(m_pAdbConnection, m_szBuffer, _countof(m_szBuffer) - 1);
+
+			if (length >= 0) {
+				// read the incoming message
+				ProcessIncomingDeviceData(length);
+
+				// flag the fact that we have build the list at least once.
+				m_bInitialDeviceListDone = true;
+			}
 		}
+		break;//todo
 	} while (!m_bQuit);
 }
 
 bool DeviceMonitor::DeviceListMonitorTask::SendDeviceListMonitoringRequest()
 {
- 	const byte* request = AdbHelper::FormAdbRequest(ADB_TRACK_DEVICES_COMMAND);
+	bool bRet = true;
+ 	const char* request = AdbHelper::FormAdbRequest(ADB_TRACK_DEVICES_COMMAND);
+	AdbHelper::AdbResponse* resp = NULL;
 
  	bool bWrite = AdbHelper::Write(m_pAdbConnection, request);
 	if (bWrite)
 	{
-		delete[] request;
-		return false;
+		resp = AdbHelper::ReadAdbResponse(m_pAdbConnection, false);
+		if (resp == NULL || !resp->okay)
+		{
+			// request was refused by adb!
+			bRet = false;
+		}
 	}
-// 	AdbResponse resp = AdbHelper.readAdbResponse(mAdbConnection, false);
-// 	if (!resp.okay)
-// 	{
-// 		// request was refused by adb!
-// 		return false;
-// 	}
+
+	if (resp != NULL)
+	{
+		delete resp;
+	}
 	delete[] request;
-	return true;
+	return bRet;
+}
+
+void DeviceMonitor::DeviceListMonitorTask::ProcessIncomingDeviceData(int length)
+{
+	std::map<std::tstring, IDevice::DeviceState> result;
+	if (length > 0)
+	{
+		size_t buffSize = length + 1;
+		char* buffer = new char[buffSize];
+		ZeroMemory(buffer, buffSize * sizeof(char));
+		// read adb response and parse output
+		const char* response = Read(m_pAdbConnection, buffer, length);
+		ParseDeviceListResponse(response, result);
+		delete[] buffer;
+	}
+
+	m_pListener->DeviceListUpdate(result);
+}
+
+void DeviceMonitor::DeviceListMonitorTask::ParseDeviceListResponse(const char* result,
+	std::map<std::tstring, IDevice::DeviceState>& list)
+{
+	// convert to tchar stream
+	std::tstringstream iss;
+	iss << result;
+
+	std::tstring line;
+	while (std::getline(iss, line))
+	{
+		// split each line with \t char
+		const TCHAR delim = _T('\t');
+		size_t pos = line.find(delim);
+		size_t lineLen = line.length();
+		if (pos != std::tstring::npos && pos < lineLen - 1)
+		{
+			std::tstring device = line.substr(0, pos);
+			std::tstring deviceState = line.substr(pos + 1);
+			IDevice::DeviceState state = IDevice::GetState(deviceState.c_str());
+			// insert a device
+			list[device] = state;
+		}
+	}
 }
 
 bool DeviceMonitor::DeviceListMonitorTask::IsMonitoring()

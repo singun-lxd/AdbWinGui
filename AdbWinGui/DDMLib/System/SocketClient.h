@@ -37,5 +37,6 @@ public:
 	static void Release();
 	void SetTcpNoDelay(BOOL bNoDelay);
 	BOOL Connect(const SocketAddress& addSocket);
-	INT Write(const BYTE* bData, INT nLen = -1);
+	INT Read(CHAR* cData, INT nLen);
+	INT Write(const CHAR* cData, INT nLen = -1);
 };

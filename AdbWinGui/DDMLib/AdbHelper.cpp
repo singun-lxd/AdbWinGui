@@ -22,35 +22,123 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define WAIT_TIME		5 // spin-wait sleep, in ms
 
-const byte* AdbHelper::FormAdbRequest(const char* req)
+AdbHelper::AdbHelper()
 {
-	std::stringstream ss;
+}
+
+const char* AdbHelper::FormAdbRequest(const char* req)
+{
+	std::ostringstream ss;
 	ss.fill(_T('0'));
 	ss.width(4);
 	ss << std::hex << strlen(req);
 	ss << req;
 
 	std::string& resultStr = ss.str();
-	size_t length = resultStr.length();
-	byte* result = new byte[length +1];
-	memcpy(result, resultStr.c_str(), length * sizeof(char));
-	result[length] = '\0';
+	size_t size = resultStr.length() + 1;
+	char* result = new char[size];
+	strcpy_s(result, size, resultStr.c_str());
 
 	return result;
 }
 
-bool AdbHelper::Write(SocketClient* client, const byte* data)
+AdbHelper::AdbResponse* AdbHelper::ReadAdbResponse(SocketClient* client, bool readDiagString)
 {
-	return Write(client, data, -1, DdmPreferences::GetTimeOut());
+	AdbResponse* pResp = new AdbResponse();
+
+	char reply[5] = { 0 };
+	Read(client, reply, 4);
+
+	if (IsOkay(reply))
+	{
+		pResp->okay = true;
+	}
+	else
+	{
+		readDiagString = true; // look for a reason after the FAIL
+		pResp->okay = false;
+	}
+
+	if (readDiagString)
+	{
+		// length string is in next 4 bytes
+		char lenBuf[5] = { 0 };
+		Read(client, lenBuf, 4);
+
+		int len = -1;
+		std::istringstream iss(lenBuf);
+		iss >> std::hex >> len;
+		if (len < 0)
+		{
+			delete pResp;
+			return NULL;
+		}
+
+		char* msg = new char[len];
+		Read(client, msg, len);
+
+		pResp->message = msg;
+		delete[] msg;
+	}
+
+	return pResp;
 }
 
-bool AdbHelper::Write(SocketClient* client, const byte* data, int length, int timeout)
+bool AdbHelper::Read(SocketClient* client, char* data, int length)
+{
+	return Read(client, data, length, DdmPreferences::GetTimeOut());
+}
+
+bool AdbHelper::Read(SocketClient* client, char* data, int length, int timeout)
 {
 	int readCount = 0;
 	int numWaits = 0;
-	if (length == -1)
+	if (length <= 0)
 	{
-		length = strlen(reinterpret_cast<const char*>(data));
+		return false;
+	}
+
+	while (readCount < length)
+	{
+		int count;
+
+		count = client->Read(data, length);
+		readCount += count;
+		if (count < 0)
+		{
+			// error
+			return false;
+		}
+		else if (count == 0)
+		{
+			if (timeout != 0 && numWaits * WAIT_TIME > timeout)
+			{
+				return false;
+			}
+			// non-blocking spin
+			std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME));
+			numWaits++;
+		}
+		else
+		{
+			numWaits = 0;
+		}
+	}
+	return true;
+}
+
+bool AdbHelper::Write(SocketClient* client, const char* data, int length)
+{
+	return Write(client, data, length, DdmPreferences::GetTimeOut());
+}
+
+bool AdbHelper::Write(SocketClient* client, const char* data, int length, int timeout)
+{
+	int readCount = 0;
+	int numWaits = 0;
+	if (length <= 0)
+	{
+		length = strlen(data);
 	}
 
 	while (readCount < length)
@@ -80,4 +168,10 @@ bool AdbHelper::Write(SocketClient* client, const byte* data, int length, int ti
 		}
 	}
 	return true;
+}
+
+bool AdbHelper::IsOkay(char* reply)
+{
+	return reply[0] == 'O' && reply[1] == 'K'
+		&& reply[2] == 'A' && reply[3] == 'Y';
 }
