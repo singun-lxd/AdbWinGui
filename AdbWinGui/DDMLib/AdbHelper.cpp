@@ -32,6 +32,11 @@ int AdbHelper::GetLastError()
 	return SocketCore::GetLastError();
 }
 
+int AdbHelper::ReleaseSocket()
+{
+	return SocketCore::ReleaseSocket();
+}
+
 const char* AdbHelper::FormAdbRequest(const char* req)
 {
 	std::ostringstream ss;

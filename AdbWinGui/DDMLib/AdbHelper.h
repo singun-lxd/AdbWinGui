@@ -34,6 +34,7 @@ public:
 	};
 public:
 	static int GetLastError();
+	static int ReleaseSocket();
 	static const char* FormAdbRequest(const char* req);	// need delete return string
 	static AdbResponse* ReadAdbResponse(SocketClient* client, bool readDiagString);	// need delete return object
 	static bool Read(SocketClient* client, char* data, int length);

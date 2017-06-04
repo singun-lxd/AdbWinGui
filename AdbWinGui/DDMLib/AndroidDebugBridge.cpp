@@ -55,7 +55,8 @@ void AndroidDebugBridge::CheckAdbVersion()
 	// default is bad check
 	m_bVersionCheck = false;
 
-	if (m_strAdbLocation.empty()) {
+	if (m_strAdbLocation.empty())
+	{
 		return;
 	}
 
@@ -142,6 +143,8 @@ void AndroidDebugBridge::DisconnectBridge()
 	if (s_pThis != NULL)
 	{
 		s_pThis->Stop();
+		delete s_pThis;
+		s_pThis = NULL;
 	}
 }
 
@@ -219,7 +222,16 @@ void AndroidDebugBridge::InitAdbSocketAddr()
 void AndroidDebugBridge::Terminate()
 {
 	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
+	// kill the monitoring services
+	if (s_pThis != NULL && s_pThis->m_pDeviceMonitor != NULL)
+	{
+		s_pThis->m_pDeviceMonitor->Stop();
+		delete s_pThis->m_pDeviceMonitor;
+		s_pThis->m_pDeviceMonitor = NULL;
+	}
+
 	s_bInitialized = false;
+
 	DeviceMonitor::ReleaseConnection();
 }
 

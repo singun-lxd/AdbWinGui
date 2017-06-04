@@ -31,6 +31,6 @@ private:
 
 public:
 	static BOOL InitSocket();
-	static void ReleaseSocket();
+	static INT ReleaseSocket();
 	static INT GetLastError();
 };

@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DeviceMonnitor.h"
 #include "AdbHelper.h"
-#include "System\SocketCore.h"
 
 #define ADB_TRACK_DEVICES_COMMAND	"host:track-devices"
 
@@ -73,7 +72,7 @@ SocketClient* DeviceMonitor::OpenAdbConnection()
 
 void DeviceMonitor::ReleaseConnection()
 {
-	SocketCore::ReleaseSocket();
+	AdbHelper::ReleaseSocket();
 }
 
 int DeviceMonitor::ReadLength(SocketClient* socket, char* buffer, int length)

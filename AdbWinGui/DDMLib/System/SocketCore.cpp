@@ -29,6 +29,7 @@ BOOL SocketCore::InitSocket()
 	{
 		return TRUE;
 	}
+	ZeroMemory(&s_wsaData, sizeof(s_wsaData));
 	INT nRet = ::WSAStartup(MAKEWORD(2, 2), &s_wsaData);
 	if (nRet == ERROR_SUCCESS)
 	{
@@ -38,14 +39,19 @@ BOOL SocketCore::InitSocket()
 	return FALSE;
 }
 
-void SocketCore::ReleaseSocket()
+INT SocketCore::ReleaseSocket()
 {
 	if (!s_bStartUp)
 	{
-		return;
+		return ERROR_SUCCESS;
 	}
-	::WSACleanup();
-	s_bStartUp = FALSE;
+	INT nRet = ::WSACleanup();
+	if (nRet == ERROR_SUCCESS)
+	{
+		ZeroMemory(&s_wsaData, sizeof(s_wsaData));
+		s_bStartUp = FALSE;
+	}
+	return nRet;
 }
 
 INT SocketCore::GetLastError()
