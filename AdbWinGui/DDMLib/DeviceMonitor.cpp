@@ -311,7 +311,8 @@ void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
 void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices)
 {
 	std::tstringstream tss;
-	for (auto &iter : devices) {
+	for (auto &iter : devices)
+	{
 		tss << _T(">>>>>>>>>>>>>>> Device: ") << iter.first << _T(" -> Stste: ") << iter.second << std::endl;
 		::OutputDebugString(tss.str().c_str());
 		tss.clear();

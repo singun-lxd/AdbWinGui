@@ -315,7 +315,8 @@ bool AndroidDebugBridge::StartAdb()
 	if (DdmPreferences::GetUseAdbHost())
 	{
 		const TString adbHostValue = DdmPreferences::GetAdbHostValue();
-		if (adbHostValue != NULL && _tcslen(adbHostValue) != 0) {
+		if (adbHostValue != NULL && _tcslen(adbHostValue) != 0)
+		{
 			//TODO : check that the String is a valid IP address
 // 			Map<String, String> env = processBuilder.environment();
 // 			env.put("ADBHOST", adbHostValue);
@@ -355,7 +356,8 @@ int AndroidDebugBridge::GrabProcessOutput(Process& process, std::vector<std::tst
 	bool waitForReaders = (pOutput != NULL);
 	if (waitForReaders)
 	{
-		std::thread tdReadOutput([&process, &pOutput] {
+		std::thread tdReadOutput([&process, &pOutput]
+		{
 			// read process output
 			const int BUFFER_SIZE = 1024;
 			CharStreamReader frProcess(process.GetRead(), BUFFER_SIZE);
