@@ -295,17 +295,17 @@ bool AndroidDebugBridge::Restart()
 	return true;
 }
 
-void AndroidDebugBridge::DeviceConnected(IDevice* device)
+void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 {
 
 }
 
-void AndroidDebugBridge::DeviceDisconnected(IDevice* device)
+void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 {
 
 }
 
-void AndroidDebugBridge::DeviceChanged(IDevice* device, int changeMask)
+void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
 {
 
 }

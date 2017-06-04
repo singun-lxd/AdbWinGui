@@ -86,9 +86,9 @@ public:
 	bool Stop();
 	bool Restart();
 
-	void DeviceConnected(IDevice* device);
-	void DeviceDisconnected(IDevice* device);
-	void DeviceChanged(IDevice* device, int changeMask);
+	void DeviceConnected(const IDevice* device);
+	void DeviceDisconnected(const IDevice* device);
+	void DeviceChanged(const IDevice* device, int changeMask);
 
 public:
 	bool StartAdb();
