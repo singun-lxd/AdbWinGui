@@ -45,6 +45,11 @@ AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 	CheckAdbVersion();
 }
 
+AndroidDebugBridge::AndroidDebugBridge()
+{
+	// a bridge not linked to any particular adb executable.
+}
+
 AndroidDebugBridge::~AndroidDebugBridge()
 {
 	Stop();
@@ -133,6 +138,19 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 		}
 	}
 	s_pThis = new AndroidDebugBridge(szLocation);
+	s_pThis->Start();
+	return *s_pThis;
+}
+
+AndroidDebugBridge& AndroidDebugBridge::CreateBridge()
+{
+	std::unique_lock<std::mutex> lock(s_lockMember);
+	if (s_pThis != NULL)
+	{
+		return *s_pThis;
+	}
+
+	s_pThis = new AndroidDebugBridge();
 	s_pThis->Start();
 	return *s_pThis;
 }
