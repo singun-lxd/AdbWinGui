@@ -187,29 +187,32 @@ const SocketAddress& AndroidDebugBridge::GetSocketAddress()
 	return s_addSocket;
 }
 
-void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
+bool AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 {
 	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (s_bInitialized)
 	{
-		return;
+		return true;
 	}
 
-	Init(clientSupport);
+	return Init(clientSupport);
 }
 
-void AndroidDebugBridge::Init(bool clientSupport)
+bool AndroidDebugBridge::Init(bool clientSupport)
 {
 	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (s_bInitialized)
 	{
-		return;
+		// has already been called
+		return false;
 	}
 	s_bInitialized = true;
 	s_bClientSupport = clientSupport;
 
 	// Determine port and instantiate socket address.
 	InitAdbSocketAddr();
+
+	return true;
 }
 
 void AndroidDebugBridge::InitAdbSocketAddr()

@@ -74,8 +74,8 @@ public:
 	static bool GetClientSupport();
 	static const SocketAddress& GetSocketAddress();
 
-	static void InitIfNeeded(bool clientSupport);
-	static void Init(bool clientSupport);
+	static bool InitIfNeeded(bool clientSupport);
+	static bool Init(bool clientSupport);
 	static void InitAdbSocketAddr();
 	static void Terminate();
 	static int GetAdbServerPort();
