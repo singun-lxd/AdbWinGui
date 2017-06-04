@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DeviceMonnitor.h"
 #include "AdbHelper.h"
+#include "System\SocketCore.h"
 
 #define ADB_TRACK_DEVICES_COMMAND	"host:track-devices"
 
@@ -72,7 +73,7 @@ SocketClient* DeviceMonitor::OpenAdbConnection()
 
 void DeviceMonitor::ReleaseConnection()
 {
-	SocketClient::Release();
+	SocketCore::ReleaseSocket();
 }
 
 int DeviceMonitor::ReadLength(SocketClient* socket, char* buffer, int length)
@@ -152,14 +153,25 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 			}			
 		}
 
-		if (m_pAdbConnection != NULL && !m_bMonitoring) {
+		if (m_pAdbConnection != NULL && !m_bMonitoring)
+		{
 			m_bMonitoring = SendDeviceListMonitoringRequest();
+			if (!m_bMonitoring)
+			{
+				int lastError = AdbHelper::GetLastError();
+				if (lastError != ERROR_SUCCESS)
+				{
+					HandleErrorInMonitorLoop(lastError);
+				}
+			}
 		}
 
-		if (m_bMonitoring) {
+		if (m_bMonitoring)
+		{
 			int length = ReadLength(m_pAdbConnection, m_szBuffer, _countof(m_szBuffer) - 1);
 
-			if (length >= 0) {
+			if (length >= 0)
+			{
 				// read the incoming message
 				ProcessIncomingDeviceData(length);
 
@@ -167,7 +179,6 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 				m_bInitialDeviceListDone = true;
 			}
 		}
-		break;//todo
 	} while (!m_bQuit);
 }
 
@@ -194,6 +205,22 @@ bool DeviceMonitor::DeviceListMonitorTask::SendDeviceListMonitoringRequest()
 	}
 	delete[] request;
 	return bRet;
+}
+
+void DeviceMonitor::DeviceListMonitorTask::HandleErrorInMonitorLoop(int errorCode)
+{
+	if (!m_bQuit)
+	{
+		m_bMonitoring = false;
+		if (m_pAdbConnection != NULL)
+		{
+			m_pAdbConnection->Close();
+			delete m_pAdbConnection;
+			m_pAdbConnection = NULL;
+
+			m_pListener->ConnectionError(errorCode);
+		}
+	}
 }
 
 void DeviceMonitor::DeviceListMonitorTask::ProcessIncomingDeviceData(int length)
@@ -274,10 +301,19 @@ DeviceMonitor::DeviceListUpdateListener::~DeviceListUpdateListener()
 
 void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
 {
-
+// 	for (Device device : mDevices)
+// 	{
+// 		removeDevice(device);
+// 		m_pMonitor->m_pServer->DeviceDisconnected(&device);
+// 	}
 }
 
-void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices)
+void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices)
 {
-
+	std::tstringstream tss;
+	for (auto &iter : devices) {
+		tss << _T(">>>>>>>>>>>>>>> Device: ") << iter.first << _T(" -> Stste: ") << iter.second << std::endl;
+		::OutputDebugString(tss.str().c_str());
+		tss.clear();
+	}
 }

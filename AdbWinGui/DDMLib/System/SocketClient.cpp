@@ -17,11 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "SocketClient.h"
-
-#pragma comment (lib, "Ws2_32.lib")
-
-WSADATA SocketClient::s_wsaData;
-BOOL SocketClient::s_bStartUp = FALSE;
+#include "SocketCore.h"
 
 SocketClient::SocketClient()
 {
@@ -45,22 +41,26 @@ SocketClient* SocketClient::Open(const SocketAddress& addSocket)
 SocketClient* SocketClient::Open()
 {
 	SocketClient* pClient = NULL;
-	INT nRet = ::WSAStartup(MAKEWORD(2, 2), &s_wsaData);
-	if (nRet == ERROR_SUCCESS)
+	BOOL bRet = SocketCore::InitSocket();
+	if (bRet)
 	{
-		s_bStartUp = TRUE;
 		pClient = new SocketClient();
 	}
 	return pClient;
 }
 
-void SocketClient::Release()
+INT SocketClient::Close()
 {
-	if (s_bStartUp)
+	if (m_sockClient == 0)
 	{
-		::WSACleanup();
-		s_bStartUp = FALSE;
+		return ERROR_SUCCESS;
 	}
+	int nRet = closesocket(m_sockClient);
+	if (nRet == ERROR_SUCCESS)
+	{
+		m_sockClient = 0;
+	}
+	return nRet;
 }
 
 void SocketClient::SetTcpNoDelay(BOOL bNoDelay)

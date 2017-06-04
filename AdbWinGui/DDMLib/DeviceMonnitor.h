@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <map>
 #include "CommonDefine.h"
 #include "AndroidDebugBridge.h"
 #include "IDevice.h"
@@ -35,7 +34,7 @@ private:
 		interface UpdateListener
 		{
 			virtual void ConnectionError(int errorCode) = 0;
-			virtual void DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices) = 0;
+			virtual void DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices) = 0;
 		};
 	private:
 		char m_szBuffer[5] = { 0 };
@@ -55,6 +54,7 @@ private:
 
 		void Run();
 		bool SendDeviceListMonitoringRequest();
+		void HandleErrorInMonitorLoop(int errorCode);
 		void ProcessIncomingDeviceData(int length);
 		static void ParseDeviceListResponse(const char* result,
 			std::map<std::tstring, IDevice::DeviceState>& list);
@@ -74,7 +74,7 @@ private:
 		~DeviceListUpdateListener();
 
 		virtual void ConnectionError(int errorCode);
-		virtual void DeviceListUpdate(std::map<std::tstring, IDevice::DeviceState>& devices);
+		virtual void DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices);
 	};
 
 private:

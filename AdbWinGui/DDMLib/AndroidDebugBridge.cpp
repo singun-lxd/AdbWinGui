@@ -16,9 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-#include <future>
-#include <thread>
 #include "AndroidDebugBridge.h"
 #include "StringUtils.h"
 #include "System/Process.h"
@@ -30,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DEFAULT_ADB_HOST   _T("127.0.0.1")
 #define DEFAULT_ADB_PORT   5037
 
+std::recursive_mutex AndroidDebugBridge::s_lockClass;
+std::mutex AndroidDebugBridge::s_lockMember;
 AdbVersion* AndroidDebugBridge::s_pCurVersion = NULL;
 AndroidDebugBridge* AndroidDebugBridge::s_pThis = NULL;
 bool AndroidDebugBridge::s_bInitialized = false;
@@ -118,6 +117,7 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 
 AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, bool forceNewBridge)
 {
+	std::unique_lock<std::mutex> lock(s_lockMember);
 	if (s_pThis != NULL)
 	{
 		if (!s_pThis->m_strAdbLocation.empty() && s_pThis->m_strAdbLocation.compare(szLocation) == 0 &&
@@ -138,6 +138,7 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 
 void AndroidDebugBridge::DisconnectBridge()
 {
+	std::unique_lock<std::mutex> lock(s_lockMember);
 	if (s_pThis != NULL)
 	{
 		s_pThis->Stop();
@@ -147,6 +148,30 @@ void AndroidDebugBridge::DisconnectBridge()
 AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 {
 	return *s_pThis;
+}
+
+void AndroidDebugBridge::AddDebugBridgeChangeListener(IDebugBridgeChangeListener* listener)
+{
+	std::unique_lock<std::mutex> lock(s_lockMember);
+
+}
+
+void AndroidDebugBridge::RemoveDebugBridgeChangeListener(IDebugBridgeChangeListener* listener)
+{
+	std::unique_lock<std::mutex> lock(s_lockMember);
+
+}
+
+void AndroidDebugBridge::AddDeviceChangeListener(IDeviceChangeListener* listener)
+{
+	std::unique_lock<std::mutex> lock(s_lockMember);
+
+}
+
+void AndroidDebugBridge::RemoveDeviceChangeListener(IDeviceChangeListener* listener)
+{
+	std::unique_lock<std::mutex> lock(s_lockMember);
+
 }
 
 bool AndroidDebugBridge::GetClientSupport()
@@ -161,6 +186,7 @@ const SocketAddress& AndroidDebugBridge::GetSocketAddress()
 
 void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 {
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (s_bInitialized)
 	{
 		return;
@@ -171,6 +197,7 @@ void AndroidDebugBridge::InitIfNeeded(bool clientSupport)
 
 void AndroidDebugBridge::Init(bool clientSupport)
 {
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (s_bInitialized)
 	{
 		return;
@@ -191,6 +218,7 @@ void AndroidDebugBridge::InitAdbSocketAddr()
 
 void AndroidDebugBridge::Terminate()
 {
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	s_bInitialized = false;
 	DeviceMonitor::ReleaseConnection();
 }
@@ -209,6 +237,7 @@ int AndroidDebugBridge::GetAdbServerPort()
 
 const IDevice* AndroidDebugBridge::GetDevices() const
 {
+	std::unique_lock<std::mutex> lock(s_lockMember);
 	return NULL;
 }
 
@@ -249,8 +278,29 @@ bool AndroidDebugBridge::Stop()
 	return true;
 }
 
+bool AndroidDebugBridge::Restart()
+{
+	return true;
+}
+
+void AndroidDebugBridge::DeviceConnected(IDevice* device)
+{
+
+}
+
+void AndroidDebugBridge::DeviceDisconnected(IDevice* device)
+{
+
+}
+
+void AndroidDebugBridge::DeviceChanged(IDevice* device, int changeMask)
+{
+
+}
+
 bool AndroidDebugBridge::StartAdb()
 {
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (m_strAdbLocation.empty())
 	{
 		return false;
@@ -327,5 +377,6 @@ int AndroidDebugBridge::GrabProcessOutput(Process& process, std::vector<std::tst
 
 bool AndroidDebugBridge::StopAdb()
 {
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	return true;
 }

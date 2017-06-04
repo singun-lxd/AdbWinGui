@@ -87,6 +87,9 @@
     <ClCompile Include="DDMLib\DdmPreferences.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
+    <ClCompile Include="DDMLib\System\SocketCore.cpp">
+      <Filter>DDMLib\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -196,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="DDMLib\DdmPreferences.h">
       <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\System\SocketCore.h">
+      <Filter>DDMLib\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -16,25 +16,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "SocketCore.h"
 
-#include "SysDef.h"
-#include "SocketAddress.h"
+#pragma comment (lib, "Ws2_32.lib")
 
-class SocketClient
+WSADATA SocketCore::s_wsaData;
+BOOL SocketCore::s_bStartUp = FALSE;
+
+BOOL SocketCore::InitSocket()
 {
-private:
-	SOCKET m_sockClient;
+	if (s_bStartUp)
+	{
+		return TRUE;
+	}
+	INT nRet = ::WSAStartup(MAKEWORD(2, 2), &s_wsaData);
+	if (nRet == ERROR_SUCCESS)
+	{
+		s_bStartUp = TRUE;
+		return TRUE;
+	}
+	return FALSE;
+}
 
-private:
-	SocketClient();
-public:
-	~SocketClient();
-	static SocketClient* Open();
-	static SocketClient* Open(const SocketAddress& addSocket);
-	INT Close();
-	void SetTcpNoDelay(BOOL bNoDelay);
-	BOOL Connect(const SocketAddress& addSocket);
-	INT Read(CHAR* cData, INT nLen);
-	INT Write(const CHAR* cData, INT nLen = -1);
-};
+void SocketCore::ReleaseSocket()
+{
+	if (!s_bStartUp)
+	{
+		return;
+	}
+	::WSACleanup();
+	s_bStartUp = FALSE;
+}
+
+INT SocketCore::GetLastError()
+{
+	return ::WSAGetLastError();
+}
+

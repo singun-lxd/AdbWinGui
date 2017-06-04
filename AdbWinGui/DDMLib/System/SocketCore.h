@@ -19,22 +19,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "SysDef.h"
-#include "SocketAddress.h"
 
-class SocketClient
+class SocketCore
 {
 private:
-	SOCKET m_sockClient;
+	static WSADATA s_wsaData;
+	static BOOL s_bStartUp;
 
 private:
-	SocketClient();
+	SocketCore();
+
 public:
-	~SocketClient();
-	static SocketClient* Open();
-	static SocketClient* Open(const SocketAddress& addSocket);
-	INT Close();
-	void SetTcpNoDelay(BOOL bNoDelay);
-	BOOL Connect(const SocketAddress& addSocket);
-	INT Read(CHAR* cData, INT nLen);
-	INT Write(const CHAR* cData, INT nLen = -1);
+	static BOOL InitSocket();
+	static void ReleaseSocket();
+	static INT GetLastError();
 };

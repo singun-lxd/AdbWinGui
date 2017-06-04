@@ -19,11 +19,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include "AdbHelper.h"
 #include "DdmPreferences.h"
+#include "System\SocketCore.h"
 
 #define WAIT_TIME		5 // spin-wait sleep, in ms
 
 AdbHelper::AdbHelper()
 {
+}
+
+int AdbHelper::GetLastError()
+{
+	return SocketCore::GetLastError();
 }
 
 const char* AdbHelper::FormAdbRequest(const char* req)

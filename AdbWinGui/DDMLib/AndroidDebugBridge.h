@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <vector>
 #include "CommonDefine.h"
 #include "DeviceMonnitor.h"
 #include "AdbVersion.h"
@@ -30,7 +29,20 @@ class DeviceMonitor;	// define class
 
 class AndroidDebugBridge
 {
+public:
+	interface IDebugBridgeChangeListener
+	{
+		virtual void BridgeChanged(AndroidDebugBridge* pBridge) = 0;
+	};
+	interface IDeviceChangeListener
+	{
+		virtual void DeviceConnected(const IDevice* device) = 0;
+		virtual void DeviceDisconnected(const IDevice* device) = 0;
+		virtual void DeviceChanged(const IDevice* device, int changeMask) = 0;
+	};
 private:
+	static std::recursive_mutex s_lockClass;
+	static std::mutex s_lockMember;
 	static AdbVersion* s_pCurVersion;
 	static AndroidDebugBridge* s_pThis;
 	static bool s_bInitialized;
@@ -55,6 +67,10 @@ public:
 	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
 	static void DisconnectBridge();
 	static AndroidDebugBridge& GetBridge();
+	static void AddDebugBridgeChangeListener(IDebugBridgeChangeListener* listener);
+	static void RemoveDebugBridgeChangeListener(IDebugBridgeChangeListener* listener);
+	static void AddDeviceChangeListener(IDeviceChangeListener* listener);
+	static void RemoveDeviceChangeListener(IDeviceChangeListener* listener);
 	static bool GetClientSupport();
 	static const SocketAddress& GetSocketAddress();
 
@@ -68,6 +84,11 @@ public:
 
 	bool Start();
 	bool Stop();
+	bool Restart();
+
+	void DeviceConnected(IDevice* device);
+	void DeviceDisconnected(IDevice* device);
+	void DeviceChanged(IDevice* device, int changeMask);
 
 public:
 	bool StartAdb();
