@@ -318,17 +318,24 @@ bool AndroidDebugBridge::Restart()
 
 void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 {
-
+	// debug: output device info
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Connected Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
+	::OutputDebugString(tss.str().c_str());
 }
 
 void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 {
-
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Disconnect Device: ") << device->GetSerialNumber() << std::endl;
+	::OutputDebugString(tss.str().c_str());
 }
 
 void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
 {
-
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Change Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
+	::OutputDebugString(tss.str().c_str());
 }
 
 bool AndroidDebugBridge::StartAdb()

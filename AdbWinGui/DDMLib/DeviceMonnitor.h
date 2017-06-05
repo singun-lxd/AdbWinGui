@@ -101,6 +101,7 @@ private:
 	AndroidDebugBridge* m_pServer;
 	DeviceListMonitorTask* m_pDeviceListMonitorTask;
 	std::vector<Device> m_vecDevices;
+	mutable std::mutex m_lockDevices;
 
 public:
 	DeviceMonitor(AndroidDebugBridge* pServer);
@@ -108,7 +109,7 @@ public:
 
 	bool m_bQuit = false;
 
-	const IDevice* GetDevices() const;
+	void GetDevices(std::vector<Device> vecDevice) const;
 	AndroidDebugBridge* GetServer() const;
 
 	void Start();
@@ -116,6 +117,10 @@ public:
 
 	void UpdateDevices(const std::vector<Device>& veNew);
 	void RemoveDevice(const Device& device);
+	std::vector<Device>::iterator RemoveDevice(std::vector<Device>::iterator iterDevice);
+
+private:
+	static void QueryAvdName(const Device& device);
 
 public:
 	static SocketClient* OpenAdbConnection();

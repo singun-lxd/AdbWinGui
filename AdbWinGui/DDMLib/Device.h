@@ -48,4 +48,11 @@ public:
 
 	virtual const TString GetSerialNumber() const;
 	virtual DeviceState GetState() const;
+	void SetState(DeviceState state);
+	virtual bool IsOnline() const;
+	virtual bool IsEmulator() const;
+	virtual bool IsOffline() const;
+	virtual bool IsBootLoader() const;
+
+	void Update(int changeMask);
 };

@@ -76,3 +76,33 @@ IDevice::DeviceState Device::GetState() const
 {
 	return m_stateDev;
 }
+
+void Device::SetState(DeviceState state)
+{
+	m_stateDev = state;
+}
+
+bool Device::IsOnline() const
+{
+	return m_stateDev == ONLINE;
+}
+
+bool Device::IsEmulator() const
+{
+	return false;
+}
+
+bool Device::IsOffline() const
+{
+	return m_stateDev == OFFLINE;
+}
+
+bool Device::IsBootLoader() const
+{
+	return m_stateDev == BOOTLOADER;
+}
+
+void Device::Update(int changeMask)
+{
+	m_pMonitor->GetServer()->DeviceChanged(this, changeMask);
+}

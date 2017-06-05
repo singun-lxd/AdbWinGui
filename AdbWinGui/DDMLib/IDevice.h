@@ -23,6 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define STATE_COUT  5
 
+#define CHANGE_STATE			0x0001
+#define CHANGE_CLIENT_LIST	0x0002;
+#define CHANGE_BUILD_INFO	0x0004;
+
 interface IDevice : public IShellEnabledDevice
 {
 public:
@@ -43,4 +47,8 @@ public:
 public:
 	virtual const TString GetSerialNumber() const = 0;
 	virtual DeviceState GetState() const = 0;
+	virtual bool IsOnline() const = 0;
+	virtual bool IsEmulator() const = 0;
+	virtual bool IsOffline() const = 0;
+	virtual bool IsBootLoader() const = 0;
 };

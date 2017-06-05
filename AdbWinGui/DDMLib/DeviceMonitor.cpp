@@ -36,9 +36,10 @@ DeviceMonitor::~DeviceMonitor()
 	}
 }
 
-const IDevice* DeviceMonitor::GetDevices() const
+void DeviceMonitor::GetDevices(std::vector<Device> vecDevice) const
 {
-	return NULL;
+	std::unique_lock<std::mutex> lock(m_lockDevices);
+	vecDevice.assign(m_vecDevices.begin(), m_vecDevices.end());
 }
 
 AndroidDebugBridge* DeviceMonitor::GetServer() const
@@ -65,48 +66,104 @@ void DeviceMonitor::Stop()
 
 void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
 {
+	m_lockDevices.lock();
 	std::unique_ptr<DeviceListComparisonResult> result(DeviceListComparisonResult::Compare(m_vecDevices, vecNew));
+	m_lockDevices.unlock();
 	for (Device& device : *(result->m_pRemoved))
 	{
+		m_lockDevices.lock();
 		RemoveDevice(device);
+		m_lockDevices.unlock();
 		m_pServer->DeviceDisconnected(&device);
 	}
 
-// 	std::vector<Device> newlyOnline;
-// 	for (auto& entry : *(result->m_pUpdated))
-// 	{
-// 		const Device& device = entry.first;
-// 		device.SetState(entry.second);
-// 		device.Update(Device.CHANGE_STATE);
-// 
-// 		if (device.IsOnline()) {
-// 			newlyOnline.push_back(device);
-// 		}
-// 	}
-// 
-// 	for (Device& device : *(result->m_pAdded))
-// 	{
-// 		m_vecDevices.push_back(device);
-// 		m_pServer->DeviceConnected(&device);
-// 		if (device.IsOnline())
-// 		{
-// 			newlyOnline.push_back(device);
-// 		}
-// 	}
-
-	// debug: output device list
-	std::tstringstream tss;
-	for (const Device &device : vecNew)
+	std::vector<Device> newlyOnline;
+	for (auto& entry : *(result->m_pUpdated))
 	{
-		tss << _T(">>>>>>>>>>>>>>> Device: ") << device.GetSerialNumber() << _T(" -> Stste: ") << device.GetState() << std::endl;
-		::OutputDebugString(tss.str().c_str());
-		tss.clear();
+		// need to change state, cast const
+		Device& device = const_cast<Device&>(entry.first);
+		device.SetState(entry.second);
+		device.Update(CHANGE_STATE);
+
+		if (device.IsOnline())
+		{
+			newlyOnline.push_back(device);
+		}
+	}
+
+	for (Device& device : *(result->m_pAdded))
+	{
+		m_lockDevices.lock();
+		m_vecDevices.push_back(device);
+		m_lockDevices.unlock();
+
+		m_pServer->DeviceConnected(&device);
+		if (device.IsOnline())
+		{
+			newlyOnline.push_back(device);
+		}
+	}
+
+
+	if (AndroidDebugBridge::GetClientSupport())
+	{
+// 		for (Device device : newlyOnline) {
+// 			if (!StartMonitoringDevice(device))
+// 			{
+// 			}
+// 		}
+	}
+
+	for (Device& device : newlyOnline)
+	{
+		QueryAvdName(device);
 	}
 }
 
 void DeviceMonitor::RemoveDevice(const Device& device)
 {
+	// lock m_vecDevices outside
+	for (std::vector<Device>::iterator iter = m_vecDevices.begin(); iter != m_vecDevices.end(); )
+	{
+		if (_tcscmp(device.GetSerialNumber(), iter->GetSerialNumber()) == 0)
+		{
+			iter = m_vecDevices.erase(iter);
+			break;
+		}
+		else
+		{
+			iter++;
+		}
+	}
+}
 
+std::vector<Device>::iterator DeviceMonitor::RemoveDevice(std::vector<Device>::iterator iterDevice)
+{
+	//device.ClearClientList();
+
+	// lock m_vecDevices outside
+	std::vector<Device>::iterator iter = m_vecDevices.erase(iterDevice);
+
+// 	SocketClient client* = device.GetClientMonitoringSocket();
+// 	if (client != NULL)
+// 	{
+// 		client->Close();
+// 	}
+	return iter;
+}
+
+void DeviceMonitor::QueryAvdName(const Device& device)
+{
+	if (!device.IsEmulator())
+	{
+		return;
+	}
+
+	// 	EmulatorConsole console = EmulatorConsole.getConsole(device);
+	// 	if (console != null) {
+	// 		device.setAvdName(console.getAvdName());
+	// 		console.close();
+	// 	}
 }
 
 SocketClient* DeviceMonitor::OpenAdbConnection()
@@ -148,6 +205,9 @@ char* DeviceMonitor::Read(SocketClient* socket, char* buffer, int length)
 	}
 	return buffer;
 }
+
+//////////////////////////////////////////////////////////////////////////
+// implements for DeviceListMonitorTask
 
 DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* pBridge, UpdateListener* pListener) : 
 	m_pBridge(pBridge), m_pListener(pListener)
@@ -326,6 +386,9 @@ void DeviceMonitor::DeviceListMonitorTask::Stop()
 	m_bQuit = true;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// implements for DeviceListUpdateListener
+
 DeviceMonitor::DeviceListUpdateListener::DeviceListUpdateListener(DeviceMonitor* pMonitor) :
 	m_pMonitor(pMonitor)
 {
@@ -337,10 +400,12 @@ DeviceMonitor::DeviceListUpdateListener::~DeviceListUpdateListener()
 
 void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
 {
-	for (Device& device : m_pMonitor->m_vecDevices)
+	std::unique_lock<std::mutex> lock(m_pMonitor->m_lockDevices);
+	std::vector<Device>& vecDevice = m_pMonitor->m_vecDevices;
+	for (std::vector<Device>::iterator iter = vecDevice.begin(); iter != vecDevice.end();)
 	{
-		m_pMonitor->RemoveDevice(device);
-		m_pMonitor->m_pServer->DeviceDisconnected(&device);
+		iter = m_pMonitor->RemoveDevice(iter);
+		m_pMonitor->m_pServer->DeviceDisconnected(&(*iter));
 	}
 }
 
@@ -356,6 +421,9 @@ void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<st
 	m_pMonitor->UpdateDevices(vec);
 }
 
+//////////////////////////////////////////////////////////////////////////
+// implements for DeviceListComparisonResult
+
 DeviceMonitor::DeviceListComparisonResult::DeviceListComparisonResult(std::map<Device, IDevice::DeviceState>* updated,
 	std::vector<Device>* added, std::vector<Device>* removed) :
 	m_pUpdated(updated), m_pAdded(added), m_pRemoved(removed)
@@ -367,7 +435,7 @@ std::vector<Device>::iterator DeviceMonitor::DeviceListComparisonResult::Find(st
 	std::vector<Device>::iterator iter;
 	for (iter = devices.begin(); iter != devices.end(); iter++)
 	{
-		if (_tcscmp(iter->GetSerialNumber(), device.GetSerialNumber()))
+		if (_tcscmp(iter->GetSerialNumber(), device.GetSerialNumber()) == 0)
 		{
 			return iter;
 		}
