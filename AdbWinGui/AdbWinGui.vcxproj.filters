@@ -90,6 +90,9 @@
     <ClCompile Include="DDMLib\System\SocketCore.cpp">
       <Filter>DDMLib\System</Filter>
     </ClCompile>
+    <ClCompile Include="DDMLib\Device.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -109,9 +112,6 @@
     </ClInclude>
     <ClInclude Include="MainTabView.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\AndroidEnvVar.h">
-      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\AdbPath.h">
       <Filter>Utils</Filter>
@@ -202,6 +202,15 @@
     </ClInclude>
     <ClInclude Include="DDMLib\System\SocketCore.h">
       <Filter>DDMLib\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AndroidEnvVarEx.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\Device.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\AndroidEnvVar.h">
+      <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

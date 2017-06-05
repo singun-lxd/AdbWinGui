@@ -19,12 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <shlwapi.h>
-#include "AndroidEnvVar.h"
+#include "AndroidEnvVarEx.h"
 
 #define ADB_PATH		_T("platform-tools")
 #define ADB_EXE		_T("adb.exe")
 
-class AdbPath : public AndroidEnvVar
+class AdbPath : public AndroidEnvVarEx
 {
 private:
 	TCHAR m_szAdbExePath[MAX_PATH] = { 0 };

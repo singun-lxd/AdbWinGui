@@ -18,54 +18,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <wtypes.h>
-#include <tchar.h>
-
-#define ENV_BUFFER_SIZE		4096
+#include "../DDMLib/AndroidEnvVar.h"
 
 #define ANDROID_ENV			_T("ANDROID_HOME")
 #define PATH_ENV				_T("PATH")
-#define SERVER_PORT_ENV		_T("ANDROID_ADB_SERVER_PORT")
 
-class AndroidEnvVar
+class AndroidEnvVarEx : public AndroidEnvVar
 {
-private:
-	TCHAR m_szBuffer[ENV_BUFFER_SIZE] = { 0 };
-
 public:
 	LPCTSTR GetAndroidHome()
 	{
-		DWORD dwRet = ::GetEnvironmentVariable(ANDROID_ENV, m_szBuffer, MAX_PATH);
-		if (dwRet > 0)
-		{
-			return m_szBuffer;
-		}
-		return NULL;
+		return GetString(ANDROID_ENV);
 	}
 
 	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
 	{
-		return ::SetEnvironmentVariable(ANDROID_ENV, lpszEnvValue);
+		return SetString(ANDROID_ENV, lpszEnvValue);
 	}
 
 	LPTSTR GetPathValue()
 	{
-		DWORD dwRet = ::GetEnvironmentVariable(PATH_ENV, m_szBuffer, ENV_BUFFER_SIZE);
-		if (dwRet > 0)
-		{
-			return m_szBuffer;
-		}
-		return NULL;
-	}
-
-	INT GetAdbServerPort()
-	{
-		int nRet = -1;
-		DWORD dwRet = ::GetEnvironmentVariable(SERVER_PORT_ENV, m_szBuffer, MAX_PATH);
-		if (dwRet > 0)
-		{
-			nRet = _ttoi(m_szBuffer);
-		}
-		return nRet;
+		return GetResultString(PATH_ENV);
 	}
 };

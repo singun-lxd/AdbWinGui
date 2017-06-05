@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AndroidDebugBridge.h"
 #include "StringUtils.h"
+#include "AndroidEnvVar.h"
 #include "System/Process.h"
 #include "System/StreamReader.h"
-#include "../Utils/AndroidEnvVar.h"
 #include "DdmPreferences.h"
 
 #define MIN_ADB_VERSION    _T("1.0.20")
