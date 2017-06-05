@@ -36,12 +36,12 @@ DeviceMonitor::~DeviceMonitor()
 	}
 }
 
-const IDevice* DeviceMonitor::GetDevices()
+const IDevice* DeviceMonitor::GetDevices() const
 {
 	return NULL;
 }
 
-AndroidDebugBridge* DeviceMonitor::GetServer()
+AndroidDebugBridge* DeviceMonitor::GetServer() const
 {
 	return m_pServer;
 }
@@ -61,6 +61,22 @@ void DeviceMonitor::Stop()
 	{
 		m_pDeviceListMonitorTask->Stop();
 	}
+}
+
+void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
+{
+	std::tstringstream tss;
+	for (const Device &device : vecNew)
+	{
+		tss << _T(">>>>>>>>>>>>>>> Device: ") << device.GetSerialNumber() << _T(" -> Stste: ") << device.GetState() << std::endl;
+		::OutputDebugString(tss.str().c_str());
+		tss.clear();
+	}
+}
+
+void DeviceMonitor::RemoveDevice(const Device& device)
+{
+
 }
 
 SocketClient* DeviceMonitor::OpenAdbConnection()
@@ -110,12 +126,6 @@ DeviceMonitor::DeviceListMonitorTask::DeviceListMonitorTask(AndroidDebugBridge* 
 
 DeviceMonitor::DeviceListMonitorTask::~DeviceListMonitorTask()
 {
-	// need to free listener
-	if (m_pListener != NULL)
-	{
-		delete m_pListener;
-	}
-
 	if (m_pAdbConnection != NULL)
 	{
 		delete m_pAdbConnection;
@@ -184,25 +194,23 @@ void DeviceMonitor::DeviceListMonitorTask::Run()
 bool DeviceMonitor::DeviceListMonitorTask::SendDeviceListMonitoringRequest()
 {
 	bool bRet = true;
- 	const char* request = AdbHelper::FormAdbRequest(ADB_TRACK_DEVICES_COMMAND);
-	AdbHelper::AdbResponse* resp = NULL;
+ 	std::unique_ptr<const char[]> request(AdbHelper::FormAdbRequest(ADB_TRACK_DEVICES_COMMAND));
 
- 	bool bWrite = AdbHelper::Write(m_pAdbConnection, request);
+ 	bool bWrite = AdbHelper::Write(m_pAdbConnection, request.get());
 	if (bWrite)
 	{
-		resp = AdbHelper::ReadAdbResponse(m_pAdbConnection, false);
+		AdbHelper::AdbResponse* resp = AdbHelper::ReadAdbResponse(m_pAdbConnection, false);
 		if (resp == NULL || !resp->okay)
 		{
 			// request was refused by adb!
 			bRet = false;
 		}
+		if (resp != NULL)
+		{
+			delete resp;
+		}
 	}
 
-	if (resp != NULL)
-	{
-		delete resp;
-	}
-	delete[] request;
 	return bRet;
 }
 
@@ -228,12 +236,11 @@ void DeviceMonitor::DeviceListMonitorTask::ProcessIncomingDeviceData(int length)
 	if (length > 0)
 	{
 		size_t buffSize = length + 1;
-		char* buffer = new char[buffSize];
-		ZeroMemory(buffer, buffSize * sizeof(char));
+		std::unique_ptr<char[]> buffer(new char[buffSize]);
+		ZeroMemory(buffer.get(), buffSize * sizeof(char));
 		// read adb response and parse output
-		const char* response = Read(m_pAdbConnection, buffer, length);
+		const char* response = Read(m_pAdbConnection, buffer.get(), length);
 		ParseDeviceListResponse(response, result);
-		delete[] buffer;
 	}
 
 	m_pListener->DeviceListUpdate(result);
@@ -264,22 +271,22 @@ void DeviceMonitor::DeviceListMonitorTask::ParseDeviceListResponse(const char* r
 	}
 }
 
-bool DeviceMonitor::DeviceListMonitorTask::IsMonitoring()
+bool DeviceMonitor::DeviceListMonitorTask::IsMonitoring() const
 {
 	return m_bMonitoring;
 }
 
-bool DeviceMonitor::DeviceListMonitorTask::HasInitialDeviceList()
+bool DeviceMonitor::DeviceListMonitorTask::HasInitialDeviceList() const
 {
 	return m_bInitialDeviceListDone;
 }
 
-int DeviceMonitor::DeviceListMonitorTask::GetConnectionAttemptCount()
+int DeviceMonitor::DeviceListMonitorTask::GetConnectionAttemptCount() const
 {
 	return m_nConnectionAttempt;
 }
 
-int DeviceMonitor::DeviceListMonitorTask::GetRestartAttemptCount()
+int DeviceMonitor::DeviceListMonitorTask::GetRestartAttemptCount() const
 {
 	return m_nRestartAttemptCount;
 }
@@ -300,20 +307,21 @@ DeviceMonitor::DeviceListUpdateListener::~DeviceListUpdateListener()
 
 void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
 {
-// 	for (Device device : mDevices)
-// 	{
-// 		removeDevice(device);
-// 		m_pMonitor->m_pServer->DeviceDisconnected(&device);
-// 	}
+	for (Device& device : m_pMonitor->m_vecDevices)
+	{
+		m_pMonitor->RemoveDevice(device);
+		m_pMonitor->m_pServer->DeviceDisconnected(&device);
+	}
 }
 
 void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices)
 {
-	std::tstringstream tss;
+	std::vector<Device> vec;
 	for (auto &iter : devices)
 	{
-		tss << _T(">>>>>>>>>>>>>>> Device: ") << iter.first << _T(" -> Stste: ") << iter.second << std::endl;
-		::OutputDebugString(tss.str().c_str());
-		tss.clear();
+		Device dev(m_pMonitor, iter.first.c_str(), iter.second);
+		vec.push_back(dev);
 	}
+	// now merge the new devices with the old ones.
+	m_pMonitor->UpdateDevices(vec);
 }

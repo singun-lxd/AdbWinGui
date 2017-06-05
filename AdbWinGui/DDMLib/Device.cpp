@@ -35,3 +35,38 @@ long Device::GetInstallTimeOut()
 	}
 	return timeOut;
 }
+
+Device::Device()
+{
+}
+
+Device::Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState) :
+	m_pMonitor(monitor),
+	m_strSerialNumber(serialNumber),
+	m_stateDev(deviceState)
+{
+}
+const TString Device::GetName() const
+{
+	return NULL;
+}
+
+void Device::ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut)
+{
+
+}
+
+std::future<std::tstring> Device::GetSystemProperty(const std::tstring& name) const
+{
+	return std::future<std::tstring>();
+}
+
+const TString Device::GetSerialNumber() const
+{
+	return m_strSerialNumber.c_str();
+}
+
+IDevice::DeviceState Device::GetState() const
+{
+	return m_stateDev;
+}

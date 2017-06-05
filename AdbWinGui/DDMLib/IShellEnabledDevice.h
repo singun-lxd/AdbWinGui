@@ -24,11 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 interface IShellEnabledDevice
 {
-	virtual void GetName(std::tstring& name) = 0;
+	virtual const TString GetName() const = 0;
 
-	template<class _Rep, class _Per>
-	void ExecuteShellCommand(const std::tstring& command, const IShellOutputReceiver& receiver,
-		const std::chrono::duration<_Rep, _Per>& maxTimeToOutputResponse) {};
+	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut) = 0;
 
-	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) = 0;
+	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const = 0;
 };

@@ -85,11 +85,10 @@ AdbHelper::AdbResponse* AdbHelper::ReadAdbResponse(SocketClient* client, bool re
 			return NULL;
 		}
 
-		char* msg = new char[len];
-		Read(client, msg, len);
+		std::unique_ptr<char[]> msg(new char[len]);
+		Read(client, msg.get(), len);
 
-		pResp->message = msg;
-		delete[] msg;
+		pResp->message = msg.get();
 	}
 
 	return pResp;

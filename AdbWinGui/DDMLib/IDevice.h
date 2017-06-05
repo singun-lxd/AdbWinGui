@@ -39,4 +39,8 @@ public:
 
 public:
 	static DeviceState GetState(const TString state);
+
+public:
+	virtual const TString GetSerialNumber() const = 0;
+	virtual DeviceState GetState() const = 0;
 };

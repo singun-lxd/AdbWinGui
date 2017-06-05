@@ -18,11 +18,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "System/SysDef.h"
 #include "IDevice.h"
+#include "DeviceMonnitor.h"
+
+// define class
+class DeviceMonitor;
 
 class Device : public IDevice
 {
 private:
 	static const long s_lInstallTimeOut;
 	static long GetInstallTimeOut();
+
+private:
+	const DeviceMonitor* m_pMonitor;
+	const std::tstring m_strSerialNumber;
+	DeviceState m_stateDev = UNKNOWN;
+
+public:
+	Device();
+	Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState);
+	virtual const TString GetName() const;
+	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut);
+	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const;
+
+	virtual const TString GetSerialNumber() const;
+	virtual DeviceState GetState() const;
 };

@@ -25,7 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "System/SocketAddress.h"
 #include "System/Process.h"
 
-class DeviceMonitor;	// define class
+// define class
+class DeviceMonitor;
 
 class AndroidDebugBridge
 {

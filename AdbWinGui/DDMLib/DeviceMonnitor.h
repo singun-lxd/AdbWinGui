@@ -21,9 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "CommonDefine.h"
 #include "AndroidDebugBridge.h"
 #include "IDevice.h"
+#include "Device.h"
 #include "System/SocketClient.h"
 
-class AndroidDebugBridge;	// define class
+// define class
+class AndroidDebugBridge;
+class Device;
 
 class DeviceMonitor
 {
@@ -39,7 +42,7 @@ private:
 	private:
 		char m_szBuffer[5] = { 0 };
 		AndroidDebugBridge* const m_pBridge;
-		UpdateListener* const m_pListener;
+		std::unique_ptr<UpdateListener> m_pListener;	// need to free listener
 
 		SocketClient* m_pAdbConnection = NULL;
 		bool m_bMonitoring = false;
@@ -58,10 +61,10 @@ private:
 		void ProcessIncomingDeviceData(int length);
 		static void ParseDeviceListResponse(const char* result,
 			std::map<std::tstring, IDevice::DeviceState>& list);
-		bool IsMonitoring();
-		bool HasInitialDeviceList();
-		int GetConnectionAttemptCount();
-		int GetRestartAttemptCount();
+		bool IsMonitoring() const;
+		bool HasInitialDeviceList() const;
+		int GetConnectionAttemptCount() const;
+		int GetRestartAttemptCount() const;
 		void Stop();
 	};
 
@@ -80,6 +83,7 @@ private:
 private:
 	AndroidDebugBridge* m_pServer;
 	DeviceListMonitorTask* m_pDeviceListMonitorTask;
+	std::vector<Device> m_vecDevices;
 
 public:
 	DeviceMonitor(AndroidDebugBridge* pServer);
@@ -87,11 +91,14 @@ public:
 
 	bool m_bQuit = false;
 
-	const IDevice* GetDevices();
-	AndroidDebugBridge* GetServer();
+	const IDevice* GetDevices() const;
+	AndroidDebugBridge* GetServer() const;
 
 	void Start();
 	void Stop();
+
+	void UpdateDevices(const std::vector<Device>& veNew);
+	void RemoveDevice(const Device& device);
 
 public:
 	static SocketClient* OpenAdbConnection();
