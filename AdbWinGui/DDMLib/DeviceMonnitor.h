@@ -80,6 +80,23 @@ private:
 		virtual void DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices);
 	};
 
+	class DeviceListComparisonResult
+	{
+	public:
+		std::unique_ptr<std::map<Device, IDevice::DeviceState>> m_pUpdated;
+		std::unique_ptr<std::vector<Device>> m_pAdded;
+		std::unique_ptr<std::vector<Device>> m_pRemoved;
+
+	private:
+		DeviceListComparisonResult(std::map<Device, IDevice::DeviceState>* updated,
+			std::vector<Device>* added, std::vector<Device>* removed);
+		static std::vector<Device>::iterator Find(std::vector<Device>& devices, const Device& device);
+
+	public:
+		static DeviceListComparisonResult* Compare(const std::vector<Device>& previous,
+			const std::vector<Device>& current);
+	};
+
 private:
 	AndroidDebugBridge* m_pServer;
 	DeviceListMonitorTask* m_pDeviceListMonitorTask;

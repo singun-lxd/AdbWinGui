@@ -65,6 +65,36 @@ void DeviceMonitor::Stop()
 
 void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
 {
+	std::unique_ptr<DeviceListComparisonResult> result(DeviceListComparisonResult::Compare(m_vecDevices, vecNew));
+	for (Device& device : *(result->m_pRemoved))
+	{
+		RemoveDevice(device);
+		m_pServer->DeviceDisconnected(&device);
+	}
+
+// 	std::vector<Device> newlyOnline;
+// 	for (auto& entry : *(result->m_pUpdated))
+// 	{
+// 		const Device& device = entry.first;
+// 		device.SetState(entry.second);
+// 		device.Update(Device.CHANGE_STATE);
+// 
+// 		if (device.IsOnline()) {
+// 			newlyOnline.push_back(device);
+// 		}
+// 	}
+// 
+// 	for (Device& device : *(result->m_pAdded))
+// 	{
+// 		m_vecDevices.push_back(device);
+// 		m_pServer->DeviceConnected(&device);
+// 		if (device.IsOnline())
+// 		{
+// 			newlyOnline.push_back(device);
+// 		}
+// 	}
+
+	// debug: output device list
 	std::tstringstream tss;
 	for (const Device &device : vecNew)
 	{
@@ -324,4 +354,55 @@ void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<st
 	}
 	// now merge the new devices with the old ones.
 	m_pMonitor->UpdateDevices(vec);
+}
+
+DeviceMonitor::DeviceListComparisonResult::DeviceListComparisonResult(std::map<Device, IDevice::DeviceState>* updated,
+	std::vector<Device>* added, std::vector<Device>* removed) :
+	m_pUpdated(updated), m_pAdded(added), m_pRemoved(removed)
+{
+}
+
+std::vector<Device>::iterator DeviceMonitor::DeviceListComparisonResult::Find(std::vector<Device>& devices, const Device& device)
+{
+	std::vector<Device>::iterator iter;
+	for (iter = devices.begin(); iter != devices.end(); iter++)
+	{
+		if (_tcscmp(iter->GetSerialNumber(), device.GetSerialNumber()))
+		{
+			return iter;
+		}
+	}
+	return devices.end();
+}
+
+DeviceMonitor::DeviceListComparisonResult* DeviceMonitor::DeviceListComparisonResult::Compare(
+	const std::vector<Device>& previous, const std::vector<Device>& current)
+{
+	std::vector<Device> curCopy;
+	curCopy.assign(current.begin(), current.end());
+
+	std::map<Device, IDevice::DeviceState>* pUpdated = new std::map<Device, IDevice::DeviceState>;
+	std::vector<Device>* pAdded = new std::vector<Device>;
+	std::vector<Device>* pRemoved = new std::vector<Device>;
+
+	for (const Device& device : previous)
+	{
+		std::vector<Device>::iterator iter = Find(curCopy, device);
+		if (iter != curCopy.end())
+		{
+			if (iter->GetState() != device.GetState())
+			{
+				(*pUpdated)[device] = iter->GetState();
+			}
+			curCopy.erase(iter);
+		}
+		else
+		{
+			pRemoved->push_back(device);
+		}
+	}
+
+	pAdded->assign(curCopy.begin(), curCopy.end());
+
+	return new DeviceListComparisonResult(pUpdated, pAdded, pRemoved);
 }

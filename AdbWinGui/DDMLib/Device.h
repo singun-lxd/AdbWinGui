@@ -33,12 +33,15 @@ private:
 
 private:
 	const DeviceMonitor* m_pMonitor;
-	const std::tstring m_strSerialNumber;
+	std::tstring m_strSerialNumber;
 	DeviceState m_stateDev = UNKNOWN;
-
+	
 public:
 	Device();
 	Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState);
+	bool Device::operator < (const Device &) const;
+
+public:
 	virtual const TString GetName() const;
 	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut);
 	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const;

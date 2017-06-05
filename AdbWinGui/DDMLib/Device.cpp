@@ -36,7 +36,7 @@ long Device::GetInstallTimeOut()
 	return timeOut;
 }
 
-Device::Device()
+Device::Device() : m_pMonitor(NULL)
 {
 }
 
@@ -46,6 +46,12 @@ Device::Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState d
 	m_stateDev(deviceState)
 {
 }
+
+bool Device::operator < (const Device& r) const
+{
+	return m_strSerialNumber < r.m_strSerialNumber;
+}
+
 const TString Device::GetName() const
 {
 	return NULL;
