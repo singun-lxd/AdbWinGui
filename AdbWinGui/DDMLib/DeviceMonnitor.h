@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class AndroidDebugBridge;
 class Device;
 
+typedef std::vector<std::shared_ptr<Device>> DeviceVector;
+
 class DeviceMonitor
 {
 private:
@@ -84,23 +86,23 @@ private:
 	{
 	public:
 		std::unique_ptr<std::map<Device, IDevice::DeviceState>> m_pUpdated;
-		std::unique_ptr<std::vector<Device*>> m_pAdded;
-		std::unique_ptr<std::vector<Device*>> m_pRemoved;
+		std::unique_ptr<DeviceVector> m_pAdded;
+		std::unique_ptr<DeviceVector> m_pRemoved;
 
 	private:
 		DeviceListComparisonResult(std::map<Device, IDevice::DeviceState>* updated,
-			std::vector<Device*>* added, std::vector<Device*>* removed);
-		static std::vector<Device*>::iterator Find(std::vector<Device*>& devices, const Device& device);
+			DeviceVector* added, DeviceVector* removed);
+		static DeviceVector::iterator Find(DeviceVector& devices, const Device& device);
 
 	public:
-		static DeviceListComparisonResult* Compare(const std::vector<Device>& previous,
-			const std::vector<Device>& current);
+		static DeviceListComparisonResult* Compare(const DeviceVector& previous,
+			const DeviceVector& current);
 	};
 
 private:
 	AndroidDebugBridge* m_pServer;
 	DeviceListMonitorTask* m_pDeviceListMonitorTask;
-	std::vector<Device> m_vecDevices;
+	DeviceVector m_vecDevices;
 	mutable std::mutex m_lockDevices;
 
 public:
@@ -115,9 +117,9 @@ public:
 	void Start();
 	void Stop();
 
-	void UpdateDevices(const std::vector<Device>& veNew);
+	void UpdateDevices(const DeviceVector& veNew);
 	void RemoveDevice(const Device& device);
-	std::vector<Device>::iterator RemoveDevice(std::vector<Device>::iterator iterDevice);
+	DeviceVector::iterator RemoveDevice(DeviceVector::iterator iterDevice);
 
 private:
 	static void QueryAvdName(const Device& device);

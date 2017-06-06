@@ -39,7 +39,11 @@ DeviceMonitor::~DeviceMonitor()
 void DeviceMonitor::GetDevices(std::vector<Device> vecDevice) const
 {
 	std::unique_lock<std::mutex> lock(m_lockDevices);
-	vecDevice.assign(m_vecDevices.begin(), m_vecDevices.end());
+	// copy device data out
+	for (const auto& pDevice : m_vecDevices)
+	{
+		vecDevice.push_back(*pDevice);
+	}
 }
 
 AndroidDebugBridge* DeviceMonitor::GetServer() const
@@ -64,13 +68,14 @@ void DeviceMonitor::Stop()
 	}
 }
 
-void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
+void DeviceMonitor::UpdateDevices(const DeviceVector& vecNew)
 {
 	m_lockDevices.lock();
 	std::unique_ptr<DeviceListComparisonResult> result(DeviceListComparisonResult::Compare(m_vecDevices, vecNew));
 	m_lockDevices.unlock();
-	for (Device* pDevice : *(result->m_pRemoved))
+	for (auto& device : *(result->m_pRemoved))
 	{
+		Device* pDevice = device.get();
 		m_pServer->DeviceDisconnected(pDevice);
 
 		m_lockDevices.lock();
@@ -92,10 +97,11 @@ void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
 		}
 	}
 
-	for (Device* pDevice : *(result->m_pAdded))
+	for (auto& device : *(result->m_pAdded))
 	{
+		Device* pDevice = device.get();
 		m_lockDevices.lock();
-		m_vecDevices.push_back(*pDevice);
+		m_vecDevices.push_back(device);
 		m_lockDevices.unlock();
 
 		m_pServer->DeviceConnected(pDevice);
@@ -125,9 +131,10 @@ void DeviceMonitor::UpdateDevices(const std::vector<Device>& vecNew)
 void DeviceMonitor::RemoveDevice(const Device& device)
 {
 	// lock m_vecDevices outside
-	for (std::vector<Device>::iterator iter = m_vecDevices.begin(); iter != m_vecDevices.end(); )
+	for (DeviceVector::iterator iter = m_vecDevices.begin(); iter != m_vecDevices.end(); )
 	{
-		if (_tcscmp(device.GetSerialNumber(), iter->GetSerialNumber()) == 0)
+		const Device* pDevice = iter->get();
+		if (_tcscmp(device.GetSerialNumber(), pDevice->GetSerialNumber()) == 0)
 		{
 			iter = m_vecDevices.erase(iter);
 			break;
@@ -139,12 +146,12 @@ void DeviceMonitor::RemoveDevice(const Device& device)
 	}
 }
 
-std::vector<Device>::iterator DeviceMonitor::RemoveDevice(std::vector<Device>::iterator iterDevice)
+DeviceVector::iterator DeviceMonitor::RemoveDevice(DeviceVector::iterator iterDevice)
 {
 	//device.ClearClientList();
 
 	// lock m_vecDevices outside
-	std::vector<Device>::iterator iter = m_vecDevices.erase(iterDevice);
+	DeviceVector::iterator iter = m_vecDevices.erase(iterDevice);
 
 // 	SocketClient client* = device.GetClientMonitoringSocket();
 // 	if (client != NULL)
@@ -403,21 +410,21 @@ DeviceMonitor::DeviceListUpdateListener::~DeviceListUpdateListener()
 void DeviceMonitor::DeviceListUpdateListener::ConnectionError(int errorCode)
 {
 	std::unique_lock<std::mutex> lock(m_pMonitor->m_lockDevices);
-	std::vector<Device>& vecDevice = m_pMonitor->m_vecDevices;
-	for (std::vector<Device>::iterator iter = vecDevice.begin(); iter != vecDevice.end();)
+	DeviceVector& vecDevice = m_pMonitor->m_vecDevices;
+	for (DeviceVector::iterator iter = vecDevice.begin(); iter != vecDevice.end();)
 	{
-		const Device& device = *iter;
-		m_pMonitor->m_pServer->DeviceDisconnected(&device);
+		const Device* pDevice = iter->get();
+		m_pMonitor->m_pServer->DeviceDisconnected(pDevice);
 		iter = m_pMonitor->RemoveDevice(iter);	// need call after callback
 	}
 }
 
 void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<std::tstring, IDevice::DeviceState>& devices)
 {
-	std::vector<Device> vec;
+	DeviceVector vec;
 	for (auto &iter : devices)
 	{
-		Device dev(m_pMonitor, iter.first.c_str(), iter.second);
+		std::shared_ptr<Device> dev(new Device(m_pMonitor, iter.first.c_str(), iter.second));
 		vec.push_back(dev);
 	}
 	// now merge the new devices with the old ones.
@@ -428,17 +435,17 @@ void DeviceMonitor::DeviceListUpdateListener::DeviceListUpdate(const std::map<st
 // implements for DeviceListComparisonResult
 
 DeviceMonitor::DeviceListComparisonResult::DeviceListComparisonResult(std::map<Device, IDevice::DeviceState>* updated,
-	std::vector<Device*>* added, std::vector<Device*>* removed) :
+	DeviceVector* added, DeviceVector* removed) :
 	m_pUpdated(updated), m_pAdded(added), m_pRemoved(removed)
 {
 }
 
-std::vector<Device*>::iterator DeviceMonitor::DeviceListComparisonResult::Find(std::vector<Device*>& devices, const Device& device)
+DeviceVector::iterator DeviceMonitor::DeviceListComparisonResult::Find(DeviceVector& devices, const Device& device)
 {
-	std::vector<Device*>::iterator iter;
+	DeviceVector::iterator iter;
 	for (iter = devices.begin(); iter != devices.end(); iter++)
 	{
-		Device* pDevice = *iter;
+		Device* pDevice = iter->get();
 		if (_tcscmp(pDevice->GetSerialNumber(), device.GetSerialNumber()) == 0)
 		{
 			return iter;
@@ -448,25 +455,22 @@ std::vector<Device*>::iterator DeviceMonitor::DeviceListComparisonResult::Find(s
 }
 
 DeviceMonitor::DeviceListComparisonResult* DeviceMonitor::DeviceListComparisonResult::Compare(
-	const std::vector<Device>& previous, const std::vector<Device>& current)
+	const DeviceVector& previous, const DeviceVector& current)
 {
-	std::vector<Device*> curCopy;
-	// copy pointer
-	for (const Device& device : current)
-	{
-		curCopy.push_back(const_cast<Device*>(&device));
-	}
+	DeviceVector curCopy;
+	curCopy.assign(current.begin(), current.end());
 
 	std::map<Device, IDevice::DeviceState>* pUpdated = new std::map<Device, IDevice::DeviceState>;
-	std::vector<Device*>* pAdded = new std::vector<Device*>;
-	std::vector<Device*>* pRemoved = new std::vector<Device*>;
+	DeviceVector* pAdded = new DeviceVector;
+	DeviceVector* pRemoved = new DeviceVector;
 
-	for (const Device& device : previous)
+	for (const auto& pDevice : previous)
 	{
-		std::vector<Device*>::iterator iter = Find(curCopy, device);
+		const Device& device = *pDevice;
+		DeviceVector::iterator iter = Find(curCopy, device);
 		if (iter != curCopy.end())
 		{
-			Device* pDevice = *iter;
+			Device* pDevice = iter->get();
 			if (pDevice->GetState() != device.GetState())
 			{
 				(*pUpdated)[device] = pDevice->GetState();
@@ -475,7 +479,7 @@ DeviceMonitor::DeviceListComparisonResult* DeviceMonitor::DeviceListComparisonRe
 		}
 		else
 		{
-			pRemoved->push_back(const_cast<Device*>(&device));
+			pRemoved->push_back(pDevice);
 		}
 	}
 
