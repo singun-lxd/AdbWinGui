@@ -68,7 +68,7 @@ public:
 
 public:
 	virtual void InitFinish() override;
-	virtual void OnDeviceUpdated(CSimpleArray<Device>& arrDevice) override;
+	virtual void OnDeviceUpdated(const CSimpleArray<Device>& arrDevice) override;
 
 public:
 	bool CreateTabControl();

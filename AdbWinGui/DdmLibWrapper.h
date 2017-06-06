@@ -25,7 +25,7 @@ class DdmLibWrapper : public AndroidDebugBridge::IDeviceChangeListener
 public:
 	interface DdmCallback
 	{
-		virtual void OnDeviceUpdated(CSimpleArray<Device>& arrDevice) = 0;
+		virtual void OnDeviceUpdated(const CSimpleArray<Device>& arrDevice) = 0;
 		virtual void InitFinish() = 0;
 	};
 
