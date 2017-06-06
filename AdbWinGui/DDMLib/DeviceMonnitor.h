@@ -111,7 +111,7 @@ public:
 
 	bool m_bQuit = false;
 
-	void GetDevices(std::vector<Device> vecDevice) const;
+	void GetDevices(std::vector<Device>& vecDevice) const;
 	AndroidDebugBridge* GetServer() const;
 
 	void Start();

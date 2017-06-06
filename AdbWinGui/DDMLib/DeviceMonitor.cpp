@@ -36,7 +36,7 @@ DeviceMonitor::~DeviceMonitor()
 	}
 }
 
-void DeviceMonitor::GetDevices(std::vector<Device> vecDevice) const
+void DeviceMonitor::GetDevices(std::vector<Device>& vecDevice) const
 {
 	std::unique_lock<std::mutex> lock(m_lockDevices);
 	// copy device data out
