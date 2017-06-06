@@ -24,7 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SettingTab.h"
 #include "MessageDefine.h"
 #include "MessageTaskDlg.h"
-#include "DDMLib/AndroidDebugBridge.h"
 
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
@@ -108,13 +107,15 @@ void SettingTab::UpdateControlStatus()
 void SettingTab::CheckSettingValid()
 {
 	const CString& strAdbPath = ConfigManager::GetInstance().GetAdbPath();
-// 	AndroidDebugBridge::Init(false);
-// 	AndroidDebugBridge::CreateBridge(strAdbPath);
-// 	AndroidDebugBridge::Terminate();
 	if (strAdbPath.IsEmpty())
 	{
 		CWindow hWnd = GetParent();
-		hWnd.PostMessage(MSG_MAIN_ADB_ERROR, 0, (LPARAM)m_hWnd);
+		hWnd.PostMessage(MSG_MAIN_ADB_PATH, FALSE, (LPARAM)m_hWnd);
+	}
+	else
+	{
+		CWindow hWnd = GetParent();
+		hWnd.PostMessage(MSG_MAIN_ADB_PATH, TRUE, (LPARAM)(LPCTSTR)strAdbPath);
 	}
 }
 

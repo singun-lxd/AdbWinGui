@@ -64,10 +64,12 @@ private:
 private:
 	AndroidDebugBridge(const TString szLocation);
 	AndroidDebugBridge();
-	~AndroidDebugBridge();
 	void CheckAdbVersion();
 
 	static AdbVersion* GetAdbVersion(const TString adb);
+public:
+	~AndroidDebugBridge();
+
 public:
 	static AndroidDebugBridge& CreateBridge(const TString szLocation, bool forceNewBridge = false);
 	static AndroidDebugBridge& CreateBridge();

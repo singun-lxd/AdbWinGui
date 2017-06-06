@@ -32,6 +32,11 @@ BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 	return FALSE;
 }
 
+LRESULT MainTabView::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	return 0;
+}
+
 LRESULT MainTabView::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	CTabViewImpl<MainTabView>::OnDestroy(uMsg, wParam, lParam, bHandled);
@@ -46,25 +51,18 @@ LRESULT MainTabView::OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPa
 	return 0;
 }
 
-LRESULT MainTabView::OnAdbError(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
+LRESULT MainTabView::OnAdbPath(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	if (uMsg == MSG_MAIN_ADB_ERROR)
+	if (uMsg == MSG_MAIN_ADB_PATH)
 	{
-		if (m_dlgPreparing.IsShowing())
+		BOOL bResult = static_cast<BOOL>(wParam);
+		if (bResult)
 		{
-			// cancel preparing dialog
-			m_dlgPreparing.EndDialog(IDOK);
+			HandleAdbPathSuccess((LPCTSTR)lParam);
 		}
-		AdbPathErrorDlg dlg;
-		int nRet = dlg.DoModal();
-		if (nRet == IDOK)
+		else
 		{
-			HWND hWndSetting = (HWND)lParam;
-			::PostMessage(hWndSetting, MSG_SETTING_SELECT_ADB, 0, 0);
-		}
-		else if (nRet == IDCANCEL)
-		{
-			GetParent().PostMessage(WM_CLOSE);
+			HandleAdbPathError((HWND)lParam);
 		}
 	}
 	return 0;
@@ -78,6 +76,10 @@ LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*
 	}
 	if (uMsg == MSG_MAIN_PREPARE_ADB)
 	{
+		if (m_ddmLibWrapper.IsInit())
+		{
+			return 0;
+		}
 		int nRet = m_dlgPreparing.DoModal();
 		if (nRet == IDCANCEL)
 		{
@@ -90,6 +92,43 @@ LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*
 		}
 	}
 	return 0;
+}
+
+LRESULT MainTabView::OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	if (m_dlgPreparing.IsShowing())
+	{
+		m_dlgPreparing.EndDialog(IDOK);
+	}
+	return 0;
+}
+
+void MainTabView::InitFinish()
+{
+	// adb init finish
+	SendMessage(MSG_MAIN_ADB_FINISH);
+}
+
+void MainTabView::DeviceConnected(const IDevice* device)
+{
+	// debug: output device info
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Connected Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
+	::OutputDebugString(tss.str().c_str());
+}
+
+void MainTabView::DeviceDisconnected(const IDevice* device)
+{
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Disconnect Device: ") << device->GetSerialNumber() << std::endl;
+	::OutputDebugString(tss.str().c_str());
+}
+
+void MainTabView::DeviceChanged(const IDevice* device, int changeMask)
+{
+	std::tstringstream tss;
+	tss << _T(">>>>>>>>>>>>>>> Change Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
+	::OutputDebugString(tss.str().c_str());
 }
 
 bool MainTabView::CreateTabControl()
@@ -158,4 +197,32 @@ void MainTabView::AddSettingTab()
 	m_arrWnd.Add(configView);
 
 	AddPage(*configView, _T("Setting"), TAB_SETTING);
+}
+
+void MainTabView::HandleAdbPathError(HWND hWndSetting)
+{
+	if (m_dlgPreparing.IsShowing())
+	{
+		// cancel preparing dialog
+		m_dlgPreparing.EndDialog(IDOK);
+	}
+	AdbPathErrorDlg dlg;
+	int nRet = dlg.DoModal();
+	if (nRet == IDOK)
+	{
+		::PostMessage(hWndSetting, MSG_SETTING_SELECT_ADB, 0, 0);
+	}
+	else if (nRet == IDCANCEL)
+	{
+		GetParent().PostMessage(WM_CLOSE);
+	}
+}
+
+void MainTabView::HandleAdbPathSuccess(LPCTSTR lpszAdbPath)
+{
+	if (lpszAdbPath != NULL && _tcslen(lpszAdbPath) > 0)
+	{
+		m_ddmLibWrapper.SetDdmCallback(this);
+		m_ddmLibWrapper.Init(lpszAdbPath);
+	}
 }

@@ -321,11 +321,6 @@ bool AndroidDebugBridge::Restart()
 
 void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 {
-	// debug: output device info
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Connected Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.
@@ -344,10 +339,6 @@ void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 
 void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 {
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Disconnect Device: ") << device->GetSerialNumber() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.
@@ -366,10 +357,6 @@ void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 
 void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
 {
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Change Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.

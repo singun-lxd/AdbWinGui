@@ -39,5 +39,5 @@ LRESULT MainTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 void MainTab::PrepareAdb()
 {
-	//GetParent().PostMessage(MSG_MAIN_PREPARE_ADB);
+	GetParent().PostMessage(MSG_MAIN_PREPARE_ADB);
 }

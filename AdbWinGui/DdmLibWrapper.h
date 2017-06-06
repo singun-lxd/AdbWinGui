@@ -18,9 +18,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define MSG_MAIN_ADB_PATH		WM_USER + 100
-#define MSG_MAIN_NOTIFY_EXIT		WM_USER + 101
-#define MSG_MAIN_PREPARE_ADB		WM_USER + 102
-#define MSG_MAIN_ADB_FINISH		WM_USER + 103
+#include "DDMLib\AndroidDebugBridge.h"
 
-#define MSG_SETTING_SELECT_ADB	WM_USER + 200
+class DdmLibWrapper
+{
+public:
+	interface DdmCallback : public AndroidDebugBridge::IDeviceChangeListener
+	{
+		virtual void InitFinish() = 0;
+	};
+
+private:
+	AndroidDebugBridge* m_pAdbInstance;
+	std::future<BOOL> m_taskInit;
+	DdmCallback* m_pCallback;
+
+public:
+	DdmLibWrapper();
+	~DdmLibWrapper();
+
+	void Init(const TString szLocation, BOOL bClienntSupport = FALSE);
+	void Release();
+	BOOL IsInit();
+	void SetDdmCallback(DdmCallback* pCallback);
+
+private:
+	BOOL InitAdb(const TString szLocation, BOOL bClienntSupport);
+};

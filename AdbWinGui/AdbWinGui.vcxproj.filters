@@ -93,6 +93,9 @@
     <ClCompile Include="DDMLib\Device.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
+    <ClCompile Include="DdmLibWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -211,6 +214,9 @@
     </ClInclude>
     <ClInclude Include="DDMLib\AndroidEnvVar.h">
       <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DdmLibWrapper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
