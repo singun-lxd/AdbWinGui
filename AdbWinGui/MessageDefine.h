@@ -26,6 +26,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MSG_SETTING_SELECT_ADB		WM_USER + 200
 
 #define MSG_RIBBON_DEVICE_LIST		WM_USER + 300
-#define PARAM_DEVICE_CONNECT			0x01
-#define PARAM_DEVICE_DISCONNECT		0x02
-#define PARAM_DEVICE_CHANGE			0x03

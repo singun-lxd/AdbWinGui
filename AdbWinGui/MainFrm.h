@@ -28,6 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainTabView.h"
 #include "MessageDefine.h"
 
+#define MAX_UI_DEVICE_LIST_COUNNT	10
+
 class CMainFrame : 
 	public CRibbonFrameWindowImpl<CMainFrame>, 
 	public CMessageFilter, public CIdleHandler
@@ -39,7 +41,7 @@ public:
 	CCommandBarCtrl m_CmdBar;
 
 	// Declare ribbon controls
-	CRibbonItemGalleryCtrl<ID_VIEW_DEVICES, 10> m_glyDevices;
+	CRibbonItemGalleryCtrl<ID_VIEW_DEVICES, MAX_UI_DEVICE_LIST_COUNNT> m_glyDevices;
 	CBitmap m_bmpDevice;
 
 	// Ribbon control map
@@ -93,7 +95,6 @@ public:
 	LRESULT OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled);
 
 private:
-	void OnDeviceConnnected(const Device* pDevice);
-	void OnDeviceDisconnnected(const Device* pDevice);
-	void OnDeviceChanged(const Device* pDevice);
+	void UpdateNoneDevice();
+	void UpdateDeviceList(const CSimpleArray<Device>& arrDevice);
 };

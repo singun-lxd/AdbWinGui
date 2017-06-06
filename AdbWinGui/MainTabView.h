@@ -68,9 +68,7 @@ public:
 
 public:
 	virtual void InitFinish() override;
-	virtual void DeviceConnected(const IDevice* device) override;
-	virtual void DeviceDisconnected(const IDevice* device) override;
-	virtual void DeviceChanged(const IDevice* device, int changeMask) override;
+	virtual void OnDeviceUpdated(CSimpleArray<Device>& arrDevice) override;
 
 public:
 	bool CreateTabControl();

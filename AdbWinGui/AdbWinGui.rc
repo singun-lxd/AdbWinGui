@@ -304,6 +304,7 @@ BEGIN
     IDS_ADB_PATH_ERROR      "Searching adb.exe path failed"
     IDS_DOWNLOAD_ADB        "Download adb from <a href=""https://developer.android.com/studio/releases/platform-tools.html"">developer.android.com</a>"
     IDS_ADB_PREPARING       "Preparing adb, please wait..."
+    IDS_DEVICE_EMPTY        "No Device"
 END
 
 STRINGTABLE

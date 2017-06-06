@@ -47,9 +47,24 @@ Device::Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState d
 {
 }
 
+Device::Device(const IDevice* pDevice) : m_pMonitor(NULL)
+{
+	m_strSerialNumber = pDevice->GetSerialNumber();
+	m_stateDev = pDevice->GetState();
+}
+
 bool Device::operator < (const Device& r) const
 {
 	return m_strSerialNumber < r.m_strSerialNumber;
+}
+
+bool Device::operator==(const Device & r) const
+{
+	if (m_strSerialNumber.length() != r.m_strSerialNumber.length())
+	{
+		return false;
+	}
+	return _tcscmp(m_strSerialNumber.c_str(), r.m_strSerialNumber.c_str()) == 0;
 }
 
 const TString Device::GetName() const

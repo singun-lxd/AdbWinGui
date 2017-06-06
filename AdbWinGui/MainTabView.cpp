@@ -103,32 +103,9 @@ void MainTabView::InitFinish()
 	SendMessage(MSG_MAIN_ADB_FINISH);
 }
 
-void MainTabView::DeviceConnected(const IDevice* device)
+void MainTabView::OnDeviceUpdated(CSimpleArray<Device>& arrDevice)
 {
-	// debug: output device info
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Connected Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
-	GetParent().SendMessage(MSG_RIBBON_DEVICE_LIST, PARAM_DEVICE_CONNECT, (LPARAM) device);
-}
-
-void MainTabView::DeviceDisconnected(const IDevice* device)
-{
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Disconnect Device: ") << device->GetSerialNumber() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
-	GetParent().SendMessage(MSG_RIBBON_DEVICE_LIST, PARAM_DEVICE_DISCONNECT, (LPARAM)device);
-}
-
-void MainTabView::DeviceChanged(const IDevice* device, int changeMask)
-{
-	std::tstringstream tss;
-	tss << _T(">>>>>>>>>>>>>>> Change Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
-	::OutputDebugString(tss.str().c_str());
-
-	GetParent().SendMessage(MSG_RIBBON_DEVICE_LIST, PARAM_DEVICE_CHANGE, (LPARAM)device);
+	GetParent().SendMessage(MSG_RIBBON_DEVICE_LIST, 0, (LPARAM) &arrDevice);
 }
 
 bool MainTabView::CreateTabControl()

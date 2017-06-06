@@ -61,10 +61,31 @@ BOOL DdmLibWrapper::IsInit()
 void DdmLibWrapper::SetDdmCallback(DdmCallback* pCallback)
 {
 	m_pCallback = pCallback;
-	if (m_pAdbInstance != NULL)
+}
+
+void DdmLibWrapper::DeviceConnected(const IDevice* device)
+{
+	m_arrDevice.Add(device);
+
+	NotifyDeviceChange();
+}
+
+void DdmLibWrapper::DeviceDisconnected(const IDevice* device)
+{
+	m_arrDevice.Remove(device);
+
+	NotifyDeviceChange();
+}
+
+void DdmLibWrapper::DeviceChanged(const IDevice* device, int changeMask)
+{
+	int nIndex = m_arrDevice.Find(device);
+	if (nIndex >= 0)
 	{
-		m_pAdbInstance->AddDeviceChangeListener(m_pCallback);
+		m_arrDevice[nIndex] = device;
 	}
+
+	NotifyDeviceChange();
 }
 
 BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
@@ -74,8 +95,16 @@ BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
 
 	if (m_pCallback != NULL)
 	{
-		m_pAdbInstance->AddDeviceChangeListener(m_pCallback);
+		m_pAdbInstance->AddDeviceChangeListener(this);
 		m_pCallback->InitFinish();
 	}
 	return TRUE;
+}
+
+void DdmLibWrapper::NotifyDeviceChange()
+{
+	if (m_pCallback != NULL)
+	{
+		m_pCallback->OnDeviceUpdated(m_arrDevice);
+	}
 }

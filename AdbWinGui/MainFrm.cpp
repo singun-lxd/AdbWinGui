@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "MainFrm.h"
 #include "AboutDlg.h"
+#include "resource.h"
 
 #define MIN_WINDOW_WIDTH		640
 #define MIN_WINDOW_HEIGHT	480
@@ -110,18 +111,18 @@ LRESULT CMainFrame::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam,
 
 LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	const Device* pDevice = (const Device*) lParam;
-	switch (wParam)
+	const CSimpleArray<Device>* pArrDevice = (CSimpleArray<Device>*) lParam;
+	if (pArrDevice != NULL)
 	{
-	case PARAM_DEVICE_CONNECT:
-		OnDeviceConnnected(pDevice);
-		break;
-	case PARAM_DEVICE_DISCONNECT:
-		OnDeviceDisconnnected(pDevice);
-		break;
-	case PARAM_DEVICE_CHANGE:
-		OnDeviceChanged(pDevice);
-		break;
+		int nSize = pArrDevice->GetSize();
+		if (nSize == 0)
+		{
+			UpdateNoneDevice();
+		}
+		else
+		{
+			UpdateDeviceList(*pArrDevice);
+		}
 	}
 	return 0;
 }
@@ -178,16 +179,7 @@ void CMainFrame::InitRibbonUI()
 {
 	HBITMAP hbm = DefRibbonQueryImage(IDB_DEVICE);
 	m_bmpDevice.Attach(hbm);
-	m_glyDevices.SetItemImage(0, hbm);
-// 	m_glyDevices.SetItemImage(1, hbm);
-// 	m_glyDevices.SetItemImage(2, hbm);
-// 	m_glyDevices.SetItemImage(3, hbm);
-	m_glyDevices.SetItemText(0, _T("test_device"));
-// 	m_glyDevices.SetItemText(1, _T("fuck2"));
-// 	m_glyDevices.SetItemText(2, _T("fuck3"));
-// 	m_glyDevices.SetItemText(3, _T("fuck4"));
-	m_glyDevices.Resize(1);
-	m_glyDevices.InvalidateItems();
+	UpdateNoneDevice();
 }
 
 LRESULT CMainFrame::OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled)
@@ -195,17 +187,29 @@ LRESULT CMainFrame::OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uS
 	return 0;
 }
 
-void CMainFrame::OnDeviceConnnected(const Device* pDevice)
+void CMainFrame::UpdateNoneDevice()
 {
-
+	CString strError;
+	strError.LoadString(IDS_DEVICE_EMPTY);
+	m_glyDevices.Resize(1);
+	m_glyDevices.SetItemImage(0, m_bmpDevice);
+	m_glyDevices.SetItemText(0, strError);
+	m_glyDevices.InvalidateItems();
 }
 
-void CMainFrame::OnDeviceDisconnnected(const Device* pDevice)
+void CMainFrame::UpdateDeviceList(const CSimpleArray<Device>& arrDevice)
 {
+	int nSize = arrDevice.GetSize();
+	if (nSize > MAX_UI_DEVICE_LIST_COUNNT)
+	{
+		nSize = MAX_UI_DEVICE_LIST_COUNNT;
+	}
+	m_glyDevices.Resize(nSize);
+	for (int i = 0; i < nSize; i++)
+	{
+		m_glyDevices.SetItemImage(i, m_bmpDevice);
+		m_glyDevices.SetItemText(i, arrDevice[i].GetSerialNumber());
+	}
 
-}
-
-void CMainFrame::OnDeviceChanged(const Device* pDevice)
-{
-
+	m_glyDevices.InvalidateItems();
 }

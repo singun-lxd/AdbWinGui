@@ -38,8 +38,10 @@ private:
 	
 public:
 	Device();
+	Device(const IDevice* pDevice);
 	Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState);
 	bool Device::operator < (const Device &) const;
+	bool Device::operator == (const Device &) const;
 
 public:
 	virtual const TString GetName() const override;

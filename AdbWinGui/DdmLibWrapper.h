@@ -20,11 +20,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DDMLib\AndroidDebugBridge.h"
 
-class DdmLibWrapper
+class DdmLibWrapper : public AndroidDebugBridge::IDeviceChangeListener
 {
 public:
-	interface DdmCallback : public AndroidDebugBridge::IDeviceChangeListener
+	interface DdmCallback
 	{
+		virtual void OnDeviceUpdated(CSimpleArray<Device>& arrDevice) = 0;
 		virtual void InitFinish() = 0;
 	};
 
@@ -32,6 +33,7 @@ private:
 	AndroidDebugBridge* m_pAdbInstance;
 	std::future<BOOL> m_taskInit;
 	DdmCallback* m_pCallback;
+	CSimpleArray<Device> m_arrDevice;
 
 public:
 	DdmLibWrapper();
@@ -42,6 +44,11 @@ public:
 	BOOL IsInit();
 	void SetDdmCallback(DdmCallback* pCallback);
 
+	virtual void DeviceConnected(const IDevice* device) override;
+	virtual void DeviceDisconnected(const IDevice* device) override;
+	virtual void DeviceChanged(const IDevice* device, int changeMask) override;
+
 private:
 	BOOL InitAdb(const TString szLocation, BOOL bClienntSupport);
+	void NotifyDeviceChange();
 };
