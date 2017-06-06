@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <sstream>
 #include <vector>
+#include <set>
 #include <map>
 #include <winsock2.h>
 #include <WS2tcpip.h>

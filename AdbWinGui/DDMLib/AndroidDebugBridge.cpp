@@ -36,8 +36,8 @@ bool AndroidDebugBridge::s_bClientSupport = false;
 int AndroidDebugBridge::s_nAdbServerPort = 0;
 SocketAddress AndroidDebugBridge::s_addSocket;
 
-std::vector<AndroidDebugBridge::IDebugBridgeChangeListener*> AndroidDebugBridge::s_vecBridgeListeners;
-std::vector<AndroidDebugBridge::IDeviceChangeListener*> AndroidDebugBridge::s_vecDeviceListeners;
+std::set<AndroidDebugBridge::IDebugBridgeChangeListener*> AndroidDebugBridge::s_setBridgeListeners;
+std::set<AndroidDebugBridge::IDeviceChangeListener*> AndroidDebugBridge::s_setDeviceListeners;
 
 AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 {
@@ -177,25 +177,25 @@ AndroidDebugBridge& AndroidDebugBridge::GetBridge()
 void AndroidDebugBridge::AddDebugBridgeChangeListener(IDebugBridgeChangeListener* listener)
 {
 	std::unique_lock<std::mutex> lock(s_lockMember);
-
+	s_setBridgeListeners.insert(listener);
 }
 
 void AndroidDebugBridge::RemoveDebugBridgeChangeListener(IDebugBridgeChangeListener* listener)
 {
 	std::unique_lock<std::mutex> lock(s_lockMember);
-
+	s_setBridgeListeners.erase(listener);
 }
 
 void AndroidDebugBridge::AddDeviceChangeListener(IDeviceChangeListener* listener)
 {
 	std::unique_lock<std::mutex> lock(s_lockMember);
-
+	s_setDeviceListeners.insert(listener);
 }
 
 void AndroidDebugBridge::RemoveDeviceChangeListener(IDeviceChangeListener* listener)
 {
 	std::unique_lock<std::mutex> lock(s_lockMember);
-
+	s_setDeviceListeners.erase(listener);
 }
 
 bool AndroidDebugBridge::GetClientSupport()
@@ -325,6 +325,21 @@ void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 	std::tstringstream tss;
 	tss << _T(">>>>>>>>>>>>>>> Connected Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
 	::OutputDebugString(tss.str().c_str());
+
+	// because the listeners could remove themselves from the list while processing
+	// their event callback, we make a copy of the list and iterate on it instead of
+	// the main list.
+	// This mostly happens when the application quits.
+	s_lockMember.lock();
+	std::vector<IDeviceChangeListener*> vecListener;
+	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
+	s_lockMember.unlock();
+
+	// Notify the listeners
+	for (IDeviceChangeListener* listener : vecListener)
+	{
+		listener->DeviceConnected(device);
+	}
 }
 
 void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
@@ -332,6 +347,21 @@ void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 	std::tstringstream tss;
 	tss << _T(">>>>>>>>>>>>>>> Disconnect Device: ") << device->GetSerialNumber() << std::endl;
 	::OutputDebugString(tss.str().c_str());
+
+	// because the listeners could remove themselves from the list while processing
+	// their event callback, we make a copy of the list and iterate on it instead of
+	// the main list.
+	// This mostly happens when the application quits.
+	s_lockMember.lock();
+	std::vector<IDeviceChangeListener*> vecListener;
+	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
+	s_lockMember.unlock();
+
+	// Notify the listeners
+	for (IDeviceChangeListener* listener : vecListener)
+	{
+		listener->DeviceDisconnected(device);
+	}
 }
 
 void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
@@ -339,6 +369,21 @@ void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
 	std::tstringstream tss;
 	tss << _T(">>>>>>>>>>>>>>> Change Device: ") << device->GetSerialNumber() << _T(" -> Stste: ") << device->GetState() << std::endl;
 	::OutputDebugString(tss.str().c_str());
+
+	// because the listeners could remove themselves from the list while processing
+	// their event callback, we make a copy of the list and iterate on it instead of
+	// the main list.
+	// This mostly happens when the application quits.
+	s_lockMember.lock();
+	std::vector<IDeviceChangeListener*> vecListener;
+	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
+	s_lockMember.unlock();
+
+	// Notify the listeners
+	for (IDeviceChangeListener* listener : vecListener)
+	{
+		listener->DeviceChanged(device, changeMask);
+	}
 }
 
 bool AndroidDebugBridge::StartAdb()
