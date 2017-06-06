@@ -36,6 +36,9 @@ bool AndroidDebugBridge::s_bClientSupport = false;
 int AndroidDebugBridge::s_nAdbServerPort = 0;
 SocketAddress AndroidDebugBridge::s_addSocket;
 
+std::vector<AndroidDebugBridge::IDebugBridgeChangeListener*> AndroidDebugBridge::s_vecBridgeListeners;
+std::vector<AndroidDebugBridge::IDeviceChangeListener*> AndroidDebugBridge::s_vecDeviceListeners;
+
 AndroidDebugBridge::AndroidDebugBridge(const TString szLocation)
 {
 	m_bStarted = false;

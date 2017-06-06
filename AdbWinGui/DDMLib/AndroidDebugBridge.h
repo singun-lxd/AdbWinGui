@@ -58,6 +58,9 @@ private:
 	bool m_bStarted;
 	DeviceMonitor* m_pDeviceMonitor;
 
+	static std::vector<IDebugBridgeChangeListener*> s_vecBridgeListeners;
+	static std::vector<IDeviceChangeListener*> s_vecDeviceListeners;
+
 private:
 	AndroidDebugBridge(const TString szLocation);
 	AndroidDebugBridge();
