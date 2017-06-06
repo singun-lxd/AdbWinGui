@@ -42,17 +42,17 @@ public:
 	bool Device::operator < (const Device &) const;
 
 public:
-	virtual const TString GetName() const;
-	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut);
-	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const;
+	virtual const TString GetName() const override;
+	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut) override;
+	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const override;
 
-	virtual const TString GetSerialNumber() const;
-	virtual DeviceState GetState() const;
+	virtual const TString GetSerialNumber() const override;
+	virtual DeviceState GetState() const override;
 	void SetState(DeviceState state);
-	virtual bool IsOnline() const;
-	virtual bool IsEmulator() const;
-	virtual bool IsOffline() const;
-	virtual bool IsBootLoader() const;
+	virtual bool IsOnline() const override;
+	virtual bool IsEmulator() const override;
+	virtual bool IsOffline() const override;
+	virtual bool IsBootLoader() const override;
 
 	void Update(int changeMask);
 };
