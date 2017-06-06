@@ -49,7 +49,6 @@ public:
 	END_RIBBON_CONTROL_MAP()
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-
 	virtual BOOL OnIdle();
 
 	BEGIN_UPDATE_UI_MAP(CMainFrame)
@@ -61,12 +60,13 @@ public:
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
+		MESSAGE_HANDLER(MSG_RIBBON_DEVICE_LIST, OnDeviceUpdate)
 		COMMAND_ID_HANDLER(ID_APP_EXIT, OnFileExit)
 		COMMAND_ID_HANDLER(ID_FILE_NEW, OnFileNew)
 		COMMAND_ID_HANDLER(ID_VIEW_TOOLBAR, OnViewToolBar)
 		COMMAND_ID_HANDLER(ID_VIEW_STATUS_BAR, OnViewStatusBar)
 		COMMAND_ID_HANDLER(ID_VIEW_RIBBON, OnViewRibbon)
-		COMMAND_ID_HANDLER(ID_APP_ABOUT, OnAppAbout)
+		COMMAND_ID_HANDLER(ID_APP_ABOUT, OnAppAbout)		
 		RIBBON_GALLERY_CONTROL_HANDLER(ID_VIEW_DEVICES, OnRibbonGalleryCtrl)
 		REFLECT_NOTIFICATIONS()
 		CHAIN_MSG_MAP(CRibbonFrameWindowImpl<CMainFrame>)
@@ -80,6 +80,7 @@ public:
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnDeviceUpdate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 
 	LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
@@ -90,4 +91,9 @@ public:
 
 	void InitRibbonUI();
 	LRESULT OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled);
+
+private:
+	void OnDeviceConnnected(const Device* pDevice);
+	void OnDeviceDisconnnected(const Device* pDevice);
+	void OnDeviceChanged(const Device* pDevice);
 };

@@ -108,6 +108,24 @@ LRESULT CMainFrame::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam,
 	return 0;
 }
 
+LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	const Device* pDevice = (const Device*) lParam;
+	switch (wParam)
+	{
+	case PARAM_DEVICE_CONNECT:
+		OnDeviceConnnected(pDevice);
+		break;
+	case PARAM_DEVICE_DISCONNECT:
+		OnDeviceDisconnnected(pDevice);
+		break;
+	case PARAM_DEVICE_CHANGE:
+		OnDeviceChanged(pDevice);
+		break;
+	}
+	return 0;
+}
+
 LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
 	PostMessage(WM_CLOSE);
@@ -175,4 +193,19 @@ void CMainFrame::InitRibbonUI()
 LRESULT CMainFrame::OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled)
 {
 	return 0;
+}
+
+void CMainFrame::OnDeviceConnnected(const Device* pDevice)
+{
+
+}
+
+void CMainFrame::OnDeviceDisconnnected(const Device* pDevice)
+{
+
+}
+
+void CMainFrame::OnDeviceChanged(const Device* pDevice)
+{
+
 }
