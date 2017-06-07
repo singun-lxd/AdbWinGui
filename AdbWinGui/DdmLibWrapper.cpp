@@ -20,18 +20,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DdmLibWrapper.h"
 
 #ifdef _WIN64
-#ifdef _DEBUG
-#define DDMLIB_PATH		"../x64/Debug/DDMLib.lib"
-#else
-#define DDMLIB_PATH		"../x64/Release/DDMLib.lib"
-#endif	//_WIN64
-#else	// WIN32
-#ifdef _DEBUG
-#define DDMLIB_PATH		"../Debug/DDMLib.lib"
-#else
-#define DDMLIB_PATH		"../Release/DDMLib.lib"
+#	ifdef _DEBUG
+#	define DDMLIB_PATH		"../x64/Debug/DDMLib.lib"
+#	else
+#	define DDMLIB_PATH		"../x64/Release/DDMLib.lib"
+#	endif
+#else	// _WIN32
+#	ifdef _DEBUG
+#	define DDMLIB_PATH		"../Debug/DDMLib.lib"
+#	else
+#	define DDMLIB_PATH		"../Release/DDMLib.lib"
+#	endif
 #endif
-#endif	// WIN32
 
 #pragma comment(lib, DDMLIB_PATH)
 

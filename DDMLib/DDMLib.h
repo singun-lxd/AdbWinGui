@@ -22,9 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DDMLib/AndroidDebugBridge.h"
 
 #if defined(DDMLIBRARY_EXPORT)
-#   define DDMLIBAPI   __declspec(dllexport)
+#define DDMLIBAPI   __declspec(dllexport)
 #else
-#   define DDMLIBAPI   __declspec(dllimport)
+#define DDMLIBAPI   __declspec(dllimport)
 #endif
 
 interface IDDMLibEntry
