@@ -149,7 +149,7 @@ bool AdbHelper::Write(SocketClient* client, const char* data, int length, int ti
 	int numWaits = 0;
 	if (length <= 0)
 	{
-		length = strlen(data);
+		length = (int) strlen(data);
 	}
 
 	while (readCount < length)

@@ -18,6 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#define _HAS_EXCEPTIONS		0	// disable stl exceptions
+
 #include <string>
 #include <sstream>
 #include <vector>
@@ -52,8 +54,4 @@ namespace std
 #endif
 
 }
-
-#ifndef _countof
-	#define _countof(_Array) (sizeof(_Array) / sizeof(_Array[0]))
-#endif
 

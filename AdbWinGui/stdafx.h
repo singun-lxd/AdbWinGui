@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define STRICT
 #endif
 
+#define _HAS_EXCEPTIONS		0	// disable stl exceptions
+
 #include "targetver.h"
 
 #define _WTL_NO_CSTRING

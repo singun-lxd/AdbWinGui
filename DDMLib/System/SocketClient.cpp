@@ -94,7 +94,7 @@ INT SocketClient::Write(const CHAR* cData, INT nLen)
 {
 	if (nLen <= 0)
 	{
-		nLen = strlen(cData);
+		nLen = (INT) strlen(cData);
 	}
 	int nRet = send(m_sockClient, cData, nLen, 0);
 	if (nRet == SOCKET_ERROR)
