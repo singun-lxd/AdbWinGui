@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "stdafx.h"
-#include "AndroidDebugBridge.h"
+#include "DDMLib/AndroidDebugBridge.h"
 
 #if defined(DDMLIBRARY_EXPORT)
 #   define DDMLIBAPI   __declspec(dllexport)

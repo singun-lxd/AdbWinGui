@@ -16,11 +16,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
-#include <thread>
 #include "AdbHelper.h"
+#include <thread>
 #include "DdmPreferences.h"
-#include "System\SocketCore.h"
+#include "../System/SocketCore.h"
 
 #define WAIT_TIME		5 // spin-wait sleep, in ms
 

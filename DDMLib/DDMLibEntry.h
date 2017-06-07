@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "DDMLib.h"
-#include "AndroidDebugBridge.h"
+#include "DDMLib/AndroidDebugBridge.h"
 
 class DDMLibEntry : public IDDMLibEntry
 {

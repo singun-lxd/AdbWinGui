@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AndroidDebugBridge.h"
 #include "IDevice.h"
 #include "Device.h"
-#include "System/SocketClient.h"
+#include "../System/SocketClient.h"
 
 // define class
 class AndroidDebugBridge;

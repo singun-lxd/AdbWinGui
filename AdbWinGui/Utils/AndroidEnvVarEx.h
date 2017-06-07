@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../../DDMLib/AndroidEnvVar.h"
+#include "../../DDMLib/DDMLib/AndroidEnvVar.h"
 
 #define ANDROID_ENV			_T("ANDROID_HOME")
 #define PATH_ENV				_T("PATH")

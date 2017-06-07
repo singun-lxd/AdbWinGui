@@ -22,8 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DeviceMonnitor.h"
 #include "AdbVersion.h"
 #include "IDevice.h"
-#include "System/SocketAddress.h"
-#include "System/Process.h"
+#include "../System/SocketAddress.h"
+#include "../System/Process.h"
 
 // define class
 class DeviceMonitor;

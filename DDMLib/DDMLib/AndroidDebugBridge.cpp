@@ -16,13 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
 #include "AndroidDebugBridge.h"
 #include "StringUtils.h"
 #include "AndroidEnvVar.h"
-#include "System/Process.h"
-#include "System/StreamReader.h"
 #include "DdmPreferences.h"
+#include "../System/Process.h"
+#include "../System/StreamReader.h"
 
 #define MIN_ADB_VERSION    _T("1.0.20")
 #define DEFAULT_ADB_HOST   _T("127.0.0.1")

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "CommonDefine.h"
-#include "System\SocketClient.h"
+#include "../System/SocketClient.h"
 
 class AdbHelper
 {

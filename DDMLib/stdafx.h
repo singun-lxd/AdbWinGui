@@ -27,6 +27,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define WIN32_LEAN_AND_MEAN
 
-#include "CommonDefine.h"
+#include "DDMLib/CommonDefine.h"
 
 #define DDMLIBRARY_EXPORT

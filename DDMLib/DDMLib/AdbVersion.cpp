@@ -16,9 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
-#include <regex>
 #include "AdbVersion.h"
+#include <regex>
 
 #define ADB_VERSION_PATTERN	_T("^.*(\\d+)\\.(\\d+)\\.(\\d+).*")
 AdbVersion* const AdbVersion::UNKNOWN = new AdbVersion(-1, -1, -1);

@@ -16,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "stdafx.h"
 #include "IDevice.h"
 
 const TString const IDevice::s_arrDevState[STATE_COUT] = {

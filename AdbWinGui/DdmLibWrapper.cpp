@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #else
 #define DDMLIB_PATH		"../x64/Release/DDMLib.lib"
 #endif	//_WIN64
-#elif	// WIN32
+#else	// WIN32
 #ifdef _DEBUG
 #define DDMLIB_PATH		"../Debug/DDMLib.lib"
 #else
