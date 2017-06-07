@@ -36,21 +36,32 @@ long Device::GetInstallTimeOut()
 	return timeOut;
 }
 
-Device::Device() : m_pMonitor(NULL)
+Device::Device() : m_pMonitor(NULL), m_pSocketClient(NULL)
 {
 }
 
 Device::Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState) :
 	m_pMonitor(monitor),
 	m_strSerialNumber(serialNumber),
-	m_stateDev(deviceState)
+	m_stateDev(deviceState),
+	m_pSocketClient(NULL)
 {
 }
 
-Device::Device(const IDevice* pDevice) : m_pMonitor(NULL)
+Device::Device(const IDevice* pDevice) : m_pMonitor(NULL), m_pSocketClient(NULL)
 {
 	m_strSerialNumber = pDevice->GetSerialNumber();
 	m_stateDev = pDevice->GetState();
+}
+
+Device::~Device()
+{
+	// need to free socket client
+	if (m_pSocketClient != NULL)
+	{
+		delete m_pSocketClient;
+		m_pSocketClient = NULL;
+	}
 }
 
 bool Device::operator < (const Device& r) const
@@ -115,6 +126,16 @@ bool Device::IsOffline() const
 bool Device::IsBootLoader() const
 {
 	return m_stateDev == BOOTLOADER;
+}
+
+void Device::SetClientMonitoringSocket(SocketClient* socketClient)
+{
+	m_pSocketClient = socketClient;
+}
+
+SocketClient* Device::GetClientMonitoringSocket()
+{
+	return m_pSocketClient;
 }
 
 void Device::Update(int changeMask)

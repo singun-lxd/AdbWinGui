@@ -124,6 +124,8 @@ public:
 
 private:
 	static void QueryAvdName(const Device& device);
+	bool StartMonitoringDevice(Device& device);
+	static bool SendDeviceMonitoringRequest(SocketClient* socket, const Device& device);
 
 public:
 	static SocketClient* OpenAdbConnection();

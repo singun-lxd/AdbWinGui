@@ -18,9 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../System/SysDef.h"
+#include "CommonDefine.h"
 #include "IDevice.h"
 #include "DeviceMonnitor.h"
+#include "../System/SocketClient.h"
 
 // define class
 class DeviceMonitor;
@@ -35,11 +36,13 @@ private:
 	const DeviceMonitor* m_pMonitor;
 	std::tstring m_strSerialNumber;
 	DeviceState m_stateDev = UNKNOWN;
+	SocketClient* m_pSocketClient;
 	
 public:
 	Device();
 	Device(const IDevice* pDevice);
 	Device(DeviceMonitor* monitor, const TString serialNumber, DeviceState deviceState);
+	~Device();
 	bool Device::operator < (const Device &) const;
 	bool Device::operator == (const Device &) const;
 
@@ -56,5 +59,7 @@ public:
 	virtual bool IsOffline() const override;
 	virtual bool IsBootLoader() const override;
 
+	void SetClientMonitoringSocket(SocketClient* socketClient);
+	SocketClient* GetClientMonitoringSocket();
 	void Update(int changeMask);
 };

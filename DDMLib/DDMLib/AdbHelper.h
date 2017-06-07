@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 #include "../System/SocketClient.h"
+#include "IDevice.h"
 
 class AdbHelper
 {
@@ -40,6 +41,7 @@ public:
 	static bool Read(SocketClient* client, char* data, int length);
 	static bool Read(SocketClient* client, char* data, int length, int timeout);
 	static bool Write(SocketClient* client, const char* data, int length = -1);
-	static bool Write(SocketClient* chan, const char* data, int length, int timeout);
+	static bool Write(SocketClient* client, const char* data, int length, int timeout);
 	static bool IsOkay(char* reply);
+	static bool SetDevice(SocketClient* client, const IDevice* device);
 };

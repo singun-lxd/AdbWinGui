@@ -185,3 +185,32 @@ bool AdbHelper::IsOkay(char* reply)
 	return reply[0] == 'O' && reply[1] == 'K'
 		&& reply[2] == 'A' && reply[3] == 'Y';
 }
+
+bool AdbHelper::SetDevice(SocketClient* client, const IDevice* device)
+{
+	// if the device is not -1, then we first tell adb we're looking to talk
+	// to a specific device
+	if (device != NULL)
+	{
+		std::ostringstream oss;
+		oss << "host:transport:" << device->GetSerialNumber();
+		std::unique_ptr<const char[]> device_query(FormAdbRequest(oss.str().c_str()));
+
+		bool bRet = Write(client, device_query.get());
+		if (bRet)
+		{
+			AdbResponse* resp = ReadAdbResponse(client, false /* readDiagString */);
+			if (resp == NULL || !resp->okay)
+			{
+				// request was refused by adb!
+				bRet = false;
+			}
+			if (resp != NULL)
+			{
+				delete resp;
+			}
+			return bRet;
+		}
+	}
+	return false;
+}

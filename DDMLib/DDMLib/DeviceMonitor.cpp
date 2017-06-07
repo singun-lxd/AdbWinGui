@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AdbHelper.h"
 
 #define ADB_TRACK_DEVICES_COMMAND	"host:track-devices"
+#define ADB_TRACK_JDWP_COMMAND		"track-jdwp"
 
 DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 {
@@ -113,15 +114,15 @@ void DeviceMonitor::UpdateDevices(const DeviceVector& vecNew)
 		}
 	}
 
-
 	if (AndroidDebugBridge::GetClientSupport())
 	{
-// 		for (Device* device : newlyOnline)
-//		{
-// 			if (!StartMonitoringDevice(*device))
-// 			{
-// 			}
-// 		}
+		for (Device* device : newlyOnline)
+		{
+			if (!StartMonitoringDevice(*device))
+			{
+				// Failed to start monitoring
+			}
+		}
 	}
 
 	for (const Device* pDevice : newlyOnline)
@@ -175,6 +176,62 @@ void DeviceMonitor::QueryAvdName(const Device& device)
 	// 		device.setAvdName(console.getAvdName());
 	// 		console.close();
 	// 	}
+}
+
+bool DeviceMonitor::StartMonitoringDevice(Device& device)
+{
+	SocketClient* pSocketClient = OpenAdbConnection();
+
+	if (pSocketClient != NULL)
+	{
+		bool result = SendDeviceMonitoringRequest(pSocketClient, device);
+		if (result)
+		{
+// 			if (mSelector == null)
+// 			{
+// 				startDeviceMonitorThread();
+// 			}
+
+ 			device.SetClientMonitoringSocket(pSocketClient);
+ 
+//			pSocketClient->ConfigureBlocking(false);
+// 
+// 			mChannelsToRegister.put(Pair.of(socketChannel, device));
+// 			mSelector.wakeup();
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool DeviceMonitor::SendDeviceMonitoringRequest(SocketClient* socket, const Device& device)
+{
+	bool bRet = AdbHelper::SetDevice(socket, &device);
+	if (!bRet)
+	{
+		return false;
+	}
+
+	std::unique_ptr<const char[]> request(AdbHelper::FormAdbRequest(ADB_TRACK_JDWP_COMMAND));
+	bRet = AdbHelper::Write(socket, request.get());
+	if (!bRet)
+	{
+		return false;
+	}
+	AdbHelper::AdbResponse* resp = AdbHelper::ReadAdbResponse(socket, false);
+	if (resp == NULL || !resp->okay)
+	{
+		// request was refused by adb!
+		bRet = false;
+	}
+	if (resp != NULL)
+	{
+		delete resp;
+	}
+
+	return bRet;
 }
 
 SocketClient* DeviceMonitor::OpenAdbConnection()
