@@ -92,10 +92,10 @@ BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
 {
 	AndroidDebugBridge::Init(bClientSupport ? true : false);
 	m_pAdbInstance = &AndroidDebugBridge::CreateBridge(szLocation);
+	m_pAdbInstance->AddDeviceChangeListener(this);
 
 	if (m_pCallback != NULL)
 	{
-		m_pAdbInstance->AddDeviceChangeListener(this);
 		m_pCallback->InitFinish();
 	}
 	return TRUE;

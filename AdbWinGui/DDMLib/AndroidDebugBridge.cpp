@@ -142,6 +142,23 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge(const TString szLocation, b
 	}
 	s_pThis = new AndroidDebugBridge(szLocation);
 	s_pThis->Start();
+
+	// because the listeners could remove themselves from the list while processing
+	// their event callback, we make a copy of the list and iterate on it instead of
+	// the main list.
+	// This mostly happens when the application quits.
+	if (s_setBridgeListeners.size() > 0)
+	{
+		std::vector<IDebugBridgeChangeListener*> vecListener;
+		vecListener.assign(s_setBridgeListeners.begin(), s_setBridgeListeners.end());
+
+		// Notify the listeners
+		for (IDebugBridgeChangeListener* listener : vecListener)
+		{
+			listener->BridgeChanged(s_pThis);
+		}
+	}
+
 	return *s_pThis;
 }
 
@@ -155,6 +172,23 @@ AndroidDebugBridge& AndroidDebugBridge::CreateBridge()
 
 	s_pThis = new AndroidDebugBridge();
 	s_pThis->Start();
+
+	// because the listeners could remove themselves from the list while processing
+	// their event callback, we make a copy of the list and iterate on it instead of
+	// the main list.
+	// This mostly happens when the application quits.
+	if (s_setBridgeListeners.size() > 0)
+	{
+		std::vector<IDebugBridgeChangeListener*> vecListener;
+		vecListener.assign(s_setBridgeListeners.begin(), s_setBridgeListeners.end());
+
+		// Notify the listeners
+		for (IDebugBridgeChangeListener* listener : vecListener)
+		{
+			listener->BridgeChanged(s_pThis);
+		}
+	}
+
 	return *s_pThis;
 }
 
@@ -321,11 +355,16 @@ bool AndroidDebugBridge::Restart()
 
 void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 {
+	s_lockMember.lock();
+	if (s_setDeviceListeners.size() == 0)
+	{
+		s_lockMember.unlock();
+		return;
+	}
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.
 	// This mostly happens when the application quits.
-	s_lockMember.lock();
 	std::vector<IDeviceChangeListener*> vecListener;
 	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
 	s_lockMember.unlock();
@@ -339,11 +378,16 @@ void AndroidDebugBridge::DeviceConnected(const IDevice* device)
 
 void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 {
+	s_lockMember.lock();
+	if (s_setDeviceListeners.size() == 0)
+	{
+		s_lockMember.unlock();
+		return;
+	}
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.
 	// This mostly happens when the application quits.
-	s_lockMember.lock();
 	std::vector<IDeviceChangeListener*> vecListener;
 	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
 	s_lockMember.unlock();
@@ -357,11 +401,16 @@ void AndroidDebugBridge::DeviceDisconnected(const IDevice* device)
 
 void AndroidDebugBridge::DeviceChanged(const IDevice* device, int changeMask)
 {
+	s_lockMember.lock();
+	if (s_setDeviceListeners.size() == 0)
+	{
+		s_lockMember.unlock();
+		return;
+	}
 	// because the listeners could remove themselves from the list while processing
 	// their event callback, we make a copy of the list and iterate on it instead of
 	// the main list.
 	// This mostly happens when the application quits.
-	s_lockMember.lock();
 	std::vector<IDeviceChangeListener*> vecListener;
 	vecListener.assign(s_setDeviceListeners.begin(), s_setDeviceListeners.end());
 	s_lockMember.unlock();
