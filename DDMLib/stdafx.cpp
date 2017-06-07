@@ -16,28 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+// stdafx.cpp : source file that includes just the standard includes
+//	DDMLib.pch will be the pre-compiled header
+//	stdafx.obj will contain the pre-compiled type information
 
-#include "../../DDMLib/AndroidEnvVar.h"
-
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
-{
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
-
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
-};
+#include "stdafx.h"

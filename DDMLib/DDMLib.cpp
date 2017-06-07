@@ -16,28 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+// DDMLib.cpp : Define DLL Application exported functions
+//
 
-#include "../../DDMLib/AndroidEnvVar.h"
+#include "stdafx.h"
+#include "DDMLib.h"
+#include "DDMLibEntry.h"
 
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
+DDMLIBAPI IDDMLibEntry* APIENTRY GetDDMLibEntry(LPCTSTR lpszAdbPath, BOOL bClientSupport)
 {
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
-
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
-};
+	return new DDMLibEntry(lpszAdbPath, bClientSupport);
+}

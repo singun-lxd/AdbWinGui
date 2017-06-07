@@ -16,28 +16,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// stdafx.h : include file for standard system include files,
+//  or project specific include files that are used frequently, but
+//  are changed infrequently
+//
+
 #pragma once
 
-#include "../../DDMLib/AndroidEnvVar.h"
+#include "targetver.h"
 
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
+#define WIN32_LEAN_AND_MEAN
 
-class AndroidEnvVarEx : public AndroidEnvVar
-{
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
+#include "CommonDefine.h"
 
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
-};
+#define DDMLIBRARY_EXPORT

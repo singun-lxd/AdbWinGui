@@ -16,28 +16,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+// dllmain.cpp : Define DLL application entry point. 
+#include "stdafx.h"
 
-#include "../../DDMLib/AndroidEnvVar.h"
-
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
+BOOL APIENTRY DllMain( HMODULE hModule,
+                       DWORD  ul_reason_for_call,
+                       LPVOID lpReserved
+					 )
 {
-public:
-	LPCTSTR GetAndroidHome()
+	switch (ul_reason_for_call)
 	{
-		return GetString(ANDROID_ENV);
+	case DLL_PROCESS_ATTACH:
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
 	}
+	return TRUE;
+}
 
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
-};

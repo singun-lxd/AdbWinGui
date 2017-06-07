@@ -111,7 +111,7 @@ LRESULT CMainFrame::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam,
 
 LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	const CSimpleArray<Device>* pArrDevice = (CSimpleArray<Device>*) lParam;
+	const CSimpleArray<IDevice*>* pArrDevice = (CSimpleArray<IDevice*>*) lParam;
 	if (pArrDevice != NULL)
 	{
 		int nSize = pArrDevice->GetSize();
@@ -197,7 +197,7 @@ void CMainFrame::UpdateNoneDevice()
 	m_glyDevices.InvalidateItems();
 }
 
-void CMainFrame::UpdateDeviceList(const CSimpleArray<Device>& arrDevice)
+void CMainFrame::UpdateDeviceList(const CSimpleArray<IDevice*>& arrDevice)
 {
 	int nSize = arrDevice.GetSize();
 	if (nSize > MAX_UI_DEVICE_LIST_COUNNT)
@@ -208,7 +208,7 @@ void CMainFrame::UpdateDeviceList(const CSimpleArray<Device>& arrDevice)
 	for (int i = 0; i < nSize; i++)
 	{
 		m_glyDevices.SetItemImage(i, m_bmpDevice);
-		m_glyDevices.SetItemText(i, arrDevice[i].GetSerialNumber());
+		m_glyDevices.SetItemText(i, arrDevice[i]->GetSerialNumber());
 	}
 
 	m_glyDevices.InvalidateItems();

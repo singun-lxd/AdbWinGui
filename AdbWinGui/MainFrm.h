@@ -96,5 +96,5 @@ public:
 
 private:
 	void UpdateNoneDevice();
-	void UpdateDeviceList(const CSimpleArray<Device>& arrDevice);
+	void UpdateDeviceList(const CSimpleArray<IDevice*>& arrDevice);
 };

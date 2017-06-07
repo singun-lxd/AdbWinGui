@@ -18,26 +18,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../../DDMLib/AndroidEnvVar.h"
+#include "stdafx.h"
+#include "AndroidDebugBridge.h"
 
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
+#if defined(DDMLIBRARY_EXPORT)
+#   define DDMLIBAPI   __declspec(dllexport)
+#else
+#   define DDMLIBAPI   __declspec(dllimport)
+#endif
 
-class AndroidEnvVarEx : public AndroidEnvVar
+interface IDDMLibEntry
 {
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
-
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
+	virtual void SetDeviceChangeListener(AndroidDebugBridge::IDeviceChangeListener* pListener) = 0;
+	virtual void Release() = 0;
 };
+
+extern "C" DDMLIBAPI IDDMLibEntry* APIENTRY GetDDMLibEntry(LPCTSTR lpszAdbPath, BOOL bClientSupport);

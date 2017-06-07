@@ -19,8 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "stdafx.h"
 #include "DdmLibWrapper.h"
 
+#ifdef _DEBUG
+#pragma comment(lib, "../Debug/DDMLib.lib")
+#else
+#pragma comment(lib, "../Release/DDMLib.lib")
+#endif
+
 DdmLibWrapper::DdmLibWrapper()
 {
+	m_hModule = NULL;
 	m_pAdbInstance = NULL;
 	m_pCallback = NULL;
 }
@@ -29,6 +36,12 @@ DdmLibWrapper::~DdmLibWrapper()
 {
 	m_pCallback = NULL;
 	Release();
+
+	if (m_hModule != NULL)
+	{
+		::FreeLibrary(m_hModule);
+		m_hModule = NULL;
+	}
 }
 
 void DdmLibWrapper::Init(const TString szLocation, BOOL bClienntSupport)
@@ -48,7 +61,7 @@ void DdmLibWrapper::Release()
 	m_taskInit.get();
 	if (m_pAdbInstance != NULL)
 	{
-		m_pAdbInstance->Terminate();
+		m_pAdbInstance->Release();
 		m_pAdbInstance = NULL;
 	}
 }
@@ -65,24 +78,24 @@ void DdmLibWrapper::SetDdmCallback(DdmCallback* pCallback)
 
 void DdmLibWrapper::DeviceConnected(const IDevice* device)
 {
-	m_arrDevice.Add(device);
+	m_arrDevice.Add(const_cast<IDevice*>(device));
 
 	NotifyDeviceChange();
 }
 
 void DdmLibWrapper::DeviceDisconnected(const IDevice* device)
 {
-	m_arrDevice.Remove(device);
+	m_arrDevice.Remove(const_cast<IDevice*>(device));
 
 	NotifyDeviceChange();
 }
 
 void DdmLibWrapper::DeviceChanged(const IDevice* device, int changeMask)
 {
-	int nIndex = m_arrDevice.Find(device);
+	int nIndex = m_arrDevice.Find(const_cast<IDevice*>(device));
 	if (nIndex >= 0)
 	{
-		m_arrDevice[nIndex] = device;
+		m_arrDevice[nIndex] = const_cast<IDevice*>(device);
 	}
 
 	NotifyDeviceChange();
@@ -90,15 +103,23 @@ void DdmLibWrapper::DeviceChanged(const IDevice* device, int changeMask)
 
 BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
 {
-	AndroidDebugBridge::Init(bClientSupport ? true : false);
-	m_pAdbInstance = &AndroidDebugBridge::CreateBridge(szLocation);
-	m_pAdbInstance->AddDeviceChangeListener(this);
+	TCHAR szFileName[MAX_PATH] = { 0 };
+	::GetModuleFileName(NULL, szFileName, MAX_PATH);
+	::PathRemoveFileSpec(szFileName);
+	::PathAppend(szFileName, _T("DDMLib.dll"));
+	m_hModule = ::LoadLibrary(szFileName);
 
-	if (m_pCallback != NULL)
+	if (m_hModule != NULL)
 	{
-		m_pCallback->InitFinish();
+		m_pAdbInstance = ::GetDDMLibEntry(szLocation, bClientSupport ? true : false);
+		m_pAdbInstance->SetDeviceChangeListener(this);
+
+		if (m_pCallback != NULL)
+		{
+			m_pCallback->InitFinish();
+		}
 	}
-	return TRUE;
+	return FALSE;
 }
 
 void DdmLibWrapper::NotifyDeviceChange()

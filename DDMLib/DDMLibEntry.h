@@ -18,26 +18,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "../../DDMLib/AndroidEnvVar.h"
+#include "DDMLib.h"
+#include "AndroidDebugBridge.h"
 
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
+class DDMLibEntry : public IDDMLibEntry
 {
+private:
+	AndroidDebugBridge* m_pBridge;
+
 public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
+	DDMLibEntry(LPCTSTR lpszAdbPath, BOOL bClientSupport);
+	~DDMLibEntry();
 
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
+public:
+	virtual void SetDeviceChangeListener(AndroidDebugBridge::IDeviceChangeListener* pListener) override;
+	virtual void Release() override;
 };

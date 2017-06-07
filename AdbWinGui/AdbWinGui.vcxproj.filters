@@ -25,12 +25,6 @@
     <Filter Include="Dialogs">
       <UniqueIdentifier>{8df0aabf-e29e-40ac-b693-5bf40f4d1936}</UniqueIdentifier>
     </Filter>
-    <Filter Include="DDMLib">
-      <UniqueIdentifier>{01cebd88-aedd-44b3-8032-ced923c058bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DDMLib\System">
-      <UniqueIdentifier>{074f9e60-23ad-4a1d-a53e-d7ddd5b20e5a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -65,33 +59,6 @@
     </ClCompile>
     <ClCompile Include="AdbPreparingDlg.cpp">
       <Filter>Dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\AndroidDebugBridge.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\DeviceMonitor.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\AdbVersion.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\IDevice.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\System\SocketClient.cpp">
-      <Filter>DDMLib\System</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\AdbHelper.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\DdmPreferences.cpp">
-      <Filter>DDMLib</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\System\SocketCore.cpp">
-      <Filter>DDMLib\System</Filter>
-    </ClCompile>
-    <ClCompile Include="DDMLib\Device.cpp">
-      <Filter>DDMLib</Filter>
     </ClCompile>
     <ClCompile Include="DdmLibWrapper.cpp">
       <Filter>Source Files</Filter>
@@ -152,68 +119,8 @@
     <ClInclude Include="AdbPreparingDlg.h">
       <Filter>Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="DDMLib\AndroidDebugBridge.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\DeviceMonnitor.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\CommonDefine.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\AdbVersion.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\StringUtils.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\FileReadWrite.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\Process.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\StreamReader.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\IShellEnabledDevice.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\IShellOutputReceiver.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\IDevice.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\SocketAddress.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\ConvertUtils.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\SocketClient.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\SysDef.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\AdbHelper.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\DdmPreferences.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\System\SocketCore.h">
-      <Filter>DDMLib\System</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\AndroidEnvVarEx.h">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\Device.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DDMLib\AndroidEnvVar.h">
-      <Filter>DDMLib</Filter>
     </ClInclude>
     <ClInclude Include="DdmLibWrapper.h">
       <Filter>Header Files</Filter>

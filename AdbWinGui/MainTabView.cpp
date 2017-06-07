@@ -103,7 +103,7 @@ void MainTabView::InitFinish()
 	SendMessage(MSG_MAIN_ADB_FINISH);
 }
 
-void MainTabView::OnDeviceUpdated(const CSimpleArray<Device>& arrDevice)
+void MainTabView::OnDeviceUpdated(const CSimpleArray<IDevice*>& arrDevice)
 {
 	GetParent().SendMessage(MSG_RIBBON_DEVICE_LIST, 0, (LPARAM) &arrDevice);
 }

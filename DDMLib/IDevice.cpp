@@ -16,28 +16,26 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "stdafx.h"
+#include "IDevice.h"
 
-#include "../../DDMLib/AndroidEnvVar.h"
-
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
-{
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
-
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
-
-	LPTSTR GetPathValue()
-	{
-		return GetResultString(PATH_ENV);
-	}
+const TString const IDevice::s_arrDevState[STATE_COUT] = {
+	_T("bootloader"),
+	_T("offline"),
+	_T("device"),
+	_T("recovery"),
+	_T("unauthorized"),
 };
+
+IDevice::DeviceState IDevice::GetState(const TString state)
+{
+	for (int i = 0; i < STATE_COUT; i++)
+	{
+		if (_tcscmp(s_arrDevState[i], state) == 0)
+		{
+			return static_cast<DeviceState>(i);
+		}
+	}
+	return UNKNOWN;
+}
+

@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <windows.h>
 #include <wtypes.h>
 #include <tchar.h>
+#include <combaseapi.h>
 
 namespace std
 {

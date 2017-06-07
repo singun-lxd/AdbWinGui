@@ -16,28 +16,31 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "stdafx.h"
+#include "DDMLibEntry.h"
 
-#include "../../DDMLib/AndroidEnvVar.h"
-
-#define ANDROID_ENV			_T("ANDROID_HOME")
-#define PATH_ENV				_T("PATH")
-
-class AndroidEnvVarEx : public AndroidEnvVar
+DDMLibEntry::DDMLibEntry(LPCTSTR lpszAdbPath, BOOL bClientSupport)
 {
-public:
-	LPCTSTR GetAndroidHome()
-	{
-		return GetString(ANDROID_ENV);
-	}
+	AndroidDebugBridge::Init(bClientSupport);
+	m_pBridge = &AndroidDebugBridge::CreateBridge(lpszAdbPath, true);
+}
 
-	BOOL SetAndroidHome(LPCTSTR lpszEnvValue)
-	{
-		return SetString(ANDROID_ENV, lpszEnvValue);
-	}
+DDMLibEntry::~DDMLibEntry()
+{
+	AndroidDebugBridge::Terminate();
+	m_pBridge = NULL;
+}
 
-	LPTSTR GetPathValue()
+void DDMLibEntry::SetDeviceChangeListener(AndroidDebugBridge::IDeviceChangeListener* pListener)
+{
+	if (m_pBridge != NULL)
 	{
-		return GetResultString(PATH_ENV);
+		m_pBridge->AddDeviceChangeListener(pListener);
 	}
-};
+}
+
+void DDMLibEntry::Release()
+{
+	delete this;
+}
+

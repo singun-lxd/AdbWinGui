@@ -16,25 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "IDevice.h"
+#pragma once
 
-const TString const IDevice::s_arrDevState[STATE_COUT] = {
-	_T("bootloader"),
-	_T("offline"),
-	_T("device"),
-	_T("recovery"),
-	_T("unauthorized"),
-};
+// Including SDKDDKVer.h defines the highest available Windows platform.
 
-IDevice::DeviceState IDevice::GetState(const TString state)
-{
-	for (int i = 0; i < STATE_COUT; i++)
-	{
-		if (_tcscmp(s_arrDevState[i], state) == 0)
-		{
-			return static_cast<DeviceState>(i);
-		}
-	}
-	return UNKNOWN;
-}
+// If you wish to build your application for a previous Windows platform, include WinSDKVer.h and
+// set the _WIN32_WINNT macro to the platform you wish to support before including SDKDDKVer.h.
 
+#include <SDKDDKVer.h>

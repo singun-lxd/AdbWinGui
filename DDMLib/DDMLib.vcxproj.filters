@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="DDMLib">
+      <UniqueIdentifier>{22eea02d-29a1-4892-8dcf-fffc3b933bd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{a3f6baeb-379b-4c4d-80ca-6df36af7d65f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AdbHelper.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AdbVersion.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidDebugBridge.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="AndroidEnvVar.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonDefine.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DdmPreferences.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceMonnitor.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="IDevice.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="IShellEnabledDevice.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="IShellOutputReceiver.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ConvertUtils.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\FileReadWrite.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Process.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SocketAddress.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SocketClient.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SocketCore.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StreamReader.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SysDef.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLibEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AdbHelper.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="AdbVersion.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="AndroidDebugBridge.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DdmPreferences.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceMonitor.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="IDevice.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="System\SocketClient.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="System\SocketCore.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLibEntry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -18,22 +18,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "DDMLib\AndroidDebugBridge.h"
+#include "../DDMLib/DDMLib.h"
 
 class DdmLibWrapper : public AndroidDebugBridge::IDeviceChangeListener
 {
 public:
 	interface DdmCallback
 	{
-		virtual void OnDeviceUpdated(const CSimpleArray<Device>& arrDevice) = 0;
+		virtual void OnDeviceUpdated(const CSimpleArray<IDevice*>& arrDevice) = 0;
 		virtual void InitFinish() = 0;
 	};
 
 private:
-	AndroidDebugBridge* m_pAdbInstance;
+	HMODULE m_hModule;
+	IDDMLibEntry* m_pAdbInstance;
 	std::future<BOOL> m_taskInit;
 	DdmCallback* m_pCallback;
-	CSimpleArray<Device> m_arrDevice;
+	CSimpleArray<IDevice*> m_arrDevice;
 
 public:
 	DdmLibWrapper();
