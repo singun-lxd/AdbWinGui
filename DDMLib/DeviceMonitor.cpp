@@ -30,6 +30,7 @@ DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 DeviceMonitor::~DeviceMonitor()
 {
 	m_pServer = NULL;
+	m_taskMonitor.get();
 	if (m_pDeviceListMonitorTask != NULL)
 	{
 		delete m_pDeviceListMonitorTask;
@@ -55,8 +56,9 @@ AndroidDebugBridge* DeviceMonitor::GetServer() const
 void DeviceMonitor::Start()
 {
 	m_pDeviceListMonitorTask = new DeviceListMonitorTask(m_pServer, new DeviceListUpdateListener(this));
-	std::thread tdMonitor(std::bind(&DeviceListMonitorTask::Run, m_pDeviceListMonitorTask));
-	tdMonitor.detach();
+	std::packaged_task<void()> ptMonitor(std::bind(&DeviceListMonitorTask::Run, m_pDeviceListMonitorTask));
+	m_taskMonitor = ptMonitor.get_future();
+	std::thread(std::move(ptMonitor)).detach();
 }
 
 void DeviceMonitor::Stop()
@@ -399,6 +401,7 @@ void DeviceMonitor::DeviceListMonitorTask::Stop()
 {
 	m_bQuit = true;
 
+	// wakeup the main loop thread by closing the main connection to adb.
 	if (m_pAdbConnection != NULL)
 	{
 		m_pAdbConnection->Close();

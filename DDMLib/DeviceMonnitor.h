@@ -102,6 +102,7 @@ private:
 private:
 	AndroidDebugBridge* m_pServer;
 	DeviceListMonitorTask* m_pDeviceListMonitorTask;
+	std::future<void> m_taskMonitor;
 	DeviceVector m_vecDevices;
 	mutable std::mutex m_lockDevices;
 
