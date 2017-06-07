@@ -24,11 +24,11 @@ AdbPreparingDlg::AdbPreparingDlg()
 {
 	SetWindowTitle(IDR_MAINFRAME);
 	SetMainInstructionText(IDS_ADB_PREPARING);
-	SetMainIcon(TD_INFORMATION_ICON);
+	//SetMainIcon(TD_INFORMATION_ICON);
 	SetCommonButtons(TDCBF_CANCEL_BUTTON);
 
 	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION |
-		TDF_SHOW_MARQUEE_PROGRESS_BAR);
+		TDF_SHOW_MARQUEE_PROGRESS_BAR | TDF_POSITION_RELATIVE_TO_WINDOW);
 }
 
 void AdbPreparingDlg::OnCreated()
