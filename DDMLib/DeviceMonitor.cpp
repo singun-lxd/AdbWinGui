@@ -332,6 +332,10 @@ void DeviceMonitor::DeviceListMonitorTask::HandleErrorInMonitorLoop(int errorCod
 
 void DeviceMonitor::DeviceListMonitorTask::ProcessIncomingDeviceData(int length)
 {
+	if (m_pAdbConnection == NULL)
+	{
+		return;
+	}
 	std::map<std::tstring, IDevice::DeviceState> result;
 	if (length > 0)
 	{
@@ -394,6 +398,11 @@ int DeviceMonitor::DeviceListMonitorTask::GetRestartAttemptCount() const
 void DeviceMonitor::DeviceListMonitorTask::Stop()
 {
 	m_bQuit = true;
+
+	if (m_pAdbConnection != NULL)
+	{
+		m_pAdbConnection->Close();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
