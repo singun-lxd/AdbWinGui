@@ -27,6 +27,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CHANGE_CLIENT_LIST	0x0002;
 #define CHANGE_BUILD_INFO	0x0004;
 
+#define PROP_BUILD_API_LEVEL		_T("ro.build.version.sdk")
+
 interface IDevice : public IShellEnabledDevice
 {
 public:
@@ -47,8 +49,17 @@ public:
 public:
 	virtual const TString GetSerialNumber() const = 0;
 	virtual DeviceState GetState() const = 0;
+	virtual const TString GetProperty(const TString name) const = 0;
 	virtual bool IsOnline() const = 0;
 	virtual bool IsEmulator() const = 0;
 	virtual bool IsOffline() const = 0;
 	virtual bool IsBootLoader() const = 0;
+
+	virtual int InstallPackage(const TString packageFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
+	virtual int InstallPackages(const TString apkFilePaths[], int apkCount, int timeOutInMs,
+		bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
+	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath) = 0;
+	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
+	virtual void RemoveRemotePackage(const TString remoteFilePath) = 0;
+	virtual int UninstallPackage(const TString packageName) = 0;
 };

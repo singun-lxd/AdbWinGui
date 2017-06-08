@@ -96,6 +96,18 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="System\Log.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\File.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\SyncService.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\MultiLineReceiver.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -135,6 +147,12 @@
       <Filter>DDMLib</Filter>
     </ClCompile>
     <ClCompile Include="DDMLib\IDevice.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="System\File.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\SyncService.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
   </ItemGroup>

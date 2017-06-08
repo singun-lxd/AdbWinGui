@@ -16,15 +16,31 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "SyncService.h"
 
-#include "CommonDefine.h"
+SyncService::NullSyncProgressMonitor* const SyncService::s_pNullSyncProgressMonitor = new NullSyncProgressMonitor();
 
-interface IShellOutputReceiver
+SyncService::SyncService(const SocketAddress& address, Device* device)
 {
-	virtual void AddOutput(char* pData, int offset, int length) = 0;
 
-	virtual void Flush() = 0;
+}
 
-	virtual bool IsCancelled() = 0;
-};
+bool SyncService::OpenSync()
+{
+	return false;
+}
+
+void SyncService::Close()
+{
+
+}
+
+SyncService::ISyncProgressMonitor* SyncService::GetNullProgressMonitor()
+{
+	return s_pNullSyncProgressMonitor;
+}
+
+void SyncService::PushFile(const TString local, const TString remote, ISyncProgressMonitor* monitor)
+{
+
+}

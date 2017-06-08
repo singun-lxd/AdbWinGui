@@ -18,13 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "CommonDefine.h"
+#include "SysDef.h"
 
-interface IShellOutputReceiver
+class File
 {
-	virtual void AddOutput(char* pData, int offset, int length) = 0;
-
-	virtual void Flush() = 0;
-
-	virtual bool IsCancelled() = 0;
+public:
+	static const TString GetName(LPCTSTR lpszPath);
 };

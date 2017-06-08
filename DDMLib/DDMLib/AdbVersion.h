@@ -20,15 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 
-class AdbVersion
+struct AdbVersion
 {
 public:
 	static AdbVersion* const UNKNOWN;
 
 public:
-	const int m_Major;
-	const int m_Minor;
-	const int m_Micro;
+	const int m_nMajor;
+	const int m_nMinor;
+	const int m_nMicro;
 
 private:
 	AdbVersion(int major, int minor, int micro);

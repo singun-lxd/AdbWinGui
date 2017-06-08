@@ -16,15 +16,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "File.h"
+#include <Shlwapi.h>
 
-#include "CommonDefine.h"
+#pragma comment(lib, "Shlwapi.lib")
 
-interface IShellOutputReceiver
+const TString File::GetName(LPCTSTR lpszPath)
 {
-	virtual void AddOutput(char* pData, int offset, int length) = 0;
-
-	virtual void Flush() = 0;
-
-	virtual bool IsCancelled() = 0;
-};
+	return ::PathFindFileName(lpszPath);
+}

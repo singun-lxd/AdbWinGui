@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DdmPreferences.h"
 #include "../System/Process.h"
 #include "../System/StreamReader.h"
+#include "../System/Log.h"
 
 #define MIN_ADB_VERSION    _T("1.0.20")
 #define DEFAULT_ADB_HOST   _T("127.0.0.1")
@@ -78,6 +79,11 @@ void AndroidDebugBridge::CheckAdbVersion()
 		// version check succeed
 		m_bVersionCheck = true;
 	}
+	else
+	{
+		LogEEx(_T("Required minimum version of adb: %s. Current version is %d.%d.%d"),
+			MIN_ADB_VERSION, pVersion->m_nMajor, pVersion->m_nMinor, pVersion->m_nMicro);
+	}
 	delete pVersion;
 	return;
 }
@@ -120,6 +126,10 @@ AdbVersion* AndroidDebugBridge::GetAdbVersion(const TString adb)
 	if (status == std::future_status::ready)
 	{
 		pRet = futureVer.get();
+	}
+	else
+	{
+		LogE(_T("Unable to obtain result of 'adb version'"));
 	}
 	return pRet;
 }
@@ -350,7 +360,36 @@ bool AndroidDebugBridge::Stop()
 
 bool AndroidDebugBridge::Restart()
 {
-	return true;
+	if (m_strAdbLocation.empty())
+	{
+		LogE(_T("Cannot restart adb when AndroidDebugBridge is created without the location of adb."));
+		return false;
+	}
+
+	if (s_nAdbServerPort == 0)
+	{
+		LogE(_T("ADB server port for restarting AndroidDebugBridge is not set."));
+		return false;
+	}
+
+	if (!m_bVersionCheck)
+	{
+		LogE(_T("Attempting to restart adb, but version check failed!"));
+		return false;
+	}
+
+	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
+	StopAdb();
+
+	bool restart = StartAdb();
+
+	if (restart && m_pDeviceMonitor == NULL)
+	{
+		m_pDeviceMonitor = new DeviceMonitor(this);
+		m_pDeviceMonitor->Start();
+	}
+
+	return restart;
 }
 
 void AndroidDebugBridge::DeviceConnected(const IDevice* device)
@@ -427,10 +466,12 @@ bool AndroidDebugBridge::StartAdb()
 	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
 	if (m_strAdbLocation.empty())
 	{
+		LogE(_T("Cannot start adb when AndroidDebugBridge is created without the location of adb."));
 		return false;
 	}
 	if (s_nAdbServerPort == 0)
 	{
+		LogE(_T("ADB server port for starting AndroidDebugBridge is not set."));
 		return false;
 	}
 	std::vector<std::tstring> vecCommand;
@@ -453,10 +494,12 @@ bool AndroidDebugBridge::StartAdb()
 	int status = GrabProcessOutput(procServer, NULL);
 	if (status != 0)
 	{
+		LogEEx(_T("'%s' failed -- run manually if necessary"), procServer.GetCmdLine());
 		return false;
 	}
 	else
 	{
+		LogDEx(_T("'%s' succeeded"), procServer.GetCmdLine());
 		return true;
 	}
 }
@@ -504,5 +547,33 @@ int AndroidDebugBridge::GrabProcessOutput(Process& process, std::vector<std::tst
 bool AndroidDebugBridge::StopAdb()
 {
 	std::unique_lock<std::recursive_mutex> lock(s_lockClass);
-	return true;
+	if (m_strAdbLocation.empty())
+	{
+		LogE(_T("Cannot stop adb when AndroidDebugBridge is created without the location of adb."));
+		return false;
+	}
+
+	if (s_nAdbServerPort == 0)
+	{
+		LogE(_T("ADB server port for restarting AndroidDebugBridge is not set"));
+		return false;
+	}
+
+	std::vector<std::tstring> vecCommand;
+	GetAdbLaunchCommand(_T("kill-server"), vecCommand);
+	Process procServer(vecCommand);
+	procServer.Start();
+
+	int status = static_cast<int>(procServer.Join());
+
+	if (status != 0)
+	{
+		LogWEx(_T("'%s' failed -- run manually if necessary"), procServer.GetCmdLine());
+		return false;
+	}
+	else
+	{
+		LogDEx(_T("'%s' succeeded"), procServer.GetCmdLine());
+		return true;
+	}
 }

@@ -23,42 +23,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 AdbVersion* const AdbVersion::UNKNOWN = new AdbVersion(-1, -1, -1);
 
 AdbVersion::AdbVersion(int major, int minor, int micro) :
-	m_Major(major), 
-	m_Minor(minor),
-	m_Micro(micro)
+	m_nMajor(major), 
+	m_nMinor(minor),
+	m_nMicro(micro)
 {
 }
 
 bool AdbVersion::operator == (const AdbVersion& o)
 {
-	if (m_Major != o.m_Major)
+	if (m_nMajor != o.m_nMajor)
 	{
 		return false;
 	}
 
-	if (m_Minor != o.m_Minor)
+	if (m_nMinor != o.m_nMinor)
 	{
 		return false;
 	}
 
-	return m_Micro == o.m_Micro;
+	return m_nMicro == o.m_nMicro;
 }
 
 bool AdbVersion::operator > (const AdbVersion& o)
 {
-	if (m_Major > o.m_Major)
+	if (m_nMajor > o.m_nMajor)
 	{
 		return true;
 	}
-	else if (m_Major == o.m_Major)
+	else if (m_nMajor == o.m_nMajor)
 	{
-		if (m_Minor > o.m_Minor)
+		if (m_nMinor > o.m_nMinor)
 		{
 			return true;
 		}
-		else if (m_Minor == o.m_Minor)
+		else if (m_nMinor == o.m_nMinor)
 		{
-			if (m_Micro > o.m_Micro)
+			if (m_nMicro > o.m_nMicro)
 			{
 				return true;
 			}
@@ -69,19 +69,19 @@ bool AdbVersion::operator > (const AdbVersion& o)
 
 bool AdbVersion::operator < (const AdbVersion& o)
 {
-	if (m_Major < o.m_Major)
+	if (m_nMajor < o.m_nMajor)
 	{
 		return true;
 	}
-	else if (m_Major == o.m_Major)
+	else if (m_nMajor == o.m_nMajor)
 	{
-		if (m_Minor < o.m_Minor)
+		if (m_nMinor < o.m_nMinor)
 		{
 			return true;
 		}
-		else if (m_Minor == o.m_Minor)
+		else if (m_nMinor == o.m_nMinor)
 		{
-			if (m_Micro < o.m_Micro)
+			if (m_nMicro < o.m_nMicro)
 			{
 				return true;
 			}

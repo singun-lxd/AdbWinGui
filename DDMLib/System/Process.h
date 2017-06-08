@@ -70,6 +70,11 @@ public:
 		Join();
 	}
 
+	const TString GetCmdLine()
+	{
+		return m_strCmdLine.c_str();
+	}
+
 	void OpenReadWrite()
 	{
 		m_fRead.Create();
