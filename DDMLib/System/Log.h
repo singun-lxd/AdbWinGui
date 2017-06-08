@@ -24,12 +24,12 @@ namespace Log
 {
 #define LOG_BUFFER_COUNT  512
 
-	inline void LogEx(LPCTSTR lpszFormat, ...)
+	inline void LogEx(const TString lpszFormat, ...)
 	{
 		va_list args;
 		va_start(args, lpszFormat);
 		int nBuf;
-		TCHAR szBuffer[LOG_BUFFER_COUNT];
+		TCHAR szBuffer[LOG_BUFFER_COUNT] = { 0 };
 		nBuf = _vsntprintf_s(szBuffer, LOG_BUFFER_COUNT - 1, lpszFormat, args);
 		::OutputDebugString(szBuffer);
 		::OutputDebugString(_T("\r\n"));

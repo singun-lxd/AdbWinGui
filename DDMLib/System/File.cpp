@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma comment(lib, "Shlwapi.lib")
 
-const TString File::GetName(LPCTSTR lpszPath)
+const TString File::GetName(const TString szPath)
 {
-	return ::PathFindFileName(lpszPath);
+	return ::PathFindFileName(szPath);
 }
