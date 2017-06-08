@@ -222,16 +222,16 @@ int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, c
 {
 	InstallReceiver receiver;
 	std::tostringstream oss;
-	oss << _T("pm install ");
+	oss << _T("pm install");
 	if (reinstall)
 	{
-		oss << _T("-r ");
+		oss << _T(" -r");
 	}
 	for (int i = 0; i != argCount; i++)
 	{
 		oss << _T(" ") << args[i];
 	}
-	oss << remoteFilePath;
+	oss << _T(" ") << remoteFilePath;
 
 	std::chrono::minutes minute(INSTALL_TIMEOUT_MINUTES);
 	long timeout = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(minute).count());
