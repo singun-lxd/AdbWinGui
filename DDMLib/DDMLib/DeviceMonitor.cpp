@@ -220,15 +220,11 @@ bool DeviceMonitor::SendDeviceMonitoringRequest(SocketClient* socket, const Devi
 	{
 		return false;
 	}
-	AdbHelper::AdbResponse* resp = AdbHelper::ReadAdbResponse(socket, false);
-	if (resp == NULL || !resp->okay)
+	std::unique_ptr<AdbHelper::AdbResponse> resp(AdbHelper::ReadAdbResponse(socket, false));
+	if (!resp || !resp->okay)
 	{
 		// request was refused by adb!
 		bRet = false;
-	}
-	if (resp != NULL)
-	{
-		delete resp;
 	}
 
 	return bRet;
@@ -357,15 +353,11 @@ bool DeviceMonitor::DeviceListMonitorTask::SendDeviceListMonitoringRequest()
  	bool bWrite = AdbHelper::Write(m_pAdbConnection, request.get());
 	if (bWrite)
 	{
-		AdbHelper::AdbResponse* resp = AdbHelper::ReadAdbResponse(m_pAdbConnection, false);
-		if (resp == NULL || !resp->okay)
+		std::unique_ptr<AdbHelper::AdbResponse> resp(AdbHelper::ReadAdbResponse(m_pAdbConnection, false));
+		if (!resp || !resp->okay)
 		{
 			// request was refused by adb!
 			bRet = false;
-		}
-		if (resp != NULL)
-		{
-			delete resp;
 		}
 	}
 

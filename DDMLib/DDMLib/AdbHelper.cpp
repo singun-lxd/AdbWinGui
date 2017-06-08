@@ -199,15 +199,11 @@ bool AdbHelper::SetDevice(SocketClient* client, const IDevice* device)
 		bool bRet = Write(client, device_query.get());
 		if (bRet)
 		{
-			AdbResponse* resp = ReadAdbResponse(client, false /* readDiagString */);
-			if (resp == NULL || !resp->okay)
+			std::unique_ptr<AdbResponse> resp(ReadAdbResponse(client, false /* readDiagString */));
+			if (!resp || !resp->okay)
 			{
 				// request was refused by adb!
 				bRet = false;
-			}
-			if (resp != NULL)
-			{
-				delete resp;
 			}
 			return bRet;
 		}
