@@ -230,10 +230,10 @@ void Log::HexDump(char data[], int length)
 void Log::PrintLog(LogLevel logLevel, const TString tag, const TString message)
 {
 	time_t currenttime = time(0);
-	TCHAR szTime[MAX_PATH] = { 0 };
+	TCHAR szTime[20] = { 0 };
 	struct tm timeRet;
 	localtime_s(&timeRet, &currenttime);
-	_tcsftime(szTime, MAX_PATH, _T("%Y-%m-%d-%H-%M-%S"), &timeRet);
+	_tcsftime(szTime, MAX_PATH, _T("%Y-%m-%d %H:%M:%S"), &timeRet);
 
 	TCHAR chLetter = GetLogLevelPriorityLetter(logLevel);
 
