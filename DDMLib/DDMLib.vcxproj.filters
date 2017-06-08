@@ -96,9 +96,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="System\Log.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="System\File.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -107,6 +104,12 @@
     </ClInclude>
     <ClInclude Include="DDMLib\MultiLineReceiver.h">
       <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\Log.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SysLog.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +156,9 @@
       <Filter>System</Filter>
     </ClCompile>
     <ClCompile Include="DDMLib\SyncService.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\Log.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
   </ItemGroup>

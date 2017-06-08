@@ -19,13 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Device.h"
 #include <regex>
 #include "AndroidEnvVar.h"
-#include "..\System\Log.h"
-#include "..\System\File.h"
+#include "../System/File.h"
 #include "SyncService.h"
 #include "AndroidDebugBridge.h"
+#include "Log.h"
 
 #define GET_PROP_TIMEOUT_MS				100
 #define INSTALL_TIMEOUT_MINUTES			Device::s_lInstallTimeOut
+
+#define DEVICE								_T("device")
 
 const long Device::s_lInstallTimeOut = Device::GetInstallTimeOut();
 
@@ -144,11 +146,11 @@ int Device::InstallPackages(const TString apkFilePaths[], int count, int timeOut
 			InstallPackage(apkFilePaths[0], reinstall, args, argCount);
 			return 0;
 		}
-		LogE(_T("Internal error : installPackages invoked with device < 21 for multiple APK"));
+		LogE(DEVICE, _T("Internal error : installPackages invoked with device < 21 for multiple APK"));
 		return -1;
 	}
 	const TString mainPackageFilePath = apkFilePaths[0];
-	LogDEx(_T("Uploading main %s and %s split APKs onto device '%s'"),
+	LogDEx(DEVICE, _T("Uploading main %s and %s split APKs onto device '%s'"),
 			mainPackageFilePath, count, GetSerialNumber());
 
 	// create a installation session.
@@ -203,12 +205,12 @@ int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remot
 	remotePath = oss.str();
 	const TString remoteFilePath = remotePath.c_str();
 
-	LogDEx(_T("Uploading %s onto device '%s'"), packageFileName, GetSerialNumber());
+	LogDEx(DEVICE, _T("Uploading %s onto device '%s'"), packageFileName, GetSerialNumber());
 
 	std::unique_ptr<SyncService> sync(GetSyncService());
 	if (sync)
 	{
-		LogDEx(_T("Uploading file onto device '%s'"), GetSerialNumber());
+		LogDEx(DEVICE, _T("Uploading file onto device '%s'"), GetSerialNumber());
 		sync->PushFile(localFilePath, remoteFilePath, SyncService::GetNullProgressMonitor());
 	}
 	return 0;
@@ -330,7 +332,11 @@ void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& ve
 			std::smatch results;
 			if (std::regex_match(line, results, rxAdb) && results[0].matched)
 			{
+#ifdef _UNICODE
 				ConvertUtils::StringToWstring(results[1].str(), m_strErrorMessage);
+#else
+				m_strErrorMessage = results[1].str();
+#endif
 			}
 			else
 			{

@@ -18,27 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "CommonDefine.h"
-#include "Log.h"
+#include "SysDef.h"
 
-class DdmPreferences
+namespace SysLog
 {
-private:
-	static Log::LogLevel s_emLogLevel;
-	static int s_nTimeOut;
-	static bool s_bUseAdbHost;
-	static std::tstring s_strAdbHostValue;
-
-private:
-	DdmPreferences();
-
-public:
-	static Log::LogLevel GetLogLevel();
-	static void SetLogLevel(const TString value);
-	static int GetTimeOut();
-	static void SetTimeOut(int timeOut);
-	static bool GetUseAdbHost();
-	static void SetUseAdbHost(bool useAdbHost);
-	static const TString GetAdbHostValue();
-	static void SetAdbHostValue(const TString adbHostValue);
+	inline void Log(const TString content)
+	{
+		::OutputDebugString(content);
+	}
 };

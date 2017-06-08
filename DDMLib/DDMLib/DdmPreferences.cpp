@@ -18,16 +18,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "DdmPreferences.h"
 
+#ifdef _DEBUG
+#define DEFAULT_LOG_LEVEL			Log::LogLevel::VERBOSE
+#else
+#define DEFAULT_LOG_LEVEL			Log::LogLevel::ERROR
+#endif
 #define DEFAULT_TIMEOUT			5000 // standard delay, in ms
 #define DEFAULT_USE_ADBHOST		false;
-#define DEFAULT_ADBHOST_VALUE	_T("127.0.0.1");
+#define DEFAULT_ADBHOST_VALUE		_T("127.0.0.1");
 
+Log::LogLevel DdmPreferences::s_emLogLevel = DEFAULT_LOG_LEVEL;
 int DdmPreferences::s_nTimeOut = DEFAULT_TIMEOUT;
 bool DdmPreferences::s_bUseAdbHost = DEFAULT_USE_ADBHOST;
 std::tstring DdmPreferences::s_strAdbHostValue = DEFAULT_ADBHOST_VALUE;
 
 DdmPreferences::DdmPreferences()
 {
+}
+
+Log::LogLevel DdmPreferences::GetLogLevel()
+{
+	return s_emLogLevel;
+}
+
+void DdmPreferences::SetLogLevel(const TString value)
+{
+	s_emLogLevel = Log::GetLogLevelByString(value);
+
+	Log::SetLevel(s_emLogLevel);
 }
 
 int DdmPreferences::GetTimeOut()

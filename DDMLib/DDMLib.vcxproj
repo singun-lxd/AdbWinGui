@@ -164,6 +164,7 @@
     <ClInclude Include="DDMLib\IDevice.h" />
     <ClInclude Include="DDMLib\IShellEnabledDevice.h" />
     <ClInclude Include="DDMLib\IShellOutputReceiver.h" />
+    <ClInclude Include="DDMLib\Log.h" />
     <ClInclude Include="DDMLib\MultiLineReceiver.h" />
     <ClInclude Include="DDMLib\StringUtils.h" />
     <ClInclude Include="DDMLib\SyncService.h" />
@@ -172,7 +173,7 @@
     <ClInclude Include="System\ConvertUtils.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\FileReadWrite.h" />
-    <ClInclude Include="System\Log.h" />
+    <ClInclude Include="System\SysLog.h" />
     <ClInclude Include="System\Process.h" />
     <ClInclude Include="System\SocketAddress.h" />
     <ClInclude Include="System\SocketClient.h" />
@@ -225,6 +226,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DDMLib\Log.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DDMLib\SyncService.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
