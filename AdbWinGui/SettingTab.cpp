@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MessageDefine.h"
 #include "MessageTaskDlg.h"
 
+#define ADB_FILE_NNAME		_T("adb.exe")
+
 BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 {
 	return IsDialogMessage(pMsg);
@@ -162,14 +164,21 @@ void SettingTab::AutoUpdateAdbPath(ConfigManager& cfgManager)
 
 BOOL SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
 {
-	CFileDialog fileDialog(TRUE, _T("exe"), _T("adb.exe"),
-		OFN_HIDEREADONLY | OFN_FILEMUSTEXIST, _T("adb.exe\0adb.exe\0\0"),
-		GetParent());
+	COMDLG_FILTERSPEC fileSpec[] =
+	{
+		{ ADB_FILE_NNAME, ADB_FILE_NNAME },
+	};
+
+	CShellFileOpenDialog fileDialog(ADB_FILE_NNAME, FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST, _T("exe"), fileSpec, _countof(fileSpec));
+	CString strTitle;
+	strTitle.LoadString(IDS_SELECT_ADB_PATH);
+	fileDialog.m_spFileDlg->SetTitle(strTitle);
 	if (fileDialog.DoModal() == IDOK)
 	{
-		LPCTSTR lpszPath = fileDialog.m_ofn.lpstrFile;
-		SwitchToManualMode(lpszPath);
-		cfgManager.SetAdbPath(lpszPath);
+		CString strFilePath;
+		fileDialog.GetFilePath(strFilePath);
+		SwitchToManualMode(strFilePath);
+		cfgManager.SetAdbPath(strFilePath);
 		return TRUE;
 	}
 	else
