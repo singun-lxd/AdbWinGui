@@ -26,10 +26,10 @@ public:
 	template <class T>
 	static std::basic_string<T>& TrimString(std::basic_string<T>& s)
 	{
-		if (s.empty()) {
+		if (s.empty())
+		{
 			return s;
 		}
-
 		std::basic_string<T>::iterator c;
 		for (c = s.begin(); c != s.end() && iswspace(*c++);); s.erase(s.begin(), --c);
 		for (c = s.end(); c != s.begin() && iswspace(*--c);); s.erase(++c, s.end());
@@ -37,15 +37,25 @@ public:
 	}
 
 	template <class T>
-	static void ToLowerCase(std::basic_string<T>& s)
+	static std::basic_string<T>& ToLowerCase(std::basic_string<T>& s)
 	{
+		if (s.empty())
+		{
+			return s;
+		}
 		std::transform(s.begin(), s.end(), s.begin(), tolower);
+		return s;
 	}
 
 	template <class T>
-	static void ToUpperCase(std::tstring& strIn)
+	static std::basic_string<T>& ToUpperCase(std::tstring& strIn)
 	{
+		if (s.empty())
+		{
+			return s;
+		}
 		std::transform(s.begin(), s.end(), s.begin(), toupper);
+		return s;
 	}
 
 	static const char* SaveString(const char* value)
