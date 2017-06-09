@@ -27,6 +27,8 @@ MessageTaskDlg::MessageTaskDlg()
 
 	m_strTitle.LoadString(IDR_MAINFRAME);
 	SetWindowTitle(m_strTitle);
+
+	ModifyFlags(0, TDF_POSITION_RELATIVE_TO_WINDOW);
 }
 
 BOOL MessageTaskDlg::OnButtonClicked(int buttonId)
