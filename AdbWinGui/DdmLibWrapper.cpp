@@ -68,7 +68,10 @@ void DdmLibWrapper::Init(const TString szLocation, BOOL bClienntSupport)
 
 void DdmLibWrapper::Release()
 {
-	m_taskInit.get();
+	if (m_taskInit.valid())
+	{
+		m_taskInit.get();
+	}
 	if (m_pAdbInstance != NULL)
 	{
 		m_pAdbInstance->Release();

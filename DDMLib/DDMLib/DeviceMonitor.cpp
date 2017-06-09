@@ -30,7 +30,10 @@ DeviceMonitor::DeviceMonitor(AndroidDebugBridge* pServer)
 DeviceMonitor::~DeviceMonitor()
 {
 	m_pServer = NULL;
-	m_taskMonitor.get();
+	if (m_taskMonitor.valid())
+	{
+		m_taskMonitor.get();
+	}
 	if (m_pDeviceListMonitorTask != NULL)
 	{
 		delete m_pDeviceListMonitorTask;
