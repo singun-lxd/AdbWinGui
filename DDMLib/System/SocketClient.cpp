@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 SocketClient::SocketClient()
 {
 	m_sockClient = 0;
+	m_bBlocking = true;
 }
 
 SocketClient::~SocketClient()
@@ -63,9 +64,29 @@ INT SocketClient::Close()
 	return nRet;
 }
 
-void SocketClient::SetTcpNoDelay(BOOL bNoDelay)
+BOOL SocketClient::IsOpen()
 {
+	return m_sockClient != 0;
+}
 
+BOOL SocketClient::SetTcpNoDelay(BOOL bNoDelay)
+{
+	return FALSE;
+}
+
+BOOL SocketClient::ConfigureBlocking(BOOL bBlock)
+{
+	if (!IsOpen())
+	{
+		return FALSE;
+	}
+	if (m_bBlocking)
+	{
+		return TRUE;
+	}
+	// todo connfig blocking
+	m_bBlocking = bBlock;
+	return TRUE;
 }
 
 BOOL SocketClient::Connect(const SocketAddress& addSocket)

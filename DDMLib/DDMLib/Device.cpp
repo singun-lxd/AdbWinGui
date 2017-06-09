@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SyncService.h"
 #include "AndroidDebugBridge.h"
 #include "Log.h"
+#include "AdbHelper.h"
 
 #define GET_PROP_TIMEOUT_MS				100
 #define INSTALL_TIMEOUT_MINUTES			Device::s_lInstallTimeOut
@@ -93,9 +94,10 @@ const TString Device::GetName() const
 	return NULL;
 }
 
-void Device::ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut)
+void Device::ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut)
 {
-
+	AdbHelper::ExecuteRemoteCommand(AndroidDebugBridge::GetSocketAddress(), command, this,
+		receiver, timeOut);
 }
 
 std::future<std::tstring> Device::GetSystemProperty(const std::tstring& name) const
@@ -238,7 +240,7 @@ int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, c
 	std::chrono::minutes minute(INSTALL_TIMEOUT_MINUTES);
 	long timeout = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(minute).count());
 	std::tstring& cmd = oss.str();
-	ExecuteShellCommand(cmd.c_str(), receiver, timeout);
+	ExecuteShellCommand(cmd.c_str(), &receiver, timeout);
 	const TString errMsg = receiver.GetErrorMessage();
 	// todo error code
 	return 0;

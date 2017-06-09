@@ -64,7 +64,7 @@ public:
 
 public:
 	virtual const TString GetName() const override;
-	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut) override;
+	virtual void ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) override;
 	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const override;
 
 	virtual const TString GetSerialNumber() const override;

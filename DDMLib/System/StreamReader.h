@@ -66,14 +66,19 @@ public:
 		return m_tss;
 	}
 
-// 	template<class _Fn, class... _Args>
-// 	void ReadLine(_Fn&& _Fx, _Args&&... _Ax)
-// 	{
-// 		std::tstring line;
-// 		while (std::getline(tss, line)) {
-// 			_Fx(line, _Ax);
-// 		}
-// 	}
+	DWORD ReadData(T *pBuff, int length)
+	{
+		DWORD dwRead = 0;
+		BOOL bRead = ::ReadFile(m_fRead, pBuff, length, &dwRead, NULL);
+		if (bRead)
+		{
+			return dwRead;
+		}
+		else
+		{
+			return -1;
+		}
+	}
 };
 
 typedef	 StreamReader<CHAR>     CharStreamReader;

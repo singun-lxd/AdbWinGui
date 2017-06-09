@@ -26,7 +26,7 @@ interface IShellEnabledDevice
 {
 	virtual const TString GetName() const = 0;
 
-	virtual void ExecuteShellCommand(const TString command, const IShellOutputReceiver& receiver, long timeOut) = 0;
+	virtual void ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) = 0;
 
 	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const = 0;
 };

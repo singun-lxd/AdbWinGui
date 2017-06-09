@@ -20,8 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <thread>
 #include "DdmPreferences.h"
 #include "../System/SocketCore.h"
+#include "Log.h"
+#include "StringUtils.h"
 
 #define WAIT_TIME		5 // spin-wait sleep, in ms
+
+const char* const AdbHelper::s_arrAdbService[ADB_SERVICE_COUT] =
+{
+	"shell",
+	"exec"
+};
 
 AdbHelper::AdbHelper()
 {
@@ -85,13 +93,125 @@ AdbHelper::AdbResponse* AdbHelper::ReadAdbResponse(SocketClient* client, bool re
 			return NULL;
 		}
 
-		std::unique_ptr<char[]> msg(new char[len]);
+		std::unique_ptr<char[]> msg(new char[len + 1]);
 		Read(client, msg.get(), len);
+		msg[len] = '0';
 
 		pResp->message = msg.get();
 	}
 
 	return pResp;
+}
+
+int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, const TString command,
+	IDevice* device, IShellOutputReceiver* rcvr, long maxTimeToOutputResponse)
+{
+	return ExecuteRemoteCommand(adbSockAddr, AdbService::SHELL, command, device, rcvr, maxTimeToOutputResponse,
+		NULL/* StreamReader */);
+}
+
+int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService adbService, const TString command,
+	IDevice* device, IShellOutputReceiver* rcvr, long maxTimeToOutputResponse, CharStreamReader* reader)
+{
+	LogVEx(_T("ddms"), _T("execute: running %s"), command);
+
+	std::unique_ptr<SocketClient> adbChan(SocketClient::Open(adbSockAddr));
+	adbChan->ConfigureBlocking(false);
+
+	// if the device is not -1, then we first tell adb we're looking to
+	// talk
+	// to a specific device
+	SetDevice(adbChan.get(), device);
+
+	const char* enumValue = s_arrAdbService[static_cast<int>(adbService)];
+	const char* szCommand = NULL;
+#ifdef _UNICODE
+	std::string strCmd;
+	ConvertUtils::WstringToString(command, strCmd);
+	szCommand = strCmd.c_str();
+#else
+	szCommand = command;
+#endif
+	std::ostringstream oss;
+	oss << enumValue << ":" << szCommand;
+	std::string& resultStr = oss.str();
+	std::unique_ptr<const char[]> request(FormAdbRequest(resultStr.c_str()));
+	Write(adbChan.get(), request.get());
+
+	std::unique_ptr<AdbResponse> resp(ReadAdbResponse(adbChan.get(), false /* readDiagString */));
+	if (!resp || !resp->okay)
+	{
+		LogEEx(_T("ddms"), _T("ADB rejected shell command (%s): %s"), command, resp->message);
+		return -1;
+	}
+
+	const int bufferLen = 16384;
+	char data[bufferLen] = { 0 };
+
+	// stream the input file if present.
+	if (reader != NULL)
+	{
+		int read;
+		while ((read = reader->ReadData(data, bufferLen)) != -1)
+		{
+			int written = 0;
+			written += adbChan->Write(data, read);
+			if (written != read)
+			{
+				LogEEx(_T("ddms"), _T("ADB write inconsistency, wrote %d expected %d"), written, read);
+				return -1;
+			}
+		}
+	}
+
+	ZeroMemory(data, sizeof(char) * bufferLen);
+	long timeToResponseCount = 0;
+	while (true)
+	{
+		int count;
+
+		if (rcvr != NULL && rcvr->IsCancelled()) {
+			LogV(_T("ddms"), _T("execute: cancelled"));
+			break;
+		}
+
+		count = adbChan->Read(data, bufferLen);
+		if (count < 0)
+		{
+			// we're at the end, we flush the output
+			rcvr->Flush();
+			LogVEx(_T("ddms"), _T("execute '%s' on '%s' : EOF hit. Read: %d"),
+				command, device, count);
+			break;
+		}
+		else if (count == 0)
+		{
+			int wait = WAIT_TIME * 5;
+			timeToResponseCount += wait;
+			if (maxTimeToOutputResponse > 0 && timeToResponseCount > maxTimeToOutputResponse)
+			{
+				return -1;
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(wait));
+		}
+		else
+		{
+			// reset timeout
+			timeToResponseCount = 0;
+
+			// send data to receiver if present
+			if (rcvr != NULL)
+			{
+				rcvr->AddOutput(data, 0, count);
+			}
+		}
+	}
+	if (adbChan != NULL)
+	{
+		adbChan->Close();
+	}
+	LogV(_T("ddms"), _T("execute: returning"));
+	return 0;
 }
 
 bool AdbHelper::Read(SocketClient* client, char* data, int length)

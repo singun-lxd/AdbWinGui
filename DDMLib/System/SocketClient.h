@@ -25,6 +25,7 @@ class SocketClient
 {
 private:
 	SOCKET m_sockClient;
+	BOOL m_bBlocking;
 
 private:
 	SocketClient();
@@ -33,7 +34,9 @@ public:
 	static SocketClient* Open();
 	static SocketClient* Open(const SocketAddress& addSocket);
 	INT Close();
-	void SetTcpNoDelay(BOOL bNoDelay);
+	BOOL IsOpen();
+	BOOL SetTcpNoDelay(BOOL bNoDelay);
+	BOOL ConfigureBlocking(BOOL bBlock);
 	BOOL Connect(const SocketAddress& addSocket);
 	INT Read(CHAR* cData, INT nLen);
 	INT Write(const CHAR* cData, INT nLen = -1);

@@ -50,7 +50,7 @@ public:
 		{
 			return;
 		}
-		size_t outLen = _tcslen(szIn);
+		size_t outLen = _tcslen(szIn) + 1;
 		size_t converted = 0;
 		setlocale(LC_CTYPE, "");
 		char *pOut = new char[outLen];
@@ -58,5 +58,4 @@ public:
 		strOut = pOut;
 		delete[] pOut;
 	}
-
 };

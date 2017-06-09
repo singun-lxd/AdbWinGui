@@ -20,7 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 #include "../System/SocketClient.h"
+#include "../System/StreamReader.h"
 #include "IDevice.h"
+
+#define ADB_SERVICE_COUT  2
 
 class AdbHelper
 {
@@ -33,11 +36,23 @@ public:
 		bool okay; // first 4 bytes in response were "OKAY"?
 		std::string message; // diagnostic string if #okay is false
 	};
+
+	static const char* const s_arrAdbService[ADB_SERVICE_COUT];
+	enum AdbService
+	{
+		SHELL,
+		EXEC
+	};
 public:
 	static int GetLastError();
 	static int ReleaseSocket();
 	static const char* FormAdbRequest(const char* req);	// need delete return string
 	static AdbResponse* ReadAdbResponse(SocketClient* client, bool readDiagString);	// need delete return object
+	static int ExecuteRemoteCommand(const SocketAddress& adbSockAddr,
+		const TString command, IDevice* device, IShellOutputReceiver* rcvr, long maxTimeToOutputResponse);
+	static int ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService adbService,
+		const TString command, IDevice* device, IShellOutputReceiver* rcvr, long maxTimeToOutputResponse,
+		CharStreamReader* reader);
 	static bool Read(SocketClient* client, char* data, int length);
 	static bool Read(SocketClient* client, char* data, int length, int timeout);
 	static bool Write(SocketClient* client, const char* data, int length = -1);

@@ -35,4 +35,23 @@ public:
 		for (c = s.end(); c != s.begin() && iswspace(*--c);); s.erase(++c, s.end());
 		return s;
 	}
+
+	template <class T>
+	static void ToLowerCase(std::basic_string<T>& s)
+	{
+		std::transform(s.begin(), s.end(), s.begin(), tolower);
+	}
+
+	template <class T>
+	static void ToUpperCase(std::tstring& strIn)
+	{
+		std::transform(s.begin(), s.end(), s.begin(), toupper);
+	}
+
+	static const char* SaveString(const char* value)
+	{
+		return value;
+	}
+
+#define EnumToString(val) StringUtils::SaveString(#val)  
 };
