@@ -61,7 +61,7 @@ bool SyncService::PushFile(const TString local, const TString remote, ISyncProgr
 
 	monitor->Start(static_cast<int>(file.GetLength()));
 
-	DoPushFile(local, remote, monitor);
+	DoPushFile(file, remote, monitor);
 
 	monitor->Stop();
 
