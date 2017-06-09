@@ -19,9 +19,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "SysDef.h"
+#include "FileReadWrite.h"
 
 class File
 {
+private:
+	const std::tstring m_strPath;
+
 public:
+	File(const TString szPath);
 	static const TString GetName(const TString szPath);
+	const TString GetName() const;
+	BOOL Exists() const;
+	BOOL IsDirectory() const;
+	BOOL IsFile() const;
+	DWORD GetLength() const;
+	DOUBLE GetLastModifiedTime() const;
+	FileReadWrite GetRead() const;
+	FileReadWrite GetWrite() const;
 };

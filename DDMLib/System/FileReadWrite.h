@@ -51,9 +51,23 @@ public:
 		return *this;
 	}
 
+	FileReadWrite& operator =(const HANDLE& rhs)
+	{
+		if (m_pHandle != NULL)
+		{
+			*m_pHandle = rhs;
+		}
+		return *this;
+	}
+
 	BOOL IsAvailable() const
 	{
 		return m_pHandle != NULL;
+	}
+
+	BOOL IsValid() const
+	{
+		return m_pHandle != NULL && *m_pHandle != INVALID_HANDLE_VALUE && *m_pHandle != NULL;
 	}
 
 	void Set(HANDLE* pHandle)
@@ -82,7 +96,7 @@ public:
 
 	void Close()
 	{
-		if (m_pHandle != NULL && *m_pHandle != NULL)
+		if (IsValid())
 		{
 			::CloseHandle(*m_pHandle);
 			*m_pHandle = NULL;

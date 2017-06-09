@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CommonDefine.h"
 #include "..\System\SocketAddress.h"
+#include "..\System\File.h"
 #include "Device.h"
 
 // define class
@@ -58,5 +59,8 @@ public:
 
 	static ISyncProgressMonitor* GetNullProgressMonitor();
 
-	void PushFile(const TString local, const TString remote, ISyncProgressMonitor* monitor);
+	bool PushFile(const TString local, const TString remote, ISyncProgressMonitor* monitor);
+
+private:
+	bool DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor);
 };
