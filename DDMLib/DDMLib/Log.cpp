@@ -50,6 +50,10 @@ char* Log::InitSpaceLine()
 	return szSpaceLine;
 }
 
+Log::Log()
+{
+}
+
 Log::LogLevel Log::GetLogLevelByString(const TString value)
 {
 	if (value == NULL)
@@ -87,7 +91,7 @@ void Log::Ex(LogLevel logLevel, const TString tag, const TString szFormat, ...)
 		va_start(args, szFormat);
 		int nBuf;
 		TCHAR szBuffer[LOG_BUFFER_COUNT] = { 0 };
-		nBuf = _vsntprintf_s(szBuffer, LOG_BUFFER_COUNT - 1, szFormat, args);
+		nBuf = _vsntprintf(szBuffer, LOG_BUFFER_COUNT - 1, szFormat, args);
 		Println(logLevel, tag, szBuffer);
 		va_end(args);
 	}
@@ -168,7 +172,7 @@ void Log::HexDump(const TString tag, LogLevel level, char data[], int offset, in
 
 		if (needErase)
 		{
-			strncpy_s(line, s_szSpaceLine, SPACE_LINE_LENGTH);
+			strncpy(line, s_szSpaceLine, SPACE_LINE_LENGTH);
 			needErase = false;
 		}
 

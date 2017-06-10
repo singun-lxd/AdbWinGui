@@ -70,6 +70,7 @@ Device::~Device()
 	// need to free socket client
 	if (m_pSocketClient != NULL)
 	{
+		m_pSocketClient->Close();
 		delete m_pSocketClient;
 		m_pSocketClient = NULL;
 	}

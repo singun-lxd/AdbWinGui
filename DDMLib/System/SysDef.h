@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #define _HAS_EXCEPTIONS		0	// disable stl exceptions
+#define _CRT_SECURE_NO_WARNINGS	// disable crt warnings
 
 #include <string>
 #include <sstream>

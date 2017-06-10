@@ -56,7 +56,7 @@ const char* AdbHelper::FormAdbRequest(const char* req)
 	std::string& resultStr = ss.str();
 	size_t size = resultStr.length() + 1;
 	char* result = new char[size];
-	strcpy_s(result, size, resultStr.c_str());
+	strcpy(result, resultStr.c_str());
 
 	return result;
 }
@@ -95,7 +95,7 @@ AdbHelper::AdbResponse* AdbHelper::ReadAdbResponse(SocketClient* client, bool re
 
 		std::unique_ptr<char[]> msg(new char[len + 1]);
 		Read(client, msg.get(), len);
-		msg[len] = '0';
+		msg[len] = '\0';
 
 		pResp->message = msg.get();
 	}
@@ -312,8 +312,16 @@ bool AdbHelper::SetDevice(SocketClient* client, const IDevice* device)
 	// to a specific device
 	if (device != NULL)
 	{
+		const char* serialNumber;
+#ifdef _UNICODE
+		std::string strSn;
+		ConvertUtils::WstringToString(device->GetSerialNumber(), strSn);
+		serialNumber = strSn.c_str();
+#else
+		serialNumber = NULL;
+#endif
 		std::ostringstream oss;
-		oss << "host:transport:" << device->GetSerialNumber();
+		oss << "host:transport:" << serialNumber;
 		std::unique_ptr<const char[]> device_query(FormAdbRequest(oss.str().c_str()));
 
 		bool bRet = Write(client, device_query.get());

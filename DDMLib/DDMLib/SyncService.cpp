@@ -20,25 +20,71 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "..\System\StreamReader.h"
 #include "DdmPreferences.h"
 #include "AdbHelper.h"
+#include "ArrayUtils.h"
 
 #define SYNC_DATA_MAX				64*1024
 #define REMOTE_PATH_MAX_LENGTH	1024
+
+#define ID_OKAY "OKAY"
+#define ID_FAIL "FAIL"
+#define ID_STAT "STAT"
+#define ID_RECV "RECV"
+#define ID_DATA "DATA"
+#define ID_DONE "DONE"
+#define ID_SEND "SEND"
 
 SyncService::NullSyncProgressMonitor* const SyncService::s_pNullSyncProgressMonitor = new NullSyncProgressMonitor();
 
 SyncService::SyncService(const SocketAddress& address, Device* device)
 {
+	m_socketAddress = address;
+	m_pDevice = device;
+	m_pClient = NULL;
+	m_pBuffer = NULL;
+}
 
+SyncService::~SyncService()
+{
+	if (m_pBuffer != NULL)
+	{
+		delete[] m_pBuffer;
+		m_pBuffer = NULL;
+	}
 }
 
 bool SyncService::OpenSync()
 {
-	return false;
+	m_pClient = SocketClient::Open(m_socketAddress);
+	m_pClient->ConfigureBlocking(false);
+
+	// target a specific device
+	AdbHelper::SetDevice(m_pClient, m_pDevice);
+
+	std::unique_ptr<const char[]> request(AdbHelper::FormAdbRequest("sync:")); //$NON-NLS-1$
+	AdbHelper::Write(m_pClient, request.get(), -1, DdmPreferences::GetTimeOut());
+
+	std::unique_ptr<AdbHelper::AdbResponse> resp(AdbHelper::ReadAdbResponse(m_pClient, false /* readDiagString */));
+
+	if (!resp || !resp->okay)
+	{
+		LogWEx(_T("ddms"), _T("Got unhappy response from ADB sync req: %s"), resp->message);
+		m_pClient->Close();
+		delete m_pClient;
+		m_pClient = NULL;
+		return false;
+	}
+
+	return true;
 }
 
 void SyncService::Close()
 {
-
+	if (m_pClient != NULL)
+	{
+		m_pClient->Close();
+		delete m_pClient;
+		m_pClient = NULL;
+	}
 }
 
 SyncService::ISyncProgressMonitor* SyncService::GetNullProgressMonitor()
@@ -70,79 +116,142 @@ bool SyncService::PushFile(const TString local, const TString remote, ISyncProgr
 
 bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor)
 {
-// 	char* msg = NULL;
-// 
-// 	const int timeOut = DdmPreferences::GetTimeOut();
-// 
-// 	int pathLen = _tcslen(remotePath);
-// 	if (pathLen > REMOTE_PATH_MAX_LENGTH)
-// 	{
-// 		return false;
-// 	}
-// 
-// 	FileReadWrite fRead = file.GetRead();
-// 
-// 	const int nBuffSize = 1024;
-// 	// create the stream to read the file
-// 	CharStreamReader fsr(fRead, nBuffSize);
-// 
-// 	// create the header for the action
-// 	msg = CreateSendFileReq(ID_SEND, remotePathContent, 0644);
-// 
-// 	// and send it. We use a custom try/catch block to make the difference between
-// 	// file and network IO exceptions.
-// 	AdbHelper::Write(mChannel, msg, -1, timeOut);
-// 
-// 	System.arraycopy(ID_DATA, 0, getBuffer(), 0, ID_DATA.length);
-// 
-// 	// look while there is something to read
-// 	while (true)
-// 	{
-// 		// check if we're canceled
-// 		if (monitor->IsCanceled())
-// 		{
-// 			return false;
-// 		}
-// 
-// 		// read up to SYNC_DATA_MAX
-// 		int readCount = fsr.ReadData(GetBuffer(), 8, SYNC_DATA_MAX);
-// 
-// 		if (readCount == -1)
-// 		{
-// 			// we reached the end of the file
-// 			break;
-// 		}
-// 
-// 		// now send the data to the device
-// 		// first write the amount read
-// 		ArrayHelper.swap32bitsToArray(readCount, getBuffer(), 4);
-// 
-// 		// now write it
-// 		AdbHelper::Write(mChannel, getBuffer(), readCount + 8, timeOut);
-// 
-// 		// and advance the monitor
-// 		monitor->Advance(readCount);
-// 	}
-// 
-// 	// close the local file
-// 	fRead.Close();
-// 	fRead.Delete();
-// 
-// 	// create the DONE message
-// 	long time = file.GetLastModifiedTime() / 1000;
-// 	msg = CreateReq(ID_DONE, (int)time);
-// 
-// 	// and send it.
-// 	AdbHelper::Write(mChannel, msg, -1, timeOut);
-// 
-// 	// read the result, in a byte array containing 2 ints
-// 	// (id, size)
-// 	char result[8];
-// 	AdbHelper::Read(mChannel, result, -1 /* full length */, timeOut);
-// 
-// 	if (!checkResult(result, ID_OKAY))
-// 	{
-// 		return false;
-// 	}
+	char* msg = NULL;
+
+	const int timeOut = DdmPreferences::GetTimeOut();
+
+	int pathLen = _tcslen(remotePath);
+	if (pathLen > REMOTE_PATH_MAX_LENGTH)
+	{
+		return false;
+	}
+
+	FileReadWrite fRead = file.GetRead();
+
+	const int nBuffSize = 1024;
+	// create the stream to read the file
+	CharStreamReader fsr(fRead, SYNC_DATA_MAX);
+
+	delete[] msg;
+	// create the header for the action
+	msg = CreateSendFileReq(ID_SEND, remotePath, 0644);
+
+	// and send it. We use a custom try/catch block to make the difference between
+	// file and network IO exceptions.
+	AdbHelper::Write(m_pClient, msg, -1, timeOut);
+
+	strncpy(GetBuffer(), ID_DATA, _countof(ID_DATA));
+
+	// look while there is something to read
+	while (true)
+	{
+		// check if we're canceled
+		if (monitor->IsCanceled())
+		{
+			return false;
+		}
+
+		// read up to SYNC_DATA_MAX
+		int readCount = fsr.ReadData(GetBuffer() + 8, SYNC_DATA_MAX);
+
+		if (readCount == -1)
+		{
+			// we reached the end of the file
+			break;
+		}
+
+		// now send the data to the device
+		// first write the amount read
+		ArrayUtils::Swap32bitsToArray(readCount, GetBuffer(), 4);
+
+		// now write it
+		AdbHelper::Write(m_pClient, GetBuffer(), readCount + 8, timeOut);
+
+		// and advance the monitor
+		monitor->Advance(readCount);
+	}
+
+	// close the local file
+	fRead.Close();
+	fRead.Delete();
+
+	delete[] msg;
+	// create the DONE message
+	long time = static_cast<long>(file.GetLastModifiedTime() / 1000);
+	msg = CreateReq(ID_DONE, (int)time);
+
+	// and send it.
+	AdbHelper::Write(m_pClient, msg, -1, timeOut);
+
+	delete[] msg;
+	// read the result, in a byte array containing 2 ints
+	// (id, size)
+	char result[8] = { 0 };
+	AdbHelper::Read(m_pClient, result, 8, timeOut);
+
+	if (!CheckResult(result, ID_OKAY))
+	{
+		return false;
+	}
  	return true;
+}
+
+char* SyncService::CreateSendFileReq(const char* command, const TString path, int mode)
+{
+	// make the mode into a string
+	std::ostringstream oss;
+	oss << "," << (mode & 0777);
+	std::string& modeStr = oss.str();
+	const char* modeContent = modeStr.c_str();
+
+	const char* remotePathContent;
+#ifdef _UNICODE
+	std::string strPath;
+	ConvertUtils::WstringToString(path, strPath);
+	remotePathContent = strPath.c_str();
+#else
+	remotePathContent = remotePath;
+#endif
+
+	const int pathLength = strlen(remotePathContent);
+	const int modeLength = strlen(modeContent);
+	char* array = new char[8 + pathLength + modeLength];
+
+	strncpy(array, command, 4);
+	ArrayUtils::Swap32bitsToArray(pathLength + modeLength, array, 4);
+	strncpy(array + 8, remotePathContent, pathLength);
+	strncpy(array + 8 + pathLength, modeContent, modeLength);
+
+	return array;
+}
+
+char* SyncService::CreateReq(const char* command, int value)
+{
+	const int nReqLength = 8;
+	char* array = new char[nReqLength + 1];
+	array[nReqLength] = '\0';
+
+	strncpy(array, command, 4);
+	ArrayUtils::Swap32bitsToArray(value, array, 4);
+
+	return array;
+}
+
+bool SyncService::CheckResult(char* result, char* code)
+{
+	return !(result[0] != code[0] ||
+		result[1] != code[1] ||
+		result[2] != code[2] ||
+		result[3] != code[3]);
+}
+
+char* SyncService::GetBuffer()
+{
+	if (m_pBuffer == NULL)
+	{
+		// create the buffer used to read.
+		// we read max SYNC_DATA_MAX, but we need 2 4 bytes at the beginning.
+		m_pBuffer = new char[SYNC_DATA_MAX + 8];
+	}
+	return m_pBuffer;
 }

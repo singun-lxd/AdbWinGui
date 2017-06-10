@@ -285,6 +285,7 @@ DeviceMonitor::DeviceListMonitorTask::~DeviceListMonitorTask()
 {
 	if (m_pAdbConnection != NULL)
 	{
+		m_pAdbConnection->Close();
 		delete m_pAdbConnection;
 		m_pAdbConnection = NULL;
 	}

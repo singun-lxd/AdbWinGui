@@ -84,7 +84,7 @@ BOOL SocketClient::ConfigureBlocking(BOOL bBlock)
 	{
 		return TRUE;
 	}
-	// todo connfig blocking
+	// todo config blocking
 	m_bBlocking = bBlock;
 	return TRUE;
 }

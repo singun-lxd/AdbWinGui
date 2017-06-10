@@ -111,6 +111,9 @@
     <ClInclude Include="System\SysLog.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="DDMLib\ArrayUtils.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

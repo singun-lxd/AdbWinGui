@@ -51,8 +51,14 @@ private:
 private:
 	static NullSyncProgressMonitor* const s_pNullSyncProgressMonitor;
 
+	SocketAddress m_socketAddress;
+	Device* m_pDevice;
+	SocketClient* m_pClient;
+	char* m_pBuffer;
+
 public:
 	SyncService(const SocketAddress& address, Device* device);
+	~SyncService();
 
 	bool OpenSync();
 	void Close();
@@ -63,4 +69,8 @@ public:
 
 private:
 	bool DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor);
+	static char* CreateSendFileReq(const char* command, const TString path, int mode);
+	static char* CreateReq(const char* command, int value);
+	static bool CheckResult(char* result, char* code);
+	char* GetBuffer();
 };

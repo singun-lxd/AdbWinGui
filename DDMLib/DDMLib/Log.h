@@ -56,6 +56,9 @@ private:
 
 	static char* InitSpaceLine();
 
+private:
+	Log();
+
 public:
 	static LogLevel GetLogLevelByString(const TString value);
 	static TCHAR GetLogLevelPriorityLetter(LogLevel level);
