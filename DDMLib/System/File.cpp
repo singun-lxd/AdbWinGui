@@ -77,16 +77,15 @@ DOUBLE File::GetLastModifiedTime() const
 		::FileTimeToSystemTime(&localtime, &time);
 		::SystemTimeToVariantTime(&time, &dTime);
 		::CloseHandle(hFile);
-		return TRUE;
 	}
-	return FALSE;
+	return dTime;
 }
 
 FileReadWrite File::GetRead() const
 {
 	FileReadWrite fRead;
 	fRead.Create();
-	fRead = ::CreateFile(m_strPath.c_str(), FILE_READ_EA, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+	fRead = ::CreateFile(m_strPath.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
 	if (!fRead.IsValid())
 	{
 		fRead.Delete();
@@ -98,7 +97,7 @@ FileReadWrite File::GetWrite() const
 {
 	FileReadWrite fWrite;
 	fWrite.Create();
-	fWrite = ::CreateFile(m_strPath.c_str(), FILE_WRITE_EA, FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+	fWrite = ::CreateFile(m_strPath.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
 	if (!fWrite.IsValid())
 	{
 		fWrite.Delete();

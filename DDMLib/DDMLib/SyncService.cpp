@@ -142,6 +142,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 	strncpy(GetBuffer(), ID_DATA, _countof(ID_DATA));
 
+	bool err = false;
 	// look while there is something to read
 	while (true)
 	{
@@ -153,10 +154,14 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// read up to SYNC_DATA_MAX
 		int readCount = fsr.ReadData(GetBuffer() + 8, SYNC_DATA_MAX);
-
-		if (readCount == -1)
+		if (readCount == 0)
 		{
 			// we reached the end of the file
+			break;
+		} else if (readCount == -1)
+		{
+			// read error
+			err = true;
 			break;
 		}
 
@@ -176,6 +181,11 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	fRead.Delete();
 
 	delete[] msg;
+	if (err == true)
+	{
+		return false;
+	}
+
 	// create the DONE message
 	long time = static_cast<long>(file.GetLastModifiedTime() / 1000);
 	msg = CreateReq(ID_DONE, (int)time);
