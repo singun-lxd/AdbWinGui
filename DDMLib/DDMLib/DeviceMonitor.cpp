@@ -236,7 +236,10 @@ bool DeviceMonitor::SendDeviceMonitoringRequest(SocketClient* socket, const Devi
 SocketClient* DeviceMonitor::OpenAdbConnection()
 {
 	SocketClient* pClient = SocketClient::Open(AndroidDebugBridge::GetSocketAddress());
-	pClient->SetTcpNoDelay(TRUE);
+	if (pClient != NULL)
+	{
+		pClient->SetTcpNoDelay(TRUE);
+	}
 	return pClient;
 }
 

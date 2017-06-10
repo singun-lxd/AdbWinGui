@@ -116,12 +116,20 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	LogVEx(_T("ddms"), _T("execute: running %s"), command);
 
 	std::unique_ptr<SocketClient> adbClient(SocketClient::Open(adbSockAddr));
+	if (!adbClient)
+	{
+		return -1;
+	}
 	adbClient->ConfigureBlocking(false);
 
 	// if the device is not -1, then we first tell adb we're looking to
 	// talk
 	// to a specific device
-	SetDevice(adbClient.get(), device);
+	bool bRet = SetDevice(adbClient.get(), device);
+	if (!bRet)
+	{
+		return -1;
+	}
 
 	const char* enumValue = s_arrAdbService[static_cast<int>(adbService)];
 	const char* szCommand = NULL;
@@ -136,7 +144,11 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	oss << enumValue << ":" << szCommand;
 	std::string& resultStr = oss.str();
 	std::unique_ptr<const char[]> request(FormAdbRequest(resultStr.c_str()));
-	Write(adbClient.get(), request.get());
+	bRet = Write(adbClient.get(), request.get());
+	if (!bRet)
+	{
+		return -1;
+	}
 
 	std::unique_ptr<AdbResponse> resp(ReadAdbResponse(adbClient.get(), false /* readDiagString */));
 	if (!resp || !resp->okay)
@@ -207,7 +219,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 			}
 		}
 	}
-	if (adbClient != NULL)
+	if (adbClient)
 	{
 		adbClient->Close();
 	}

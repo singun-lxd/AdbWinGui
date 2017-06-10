@@ -56,6 +56,10 @@ SyncService::~SyncService()
 bool SyncService::OpenSync()
 {
 	m_pClient = SocketClient::Open(m_socketAddress);
+	if (m_pClient == NULL)
+	{
+		return false;
+	}
 	m_pClient->ConfigureBlocking(false);
 
 	// target a specific device
