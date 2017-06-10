@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define SYNC_DATA_MAX				64*1024
 #define REMOTE_PATH_MAX_LENGTH	1024
+#define SYNC_REQ_LENGTH			8
 
 #define ID_OKAY "OKAY"
 #define ID_FAIL "FAIL"
@@ -107,11 +108,11 @@ bool SyncService::PushFile(const TString local, const TString remote, ISyncProgr
 
 	monitor->Start(static_cast<int>(file.GetLength()));
 
-	DoPushFile(file, remote, monitor);
+	bool bRet = DoPushFile(file, remote, monitor);
 
 	monitor->Stop();
 
-	return true;
+	return bRet;
 }
 
 bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor)
@@ -138,7 +139,12 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 	// and send it. We use a custom try/catch block to make the difference between
 	// file and network IO exceptions.
-	AdbHelper::Write(m_pClient, msg, -1, timeOut);
+	bool bRet = AdbHelper::Write(m_pClient, msg, -1, timeOut);
+	if (!bRet)
+	{
+		delete[] msg;
+		return false;
+	}
 
 	strncpy(GetBuffer(), ID_DATA, _countof(ID_DATA));
 
@@ -153,12 +159,13 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 		}
 
 		// read up to SYNC_DATA_MAX
-		int readCount = fsr.ReadData(GetBuffer() + 8, SYNC_DATA_MAX);
+		int readCount = fsr.ReadData(GetBuffer() + SYNC_REQ_LENGTH, SYNC_DATA_MAX);
 		if (readCount == 0)
 		{
 			// we reached the end of the file
 			break;
-		} else if (readCount == -1)
+		}
+		else if (readCount == -1)
 		{
 			// read error
 			err = true;
@@ -170,7 +177,13 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 		ArrayUtils::Swap32bitsToArray(readCount, GetBuffer(), 4);
 
 		// now write it
-		AdbHelper::Write(m_pClient, GetBuffer(), readCount + 8, timeOut);
+		bRet = AdbHelper::Write(m_pClient, GetBuffer(), readCount + SYNC_REQ_LENGTH, timeOut);
+		if (!bRet)
+		{
+			// write error
+			err = true;
+			break;
+		}
 
 		// and advance the monitor
 		monitor->Advance(readCount);
@@ -187,19 +200,24 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	}
 
 	// create the DONE message
-	long time = static_cast<long>(file.GetLastModifiedTime() / 1000);
-	msg = CreateReq(ID_DONE, (int)time);
+	int time = static_cast<int>(file.GetLastModifiedTime() / 1000);
+	msg = CreateReq(ID_DONE, time);
 
 	// and send it.
-	AdbHelper::Write(m_pClient, msg, -1, timeOut);
+	bRet = AdbHelper::Write(m_pClient, msg, SYNC_REQ_LENGTH, timeOut);
 
 	delete[] msg;
+
+	if (!bRet)
+	{
+		return false;
+	}
 	// read the result, in a byte array containing 2 ints
 	// (id, size)
-	char result[8] = { 0 };
-	AdbHelper::Read(m_pClient, result, 8, timeOut);
+	char result[SYNC_REQ_LENGTH] = { 0 };
+	bRet = AdbHelper::Read(m_pClient, result, SYNC_REQ_LENGTH, timeOut);
 
-	if (!CheckResult(result, ID_OKAY))
+	if (!bRet || !CheckResult(result, ID_OKAY))
 	{
 		return false;
 	}
@@ -225,21 +243,19 @@ char* SyncService::CreateSendFileReq(const char* command, const TString path, in
 
 	const int pathLength = strlen(remotePathContent);
 	const int modeLength = strlen(modeContent);
-	char* array = new char[8 + pathLength + modeLength];
+	char* array = new char[SYNC_REQ_LENGTH + pathLength + modeLength];
 
 	strncpy(array, command, 4);
 	ArrayUtils::Swap32bitsToArray(pathLength + modeLength, array, 4);
-	strncpy(array + 8, remotePathContent, pathLength);
-	strncpy(array + 8 + pathLength, modeContent, modeLength);
+	strncpy(array + SYNC_REQ_LENGTH, remotePathContent, pathLength);
+	strncpy(array + SYNC_REQ_LENGTH + pathLength, modeContent, modeLength);
 
 	return array;
 }
 
 char* SyncService::CreateReq(const char* command, int value)
 {
-	const int nReqLength = 8;
-	char* array = new char[nReqLength + 1];
-	array[nReqLength] = '\0';
+	char* array = new char[SYNC_REQ_LENGTH];
 
 	strncpy(array, command, 4);
 	ArrayUtils::Swap32bitsToArray(value, array, 4);
@@ -261,7 +277,7 @@ char* SyncService::GetBuffer()
 	{
 		// create the buffer used to read.
 		// we read max SYNC_DATA_MAX, but we need 2 4 bytes at the beginning.
-		m_pBuffer = new char[SYNC_DATA_MAX + 8];
+		m_pBuffer = new char[SYNC_DATA_MAX + SYNC_REQ_LENGTH];
 	}
 	return m_pBuffer;
 }

@@ -115,13 +115,13 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 {
 	LogVEx(_T("ddms"), _T("execute: running %s"), command);
 
-	std::unique_ptr<SocketClient> adbChan(SocketClient::Open(adbSockAddr));
-	adbChan->ConfigureBlocking(false);
+	std::unique_ptr<SocketClient> adbClient(SocketClient::Open(adbSockAddr));
+	adbClient->ConfigureBlocking(false);
 
 	// if the device is not -1, then we first tell adb we're looking to
 	// talk
 	// to a specific device
-	SetDevice(adbChan.get(), device);
+	SetDevice(adbClient.get(), device);
 
 	const char* enumValue = s_arrAdbService[static_cast<int>(adbService)];
 	const char* szCommand = NULL;
@@ -136,9 +136,9 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	oss << enumValue << ":" << szCommand;
 	std::string& resultStr = oss.str();
 	std::unique_ptr<const char[]> request(FormAdbRequest(resultStr.c_str()));
-	Write(adbChan.get(), request.get());
+	Write(adbClient.get(), request.get());
 
-	std::unique_ptr<AdbResponse> resp(ReadAdbResponse(adbChan.get(), false /* readDiagString */));
+	std::unique_ptr<AdbResponse> resp(ReadAdbResponse(adbClient.get(), false /* readDiagString */));
 	if (!resp || !resp->okay)
 	{
 		LogEEx(_T("ddms"), _T("ADB rejected shell command (%s): %s"), command, resp->message);
@@ -155,7 +155,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 		while ((read = reader->ReadData(data, bufferLen)) != -1)
 		{
 			int written = 0;
-			written += adbChan->Write(data, read);
+			written += adbClient->Write(data, read);
 			if (written != read)
 			{
 				LogEEx(_T("ddms"), _T("ADB write inconsistency, wrote %d expected %d"), written, read);
@@ -170,12 +170,13 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	{
 		int count;
 
-		if (rcvr != NULL && rcvr->IsCancelled()) {
+		if (rcvr != NULL && rcvr->IsCancelled())
+		{
 			LogV(_T("ddms"), _T("execute: cancelled"));
 			break;
 		}
 
-		count = adbChan->Read(data, bufferLen);
+		count = adbClient->Read(data, bufferLen);
 		if (count < 0)
 		{
 			// we're at the end, we flush the output
@@ -206,9 +207,9 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 			}
 		}
 	}
-	if (adbChan != NULL)
+	if (adbClient != NULL)
 	{
-		adbChan->Close();
+		adbClient->Close();
 	}
 	LogV(_T("ddms"), _T("execute: returning"));
 	return 0;
@@ -264,19 +265,19 @@ bool AdbHelper::Write(SocketClient* client, const char* data, int length)
 
 bool AdbHelper::Write(SocketClient* client, const char* data, int length, int timeout)
 {
-	int readCount = 0;
+	int writeCount = 0;
 	int numWaits = 0;
 	if (length <= 0)
 	{
 		length = (int) strlen(data);
 	}
 
-	while (readCount < length)
+	while (writeCount < length)
 	{
 		int count;
 
-		count = client->Write(data);
-		readCount += count;
+		count = client->Write(data, length);
+		writeCount += count;
 		if (count < 0)
 		{
 			// error

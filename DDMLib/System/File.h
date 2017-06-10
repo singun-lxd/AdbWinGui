@@ -34,7 +34,10 @@ public:
 	BOOL IsDirectory() const;
 	BOOL IsFile() const;
 	DWORD GetLength() const;
-	DOUBLE GetLastModifiedTime() const;
+	time_t GetLastModifiedTime() const;
 	FileReadWrite GetRead() const;
 	FileReadWrite GetWrite() const;
+
+private:
+	void FileTimeToTime_t(const FILETIME* ft, time_t *t) const;
 };

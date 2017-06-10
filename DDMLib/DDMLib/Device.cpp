@@ -146,8 +146,7 @@ int Device::InstallPackages(const TString apkFilePaths[], int count, int timeOut
 	{
 		if (count == 1)
 		{
-			InstallPackage(apkFilePaths[0], reinstall, args, argCount);
-			return 0;
+			return InstallPackage(apkFilePaths[0], reinstall, args, argCount);
 		}
 		LogE(DEVICE, _T("Internal error : installPackages invoked with device < 21 for multiple APK"));
 		return -1;
@@ -214,7 +213,11 @@ int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remot
 	if (sync)
 	{
 		LogDEx(DEVICE, _T("Uploading file onto device '%s'"), GetSerialNumber());
-		sync->PushFile(localFilePath, remoteFilePath, SyncService::GetNullProgressMonitor());
+		bool bSync = sync->PushFile(localFilePath, remoteFilePath, SyncService::GetNullProgressMonitor());
+		if (!bSync)
+		{
+			return -1;
+		}
 	}
 	return 0;
 }

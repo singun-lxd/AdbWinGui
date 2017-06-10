@@ -63,10 +63,9 @@ DWORD File::GetLength() const
 	return 0;
 }
 
-DOUBLE File::GetLastModifiedTime() const
+time_t File::GetLastModifiedTime() const
 {
-	DOUBLE dTime = 0;
-	SYSTEMTIME time;
+	time_t tTime = 0;
 	FILETIME filetime;
 	FILETIME localtime;
 	HANDLE hFile = ::CreateFile(m_strPath.c_str(), FILE_READ_ATTRIBUTES, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
@@ -74,11 +73,10 @@ DOUBLE File::GetLastModifiedTime() const
 	{
 		::GetFileTime(hFile, NULL, NULL, &filetime);
 		::FileTimeToLocalFileTime(&filetime, &localtime);
-		::FileTimeToSystemTime(&localtime, &time);
-		::SystemTimeToVariantTime(&time, &dTime);
+		FileTimeToTime_t(&filetime, &tTime);
 		::CloseHandle(hFile);
 	}
-	return dTime;
+	return tTime;
 }
 
 FileReadWrite File::GetRead() const
@@ -103,4 +101,13 @@ FileReadWrite File::GetWrite() const
 		fWrite.Delete();
 	}
 	return fWrite;
+}
+
+void File::FileTimeToTime_t(const FILETIME* ft, time_t *t) const
+{
+	ULARGE_INTEGER ui;
+	ui.LowPart = ft->dwLowDateTime;
+	ui.HighPart = ft->dwHighDateTime;
+
+	*t = ((LONGLONG)(ui.QuadPart - 116444736000000000) / 10000000);
 }

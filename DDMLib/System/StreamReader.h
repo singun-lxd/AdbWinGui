@@ -68,10 +68,6 @@ public:
 
 	LONG ReadData(T *pBuff, int length)
 	{
-		if (length > m_nBuffSize)
-		{
-			return -1;
-		}
 		DWORD dwRead = 0;
 		BOOL bRead = ::ReadFile(m_fRead, pBuff, length, &dwRead, NULL);
 		if (bRead)
