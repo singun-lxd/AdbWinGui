@@ -30,7 +30,7 @@ private:
 	std::vector<std::string> m_vecArray;
 
 public:
-	void setTrimLine(bool trim)
+	void SetTrimLine(bool trim)
 	{
 		m_bTrimLines = trim;
 	}

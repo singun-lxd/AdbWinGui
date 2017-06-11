@@ -18,15 +18,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <future>
-#include "CommonDefine.h"
 #include "IShellOutputReceiver.h"
 
-interface IShellEnabledDevice
+class NullOutputReceiver : public IShellOutputReceiver
 {
-	virtual const TString GetName() const = 0;
+private:
+	static NullOutputReceiver s_rcvNull;
 
-	virtual int ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) = 0;
+public:
+	static IShellOutputReceiver& GetReceiver();
 
-	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const = 0;
+private:
+	NullOutputReceiver();
+
+public:
+	virtual void AddOutput(char* data, int offset, int length) override;
+	virtual void Flush() override;
+	virtual bool IsCancelled() override;
 };

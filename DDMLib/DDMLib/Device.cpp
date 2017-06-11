@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AndroidDebugBridge.h"
 #include "Log.h"
 #include "AdbHelper.h"
+#include "NullOutputReceiver.h"
 
 #define GET_PROP_TIMEOUT_MS				100
 #define INSTALL_TIMEOUT_MINUTES			Device::s_lInstallTimeOut
@@ -95,9 +96,9 @@ const TString Device::GetName() const
 	return NULL;
 }
 
-void Device::ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut)
+int Device::ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut)
 {
-	AdbHelper::ExecuteRemoteCommand(AndroidDebugBridge::GetSocketAddress(), command, this,
+	return AdbHelper::ExecuteRemoteCommand(AndroidDebugBridge::GetSocketAddress(), command, this,
 		receiver, timeOut);
 }
 
@@ -251,14 +252,24 @@ int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, c
 	return 0;
 }
 
-void Device::RemoveRemotePackage(const TString remoteFilePath)
+int Device::RemoveRemotePackage(const TString remoteFilePath)
 {
-
+	IShellOutputReceiver& receiver = NullOutputReceiver::GetReceiver();
+	std::tostringstream oss;
+	oss << _T("rm \"") << remoteFilePath << _T("\"");
+	std::chrono::minutes minute(INSTALL_TIMEOUT_MINUTES);
+	long timeout = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(minute).count());
+	return ExecuteShellCommand(oss.str().c_str(), &receiver, timeout);
 }
 
 int Device::UninstallPackage(const TString packageName)
 {
-	return 0;
+	InstallReceiver receiver;
+	std::tostringstream oss;
+	oss << _T("pm uninstall") << packageName;
+	std::chrono::minutes minute(INSTALL_TIMEOUT_MINUTES);
+	long timeout = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(minute).count());
+	return ExecuteShellCommand(oss.str().c_str(), &receiver, timeout);
 }
 
 void Device::SetState(DeviceState state)

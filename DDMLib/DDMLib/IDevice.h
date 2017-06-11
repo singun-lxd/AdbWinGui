@@ -60,6 +60,6 @@ public:
 		bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
 	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath) = 0;
 	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
-	virtual void RemoveRemotePackage(const TString remoteFilePath) = 0;
+	virtual int RemoveRemotePackage(const TString remoteFilePath) = 0;
 	virtual int UninstallPackage(const TString packageName) = 0;
 };

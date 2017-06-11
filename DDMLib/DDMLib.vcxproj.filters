@@ -114,6 +114,9 @@
     <ClInclude Include="DDMLib\ArrayUtils.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
+    <ClInclude Include="DDMLib\NullOutputReceiver.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -162,6 +165,9 @@
       <Filter>DDMLib</Filter>
     </ClCompile>
     <ClCompile Include="DDMLib\Log.cpp">
+      <Filter>DDMLib</Filter>
+    </ClCompile>
+    <ClCompile Include="DDMLib\NullOutputReceiver.cpp">
       <Filter>DDMLib</Filter>
     </ClCompile>
   </ItemGroup>

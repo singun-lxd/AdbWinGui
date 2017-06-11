@@ -64,7 +64,7 @@ public:
 
 public:
 	virtual const TString GetName() const override;
-	virtual void ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) override;
+	virtual int ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) override;
 	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const override;
 
 	virtual const TString GetSerialNumber() const override;
@@ -81,7 +81,7 @@ public:
 		const TString args[] = NULL, int argCount = 0) override;
 	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath) override;
 	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) override;
-	virtual void RemoveRemotePackage(const TString remoteFilePath) override;
+	virtual int RemoveRemotePackage(const TString remoteFilePath) override;
 	virtual int UninstallPackage(const TString packageName) override;
 
 	void SetClientMonitoringSocket(SocketClient* socketClient);

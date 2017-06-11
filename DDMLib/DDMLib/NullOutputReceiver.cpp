@@ -16,17 +16,28 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "NullOutputReceiver.h"
 
-#include <future>
-#include "CommonDefine.h"
-#include "IShellOutputReceiver.h"
+NullOutputReceiver NullOutputReceiver::s_rcvNull;
 
-interface IShellEnabledDevice
+IShellOutputReceiver& NullOutputReceiver::GetReceiver()
 {
-	virtual const TString GetName() const = 0;
+	return s_rcvNull;
+}
 
-	virtual int ExecuteShellCommand(const TString command, IShellOutputReceiver* receiver, long timeOut) = 0;
+NullOutputReceiver::NullOutputReceiver()
+{
+}
 
-	virtual std::future<std::tstring> GetSystemProperty(const std::tstring& name) const = 0;
-};
+void NullOutputReceiver::AddOutput(char* data, int offset, int length)
+{
+}
+
+void NullOutputReceiver::Flush()
+{
+}
+
+bool NullOutputReceiver::IsCancelled()
+{
+	return false;
+}
