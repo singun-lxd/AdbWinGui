@@ -34,7 +34,11 @@ SocketClient* SocketClient::Open(const SocketAddress& addSocket)
 	SocketClient* pClient = Open();
 	if (pClient != NULL)
 	{
-		pClient->Connect(addSocket);
+		if (!pClient->Connect(addSocket))
+		{
+			delete pClient;
+			pClient = NULL;
+		}
 	}
 	return pClient;
 }
@@ -56,7 +60,7 @@ INT SocketClient::Close()
 	{
 		return ERROR_SUCCESS;
 	}
-	int nRet = closesocket(m_sockClient);
+	INT nRet = closesocket(m_sockClient);
 	if (nRet == ERROR_SUCCESS)
 	{
 		m_sockClient = 0;
@@ -71,8 +75,8 @@ BOOL SocketClient::IsOpen()
 
 BOOL SocketClient::SetTcpNoDelay(BOOL bNoDelay)
 {
-	int nRet = setsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (const char*)&bNoDelay, sizeof(BOOL));
-	if (nRet == 0)
+	INT nRet = setsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (const CHAR*)&bNoDelay, sizeof(BOOL));
+	if (nRet == NO_ERROR)
 	{
 		return TRUE;
 	}
@@ -83,12 +87,34 @@ BOOL SocketClient::GetTcpNoDelay()
 {
 	BOOL bNoDelay = FALSE;
 	INT nSize = sizeof(BOOL);
-	int nRet = getsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, &nSize);
-	if (nRet == 0)
+	INT nRet = getsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (CHAR*)&bNoDelay, &nSize);
+	if (nRet == NO_ERROR)
 	{
 		return bNoDelay;
 	}
 	return FALSE;
+}
+
+BOOL SocketClient::SetTimeout(INT nTimeout)
+{
+	INT nRet = setsockopt(m_sockClient, SOL_SOCKET, SO_RCVTIMEO, (const CHAR*)&nTimeout, sizeof(INT));
+	if (nRet == NO_ERROR)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+INT SocketClient::GetTimeout()
+{
+	INT nTimeout = 0;
+	INT nSize = sizeof(INT);
+	INT nRet = getsockopt(m_sockClient, SOL_SOCKET, SO_RCVTIMEO, (CHAR *)&nTimeout, &nSize);
+	if (nRet == NO_ERROR)
+	{
+		return nTimeout;
+	}
+	return -1;
 }
 
 BOOL SocketClient::ConfigureBlocking(BOOL bBlock)
@@ -127,7 +153,7 @@ BOOL SocketClient::Connect(const SocketAddress& addSocket)
 
 INT SocketClient::Read(CHAR* cData, INT nLen)
 {
-	int nRet = recv(m_sockClient, cData, nLen, 0);
+	INT nRet = recv(m_sockClient, cData, nLen, 0);
 	if (nRet == SOCKET_ERROR)
 	{
 		// recv error
@@ -142,7 +168,7 @@ INT SocketClient::Write(const CHAR* cData, INT nLen)
 	{
 		nLen = (INT) strlen(cData);
 	}
-	int nRet = send(m_sockClient, cData, nLen, 0);
+	INT nRet = send(m_sockClient, cData, nLen, 0);
 	if (nRet == SOCKET_ERROR)
 	{
 		// send error

@@ -37,6 +37,8 @@ public:
 	BOOL IsOpen();
 	BOOL SetTcpNoDelay(BOOL bNoDelay);
 	BOOL GetTcpNoDelay();
+	BOOL SetTimeout(INT nTimeout);
+	INT GetTimeout();
 	BOOL ConfigureBlocking(BOOL bBlock);
 	BOOL Connect(const SocketAddress& addSocket);
 	INT Read(CHAR* cData, INT nLen);

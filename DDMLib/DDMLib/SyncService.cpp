@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "AdbHelper.h"
 #include "ArrayUtils.h"
 
+#define SYNC						_T("sync")
+
 #define SYNC_DATA_MAX				64*1024
 #define REMOTE_PATH_MAX_LENGTH	1024
 #define SYNC_REQ_LENGTH			8
@@ -80,7 +82,7 @@ bool SyncService::OpenSync()
 
 	if (!resp || !resp->okay)
 	{
-		LogWEx(_T("ddms"), _T("Got unhappy response from ADB sync req: %s"), resp->message);
+		LogWEx(SYNC, _T("Got unhappy response from ADB sync req: %s"), resp->message);
 		m_pClient->Close();
 		delete m_pClient;
 		m_pClient = NULL;
@@ -172,7 +174,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// read up to SYNC_DATA_MAX
 		int readCount = fsr.ReadData(GetBuffer() + SYNC_REQ_LENGTH, SYNC_DATA_MAX);
-		LogDEx(_T("ddms"), _T("readCount=%d"), readCount);
+		LogDEx(SYNC, _T("readCount=%d"), readCount);
 		if (readCount == 0)
 		{
 			// we reached the end of the file
@@ -191,7 +193,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// now write it
 		bRet = AdbHelper::Write(m_pClient, GetBuffer(), readCount + SYNC_REQ_LENGTH, timeOut);
-		LogDEx(_T("ddms"), _T("writecount=%d"), readCount + SYNC_REQ_LENGTH);
+		LogDEx(SYNC, _T("writecount=%d"), readCount + SYNC_REQ_LENGTH);
 		if (!bRet)
 		{
 			// write error

@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Log.h"
 #include "StringUtils.h"
 
+#define DDMS			_T("ddms")
 #define WAIT_TIME		5 // spin-wait sleep, in ms
 
 const char* const AdbHelper::s_arrAdbService[ADB_SERVICE_COUT] =
@@ -113,7 +114,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, const TStr
 int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService adbService, const TString command,
 	IDevice* device, IShellOutputReceiver* rcvr, long maxTimeToOutputResponse, CharStreamReader* reader)
 {
-	LogVEx(_T("ddms"), _T("execute: running %s"), command);
+	LogVEx(DDMS, _T("execute: running %s"), command);
 
 	std::unique_ptr<SocketClient> adbClient(SocketClient::Open(adbSockAddr));
 	if (!adbClient)
@@ -153,7 +154,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	std::unique_ptr<AdbResponse> resp(ReadAdbResponse(adbClient.get(), false /* readDiagString */));
 	if (!resp || !resp->okay)
 	{
-		LogEEx(_T("ddms"), _T("ADB rejected shell command (%s): %s"), command, resp->message);
+		LogEEx(DDMS, _T("ADB rejected shell command (%s): %s"), command, resp->message);
 		return -1;
 	}
 
@@ -170,7 +171,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 			written += adbClient->Write(data, read);
 			if (written != read)
 			{
-				LogEEx(_T("ddms"), _T("ADB write inconsistency, wrote %d expected %d"), written, read);
+				LogEEx(DDMS, _T("ADB write inconsistency, wrote %d expected %d"), written, read);
 				return -1;
 			}
 		}
@@ -184,7 +185,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 
 		if (rcvr != NULL && rcvr->IsCancelled())
 		{
-			LogV(_T("ddms"), _T("execute: cancelled"));
+			LogV(DDMS, _T("execute: cancelled"));
 			break;
 		}
 
@@ -193,7 +194,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 		{
 			// we're at the end, we flush the output
 			rcvr->Flush();
-			LogVEx(_T("ddms"), _T("execute '%s' on '%s' : EOF hit. Read: %d"),
+			LogVEx(DDMS, _T("execute '%s' on '%s' : EOF hit. Read: %d"),
 				command, device, count);
 			break;
 		}
@@ -223,7 +224,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 	{
 		adbClient->Close();
 	}
-	LogV(_T("ddms"), _T("execute: returning"));
+	LogV(DDMS, _T("execute: returning"));
 	return 0;
 }
 
@@ -250,12 +251,14 @@ bool AdbHelper::Read(SocketClient* client, char* data, int length, int timeout)
 		if (count < 0)
 		{
 			// error
+			LogDEx(DDMS, _T("read: channel error %d"), GetLastError());
 			return false;
 		}
 		else if (count == 0)
 		{
 			if (timeout != 0 && numWaits * WAIT_TIME > timeout)
 			{
+				LogD(DDMS, _T("read: timeout"));
 				return false;
 			}
 			// non-blocking spin
@@ -293,12 +296,14 @@ bool AdbHelper::Write(SocketClient* client, const char* data, int length, int ti
 		if (count < 0)
 		{
 			// error
+			LogDEx(DDMS, _T("write: channel error %d"), GetLastError());
 			return false;
 		}
 		else if (count == 0)
 		{
 			if (timeout != 0 && numWaits * WAIT_TIME > timeout)
 			{
+				LogD(DDMS, _T("write: timeout"));
 				return false;
 			}
 			// non-blocking spin
