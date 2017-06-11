@@ -48,6 +48,7 @@ SyncService::SyncService(const SocketAddress& address, Device* device)
 
 SyncService::~SyncService()
 {
+	Close();
 	if (m_pBuffer != NULL)
 	{
 		delete[] m_pBuffer;

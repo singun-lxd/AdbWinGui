@@ -214,6 +214,7 @@ int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remot
 	{
 		LogDEx(DEVICE, _T("Uploading file onto device '%s'"), GetSerialNumber());
 		bool bSync = sync->PushFile(localFilePath, remoteFilePath, SyncService::GetNullProgressMonitor());
+		sync->Close();
 		if (!bSync)
 		{
 			return -1;
