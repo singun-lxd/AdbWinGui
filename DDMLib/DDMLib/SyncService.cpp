@@ -63,10 +63,18 @@ bool SyncService::OpenSync()
 	m_pClient->ConfigureBlocking(false);
 
 	// target a specific device
-	AdbHelper::SetDevice(m_pClient, m_pDevice);
+	bool bRet = AdbHelper::SetDevice(m_pClient, m_pDevice);
+	if (!bRet)
+	{
+		return false;
+	}
 
 	std::unique_ptr<const char[]> request(AdbHelper::FormAdbRequest("sync:")); //$NON-NLS-1$
-	AdbHelper::Write(m_pClient, request.get(), -1, DdmPreferences::GetTimeOut());
+	bRet = AdbHelper::Write(m_pClient, request.get(), -1, DdmPreferences::GetTimeOut());
+	if (!bRet)
+	{
+		return false;
+	}
 
 	std::unique_ptr<AdbHelper::AdbResponse> resp(AdbHelper::ReadAdbResponse(m_pClient, false /* readDiagString */));
 
@@ -152,7 +160,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 	strncpy(GetBuffer(), ID_DATA, _countof(ID_DATA));
 
-	bool err = false;
+	int errCode = 0;
 	// look while there is something to read
 	while (true)
 	{
@@ -164,6 +172,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// read up to SYNC_DATA_MAX
 		int readCount = fsr.ReadData(GetBuffer() + SYNC_REQ_LENGTH, SYNC_DATA_MAX);
+		LogDEx(_T("ddms"), _T("readCount=%d"), readCount);
 		if (readCount == 0)
 		{
 			// we reached the end of the file
@@ -172,7 +181,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 		else if (readCount == -1)
 		{
 			// read error
-			err = true;
+			errCode = -1;
 			break;
 		}
 
@@ -182,10 +191,11 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// now write it
 		bRet = AdbHelper::Write(m_pClient, GetBuffer(), readCount + SYNC_REQ_LENGTH, timeOut);
+		LogDEx(_T("ddms"), _T("writecount=%d"), readCount + SYNC_REQ_LENGTH);
 		if (!bRet)
 		{
 			// write error
-			err = true;
+			errCode = AdbHelper::GetLastError();
 			break;
 		}
 
@@ -198,7 +208,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	fRead.Delete();
 
 	delete[] msg;
-	if (err == true)
+	if (errCode != 0)
 	{
 		return false;
 	}

@@ -36,8 +36,12 @@ public:
 	INT Close();
 	BOOL IsOpen();
 	BOOL SetTcpNoDelay(BOOL bNoDelay);
+	BOOL GetTcpNoDelay();
 	BOOL ConfigureBlocking(BOOL bBlock);
 	BOOL Connect(const SocketAddress& addSocket);
 	INT Read(CHAR* cData, INT nLen);
 	INT Write(const CHAR* cData, INT nLen = -1);
+
+private:
+	BOOL ImplConfigureBlocking(BOOL bBlock);
 };

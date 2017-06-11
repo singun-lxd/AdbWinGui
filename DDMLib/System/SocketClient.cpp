@@ -52,7 +52,7 @@ SocketClient* SocketClient::Open()
 
 INT SocketClient::Close()
 {
-	if (m_sockClient == 0)
+	if (m_sockClient == INVALID_SOCKET)
 	{
 		return ERROR_SUCCESS;
 	}
@@ -66,11 +66,28 @@ INT SocketClient::Close()
 
 BOOL SocketClient::IsOpen()
 {
-	return m_sockClient != 0;
+	return m_sockClient != INVALID_SOCKET;
 }
 
 BOOL SocketClient::SetTcpNoDelay(BOOL bNoDelay)
 {
+	int nRet = setsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (const char*)&bNoDelay, sizeof(BOOL));
+	if (nRet == 0)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL SocketClient::GetTcpNoDelay()
+{
+	BOOL bNoDelay = FALSE;
+	INT nSize = sizeof(BOOL);
+	int nRet = getsockopt(m_sockClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, &nSize);
+	if (nRet == 0)
+	{
+		return bNoDelay;
+	}
 	return FALSE;
 }
 
@@ -84,18 +101,25 @@ BOOL SocketClient::ConfigureBlocking(BOOL bBlock)
 	{
 		return TRUE;
 	}
-	// todo config blocking
-	m_bBlocking = bBlock;
-	return TRUE;
+	BOOL bRet = ImplConfigureBlocking(bBlock);
+	if (bRet)
+	{
+		m_bBlocking = bBlock;
+	}
+	return bRet;
 }
 
 BOOL SocketClient::Connect(const SocketAddress& addSocket)
 {
 	m_sockClient = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (m_sockClient == INVALID_SOCKET)
+	{
+		return FALSE;
+	}
 	INT nRet = connect(m_sockClient, (SOCKADDR*)&addSocket, sizeof(addSocket));
 	if (nRet == SOCKET_ERROR)
 	{
-		m_sockClient = 0;
+		m_sockClient = INVALID_SOCKET;
 		return FALSE;
 	}
 	return TRUE;
@@ -107,6 +131,7 @@ INT SocketClient::Read(CHAR* cData, INT nLen)
 	if (nRet == SOCKET_ERROR)
 	{
 		// recv error
+		return -1;
 	}
 	return nLen;
 }
@@ -121,6 +146,18 @@ INT SocketClient::Write(const CHAR* cData, INT nLen)
 	if (nRet == SOCKET_ERROR)
 	{
 		// send error
+		return -1;
 	}
 	return nLen;
+}
+
+BOOL SocketClient::ImplConfigureBlocking(BOOL bBlock)
+{
+	ULONG ulMode = static_cast<ULONG>(bBlock);
+	int nRet = ioctlsocket(m_sockClient, FIONBIO, &ulMode);
+	if (nRet != NO_ERROR)
+	{
+		return FALSE;
+	}
+	return TRUE;
 }
