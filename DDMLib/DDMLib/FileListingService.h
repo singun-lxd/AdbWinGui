@@ -46,33 +46,33 @@ public:
 		FileEntry(FileEntry* parent, const char* name, int type, bool isRoot);
 
 	public:
-		const char* GetName();
-		const char* GetSize();
-		int GetSizeValue();
-		const char* GetDate();
-		const char* GetTime();
-		const char* GetPermissions();
-		const char* GetOwner();
-		const char* GetGroup();
-		const char* GetInfo();
-		void GetFullPath(std::string& fullPath);
-		void GetFullEscapedPath(std::string& fullPath);
-		void GetPathSegments(std::vector<std::string>& vecSegments);
-		int GetType();
+		const char* GetName() const;
+		const char* GetSize() const;
+		int GetSizeValue() const;
+		const char* GetDate() const;
+		const char* GetTime() const;
+		const char* GetPermissions() const;
+		const char* GetOwner() const;
+		const char* GetGroup() const;
+		const char* GetInfo() const;
+		void GetFullPath(std::string& fullPath) const;
+		void GetFullEscapedPath(std::string& fullPath) const;
+		void GetPathSegments(std::vector<std::string>& vecSegments) const;
+		int GetType() const;
 		void SetType(int type);
-		bool IsDirectory();
-		FileEntry* GetParent();
-		void GetCachedChildren(std::vector<FileEntry*>& vecChildren);
-		FileEntry* FindChild(const char* name);
-		bool IsRoot();
+		bool IsDirectory() const;
+		FileEntry* GetParent() const;
+		void GetCachedChildren(std::vector<FileEntry*>& vecChildren) const;
+		FileEntry* FindChild(const char* name) const;
+		bool IsRoot() const;
 		void AddChild(FileEntry* child);
 		void SetChildren(const std::vector<FileEntry*>& newChildren);
-		bool NeedFetch();
-		bool IsApplicationPackage();
-		bool IsAppFileName();
+		bool NeedFetch() const;
+		bool IsApplicationPackage() const;
+		bool IsAppFileName() const;
 	protected:
-		void FillPathBuilder(std::string& pathBuilder, bool escapePath);
-		void FillPathSegments(std::vector<std::string>& list);
+		void FillPathBuilder(std::string& pathBuilder, bool escapePath) const;
+		void FillPathSegments(std::vector<std::string>& list) const;
 	private:
 		void CheckAppPackageStatus();
 	public:

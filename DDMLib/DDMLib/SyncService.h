@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "CommonDefine.h"
-#include "..\System\SocketAddress.h"
-#include "..\System\File.h"
+#include "../System/SocketAddress.h"
+#include "../System/File.h"
 #include "Device.h"
 
 // define class
@@ -36,6 +36,20 @@ public:
 		virtual bool IsCanceled() = 0;
 		virtual void StartSubTask(const TString name) = 0;
 		virtual void Advance(int work) = 0;
+	};
+
+	struct FileStat
+	{
+	private:
+		const int m_nMode;
+		const int m_nSize;
+		const time_t m_tLastModified;
+
+	public:
+		FileStat(int mode, int size, int lastModifiedSecs);
+		int GetMode() const;
+		int GetSize() const;
+		time_t GetLastModified() const;
 	};
 
 private:
@@ -66,11 +80,15 @@ public:
 	static ISyncProgressMonitor* GetNullProgressMonitor();
 
 	bool PushFile(const TString local, const TString remote, ISyncProgressMonitor* monitor);
+	bool PullFile(const TString remote, const TString local, ISyncProgressMonitor* monitor);
+	bool StatFile(const TString path, FileStat** fileStat);
 
 private:
 	bool DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor);
-	static char* CreateSendFileReq(const char* command, const TString path, int mode);
-	static char* CreateReq(const char* command, int value);
+	bool DoPullFile(const TString remotePath, const TString localPath, ISyncProgressMonitor* monitor);
+	static char* CreateReq(const char* command, int value, int& len);
+	static char* CreateFileReq(const char* command, const TString path, int& len);
+	static char* CreateSendFileReq(const char* command, const TString path, int mode, int& len);
 	static bool CheckResult(char* result, char* code);
 	char* GetBuffer();
 };

@@ -19,32 +19,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "FileListingService.h"
 #include <regex>
 
-#define APK_PATTERN	".*\\.apk"
+#define APK_PATTERN			".*\\.apk"
 
-#define  DIRECTORY_DATA "data"
-#define  DIRECTORY_SDCARD "sdcard"
-#define  DIRECTORY_MNT "mnt"
-#define  DIRECTORY_SYSTEM "system"
-#define  DIRECTORY_TEMP "tmp"
-#define  DIRECTORY_APP "app"
+#define  DIRECTORY_DATA		"data"
+#define  DIRECTORY_SDCARD		"sdcard"
+#define  DIRECTORY_MNT			"mnt"
+#define  DIRECTORY_SYSTEM		"system"
+#define  DIRECTORY_TEMP		"tmp"
+#define  DIRECTORY_APP			"app"
 
-#define REFRESH_RATE	5000L
-#define REFRESH_TEST	(long)(REFRESH_RATE * .8)
+#define REFRESH_RATE			5000L
+#define REFRESH_TEST			(long)(REFRESH_RATE * .8)
 
-#define TYPE_FILE 0
-#define TYPE_DIRECTORY 1
-#define TYPE_DIRECTORY_LINK 2
-#define TYPE_BLOCK 3
-#define TYPE_CHARACTER 4
-#define TYPE_LINK 5
-#define TYPE_SOCKET 6
-#define TYPE_FIFO 7
-#define TYPE_OTHER 8
+#define TYPE_FILE				0
+#define TYPE_DIRECTORY			1
+#define TYPE_DIRECTORY_LINK	2
+#define TYPE_BLOCK				3
+#define TYPE_CHARACTER			4
+#define TYPE_LINK				5
+#define TYPE_SOCKET			6
+#define TYPE_FIFO				7
+#define TYPE_OTHER				8
 
-#define FILE_SEPARATOR		"/"
-#define FILE_ROOT			"/"
+#define FILE_SEPARATOR			"/"
+#define FILE_ROOT				"/"
 
 #define ESCAPE_PATTERN_REGEX	"([\\\\()*+?\"'&#/\\s])"
+
+//////////////////////////////////////////////////////////////////////////
+// implements for FileEntry
 
 FileListingService::FileEntry::FileEntry(FileEntry* parent, const char* name, int type, bool isRoot)
 {
@@ -56,52 +59,52 @@ FileListingService::FileEntry::FileEntry(FileEntry* parent, const char* name, in
 	CheckAppPackageStatus();
 }
 
-const char * FileListingService::FileEntry::GetName()
+const char * FileListingService::FileEntry::GetName() const
 {
 	return m_strName.c_str();
 }
 
-const char* FileListingService::FileEntry::GetSize()
+const char* FileListingService::FileEntry::GetSize() const
 {
 	return m_strSize.c_str();
 }
 
-int FileListingService::FileEntry::GetSizeValue()
+int FileListingService::FileEntry::GetSizeValue() const
 {
 	return atoi(m_strSize.c_str());
 }
 
-const char* FileListingService::FileEntry::GetDate()
+const char* FileListingService::FileEntry::GetDate() const
 {
 	return m_strDate.c_str();
 }
 
-const char* FileListingService::FileEntry::GetTime()
+const char* FileListingService::FileEntry::GetTime() const
 {
 	return m_strTime.c_str();
 }
 
-const char* FileListingService::FileEntry::GetPermissions()
+const char* FileListingService::FileEntry::GetPermissions() const
 {
 	return m_strPermissions.c_str();
 }
 
-const char* FileListingService::FileEntry::GetOwner()
+const char* FileListingService::FileEntry::GetOwner() const
 {
 	return m_strOwner.c_str();
 }
 
-const char* FileListingService::FileEntry::GetGroup()
+const char* FileListingService::FileEntry::GetGroup() const
 {
 	return m_strGroup.c_str();
 }
 
-const char* FileListingService::FileEntry::GetInfo()
+const char* FileListingService::FileEntry::GetInfo() const
 {
 	return m_strInfo.c_str();
 }
 
-void FileListingService::FileEntry::GetFullPath(std::string& fullPath)
+void FileListingService::FileEntry::GetFullPath(std::string& fullPath) const
 {
 	if (m_bIsRoot)
 	{
@@ -110,17 +113,17 @@ void FileListingService::FileEntry::GetFullPath(std::string& fullPath)
 	FillPathBuilder(fullPath, false);
 }
 
-void FileListingService::FileEntry::GetFullEscapedPath(std::string& fullPath)
+void FileListingService::FileEntry::GetFullEscapedPath(std::string& fullPath) const
 {
 	FillPathBuilder(fullPath, true);
 }
 
-void FileListingService::FileEntry::GetPathSegments(std::vector<std::string>& vecSegments)
+void FileListingService::FileEntry::GetPathSegments(std::vector<std::string>& vecSegments) const
 {
 	FillPathSegments(vecSegments);
 }
 
-int FileListingService::FileEntry::GetType()
+int FileListingService::FileEntry::GetType() const
 {
 	return m_nType;
 }
@@ -130,22 +133,22 @@ void FileListingService::FileEntry::SetType(int type)
 	m_nType = type;
 }
 
-bool FileListingService::FileEntry::IsDirectory()
+bool FileListingService::FileEntry::IsDirectory() const
 {
 	return m_nType == TYPE_DIRECTORY || m_nType == TYPE_DIRECTORY_LINK;
 }
 
-FileListingService::FileEntry* FileListingService::FileEntry::GetParent()
+FileListingService::FileEntry* FileListingService::FileEntry::GetParent() const
 {
 	return m_pParent;
 }
 
-void FileListingService::FileEntry::GetCachedChildren(std::vector<FileEntry*>& vecChildren)
+void FileListingService::FileEntry::GetCachedChildren(std::vector<FileEntry*>& vecChildren) const
 {
 	vecChildren.assign(m_vecChildren.begin(), m_vecChildren.end());
 }
 
-FileListingService::FileEntry* FileListingService::FileEntry::FindChild(const char* name)
+FileListingService::FileEntry* FileListingService::FileEntry::FindChild(const char* name) const
 {
 	if (name == NULL)
 	{
@@ -161,7 +164,7 @@ FileListingService::FileEntry* FileListingService::FileEntry::FindChild(const ch
 	return NULL;
 }
 
-bool FileListingService::FileEntry::IsRoot()
+bool FileListingService::FileEntry::IsRoot() const
 {
 	return m_bIsRoot;
 }
@@ -177,7 +180,7 @@ void FileListingService::FileEntry::SetChildren(const std::vector<FileEntry*>& n
 	m_vecChildren.assign(newChildren.begin(), newChildren.end());
 }
 
-bool FileListingService::FileEntry::NeedFetch()
+bool FileListingService::FileEntry::NeedFetch() const
 {
 	if (m_tFetchTime == 0)
 	{
@@ -187,12 +190,12 @@ bool FileListingService::FileEntry::NeedFetch()
 	return current - m_tFetchTime > REFRESH_TEST;
 }
 
-bool FileListingService::FileEntry::IsApplicationPackage()
+bool FileListingService::FileEntry::IsApplicationPackage() const
 {
 	return m_bIsAppPackage;
 }
 
-bool FileListingService::FileEntry::IsAppFileName()
+bool FileListingService::FileEntry::IsAppFileName() const
 {
 	std::regex rxName(APK_PATTERN, std::tregex::icase);
 	std::smatch results;
@@ -203,7 +206,7 @@ bool FileListingService::FileEntry::IsAppFileName()
 	return false;
 }
 
-void FileListingService::FileEntry::FillPathBuilder(std::string& pathBuilder, bool escapePath)
+void FileListingService::FileEntry::FillPathBuilder(std::string& pathBuilder, bool escapePath) const
 {
 	if (m_bIsRoot)
 	{
@@ -227,7 +230,7 @@ void FileListingService::FileEntry::FillPathBuilder(std::string& pathBuilder, bo
 	}
 }
 
-void FileListingService::FileEntry::FillPathSegments(std::vector<std::string>& list)
+void FileListingService::FileEntry::FillPathSegments(std::vector<std::string>& list) const
 {
 	if (m_bIsRoot)
 	{

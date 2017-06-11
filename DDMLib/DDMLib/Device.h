@@ -76,6 +76,8 @@ public:
 	virtual bool IsOffline() const override;
 	virtual bool IsBootLoader() const override;
 	SyncService* GetSyncService();
+	virtual int PushFile(const TString local, const TString remote) override;
+	virtual int PullFile(const TString remote, const TString local) override;
 	virtual int InstallPackage(const TString packageFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) override;
 	virtual int InstallPackages(const TString apkFilePaths[], int apkCount, int timeOutInMs, bool reinstall,
 		const TString args[] = NULL, int argCount = 0) override;

@@ -179,6 +179,7 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 
 	ZeroMemory(data, sizeof(char) * bufferLen);
 	long timeToResponseCount = 0;
+	int err = 0;
 	while (true)
 	{
 		int count;
@@ -192,21 +193,30 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 		count = adbClient->Read(data, bufferLen);
 		if (count < 0)
 		{
-			// we're at the end, we flush the output
-			rcvr->Flush();
-			LogVEx(DDMS, _T("execute '%s' on '%s' : EOF hit. Read: %d"),
-				command, device, count);
-			break;
+			err = GetLastError();
+			if (err == WSAEWOULDBLOCK || err == WSAEINPROGRESS)
+			{
+				int wait = WAIT_TIME * 5;
+				timeToResponseCount += wait;
+				if (maxTimeToOutputResponse > 0 && timeToResponseCount > maxTimeToOutputResponse)
+				{
+					break;
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(wait));
+			}
+			else
+			{
+				break;
+			}
 		}
 		else if (count == 0)
 		{
-			int wait = WAIT_TIME * 5;
-			timeToResponseCount += wait;
-			if (maxTimeToOutputResponse > 0 && timeToResponseCount > maxTimeToOutputResponse)
-			{
-				return -1;
-			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(wait));
+			err = 0;
+			// we're at the end, we flush the output
+			rcvr->Flush();
+			LogVEx(DDMS, _T("execute '%s' on '%s' : EOF hit. Read: %d"),
+				command, device->GetSerialNumber(), count);
+			break;
 		}
 		else
 		{
@@ -225,6 +235,10 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 		adbClient->Close();
 	}
 	LogV(DDMS, _T("execute: returning"));
+	if (err != 0)
+	{
+		return -1;
+	}
 	return 0;
 }
 
@@ -247,28 +261,37 @@ bool AdbHelper::Read(SocketClient* client, char* data, int length, int timeout)
 		int count;
 
 		count = client->Read(data, length);
-		readCount += count;
 		if (count < 0)
 		{
-			// error
-			LogDEx(DDMS, _T("read: channel error %d"), GetLastError());
-			return false;
+			int err = GetLastError();
+			if (err == WSAEWOULDBLOCK || err == WSAEINPROGRESS)
+			{
+				if (timeout != 0 && numWaits * WAIT_TIME > timeout)
+				{
+					LogD(DDMS, _T("read: timeout"));
+					return false;
+				}
+				// non-blocking spin
+				std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME));
+				numWaits++;
+			}
+			else
+			{
+				// error
+				LogDEx(DDMS, _T("read: channel error %d"), GetLastError());
+				return false;
+			}
 		}
 		else if (count == 0)
 		{
-			if (timeout != 0 && numWaits * WAIT_TIME > timeout)
-			{
-				LogD(DDMS, _T("read: timeout"));
-				return false;
-			}
-			// non-blocking spin
-			std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME));
-			numWaits++;
+			// normal finished
+			break;
 		}
 		else
 		{
 			numWaits = 0;
 		}
+		readCount += count;
 	}
 	return true;
 }
@@ -292,28 +315,37 @@ bool AdbHelper::Write(SocketClient* client, const char* data, int length, int ti
 		int count;
 
 		count = client->Write(data, length);
-		writeCount += count;
 		if (count < 0)
 		{
-			// error
-			LogDEx(DDMS, _T("write: channel error %d"), GetLastError());
-			return false;
+			int err = GetLastError();
+			if (err == WSAEWOULDBLOCK || err == WSAEINPROGRESS)
+			{
+				if (timeout != 0 && numWaits * WAIT_TIME > timeout)
+				{
+					LogD(DDMS, _T("write: timeout"));
+					return false;
+				}
+				// non-blocking spin
+				std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME));
+				numWaits++;
+			}
+			else
+			{
+				// error
+				LogDEx(DDMS, _T("write: channel error %d"), GetLastError());
+				return false;
+			}
 		}
 		else if (count == 0)
 		{
-			if (timeout != 0 && numWaits * WAIT_TIME > timeout)
-			{
-				LogD(DDMS, _T("write: timeout"));
-				return false;
-			}
-			// non-blocking spin
-			std::this_thread::sleep_for(std::chrono::milliseconds(WAIT_TIME));
-			numWaits++;
+			// normal finished
+			break;
 		}
 		else
 		{
 			numWaits = 0;
 		}
+		writeCount += count;
 	}
 	return true;
 }

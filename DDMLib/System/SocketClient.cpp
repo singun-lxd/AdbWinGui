@@ -58,10 +58,10 @@ INT SocketClient::Close()
 {
 	if (m_sockClient == INVALID_SOCKET)
 	{
-		return ERROR_SUCCESS;
+		return NO_ERROR;
 	}
 	INT nRet = closesocket(m_sockClient);
-	if (nRet == ERROR_SUCCESS)
+	if (nRet == NO_ERROR)
 	{
 		m_sockClient = 0;
 	}
@@ -159,7 +159,7 @@ INT SocketClient::Read(CHAR* cData, INT nLen)
 		// recv error
 		return -1;
 	}
-	return nLen;
+	return nRet;
 }
 
 INT SocketClient::Write(const CHAR* cData, INT nLen)
@@ -174,7 +174,7 @@ INT SocketClient::Write(const CHAR* cData, INT nLen)
 		// send error
 		return -1;
 	}
-	return nLen;
+	return nRet;
 }
 
 BOOL SocketClient::ImplConfigureBlocking(BOOL bBlock)

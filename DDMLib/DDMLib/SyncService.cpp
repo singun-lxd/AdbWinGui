@@ -130,10 +130,67 @@ bool SyncService::PushFile(const TString local, const TString remote, ISyncProgr
 	return bRet;
 }
 
+bool SyncService::PullFile(const TString remote, const TString local, ISyncProgressMonitor* monitor)
+{
+	FileStat* fileStat = NULL;
+	bool bRet = StatFile(remote, &fileStat);
+	if (!bRet)
+	{
+		return false;
+	}
+	if (fileStat->GetMode() == 0)
+	{
+		return false;
+	}
+
+	monitor->Start(0);
+	//TODO: use the {@link FileListingService} to get the file size.
+
+	bRet = DoPullFile(remote, local, monitor);
+
+	monitor->Stop();
+
+	return bRet;
+}
+
+bool SyncService::StatFile(const TString path, FileStat** fileStat)
+{
+	if (fileStat == NULL)
+	{
+		return false;
+	}
+	// create the stat request message.
+	int len = 0;
+	char* msg = CreateFileReq(ID_STAT, path, len);
+
+	bool bRet = AdbHelper::Write(m_pClient, msg, len, DdmPreferences::GetTimeOut());
+	delete[] msg;
+	if (!bRet)
+	{
+		return false;
+	}
+
+	// read the result, in a byte array containing 4 ints
+	// (id, mode, size, time)
+	const int statLen = 16;
+	char* statResult = new char[statLen];
+	bRet = AdbHelper::Read(m_pClient, statResult, statLen, DdmPreferences::GetTimeOut());
+
+	// check we have the proper data back
+	if (!bRet || !CheckResult(statResult, ID_STAT))
+	{
+		return false;
+	}
+
+	const int mode = ArrayUtils::Swap32bitFromArray(statResult, 4);
+	const int size = ArrayUtils::Swap32bitFromArray(statResult, 8);
+	const int lastModifiedSecs = ArrayUtils::Swap32bitFromArray(statResult, 12);
+	*fileStat = new FileStat(mode, size, lastModifiedSecs);
+	return true;
+}
+
 bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncProgressMonitor* monitor)
 {
-	char* msg = NULL;
-
 	const int timeOut = DdmPreferences::GetTimeOut();
 
 	int pathLen = _tcslen(remotePath);
@@ -148,22 +205,23 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	// create the stream to read the file
 	CharStreamReader fsr(fRead, SYNC_DATA_MAX);
 
-	delete[] msg;
+	char* msg = NULL;
+	int len = 0;
 	// create the header for the action
-	msg = CreateSendFileReq(ID_SEND, remotePath, 0644);
+	msg = CreateSendFileReq(ID_SEND, remotePath, 0644, len);
 
 	// and send it. We use a custom try/catch block to make the difference between
 	// file and network IO exceptions.
-	bool bRet = AdbHelper::Write(m_pClient, msg, -1, timeOut);
+	bool bRet = AdbHelper::Write(m_pClient, msg, len, timeOut);
+	delete[] msg;
 	if (!bRet)
 	{
-		delete[] msg;
 		return false;
 	}
 
 	strncpy(GetBuffer(), ID_DATA, _countof(ID_DATA));
 
-	int errCode = 0;
+	bool bError = false;
 	// look while there is something to read
 	while (true)
 	{
@@ -175,7 +233,6 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// read up to SYNC_DATA_MAX
 		int readCount = fsr.ReadData(GetBuffer() + SYNC_REQ_LENGTH, SYNC_DATA_MAX);
-		LogDEx(SYNC, _T("readCount=%d"), readCount);
 		if (readCount == 0)
 		{
 			// we reached the end of the file
@@ -184,7 +241,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 		else if (readCount == -1)
 		{
 			// read error
-			errCode = -1;
+			bError = true;
 			break;
 		}
 
@@ -194,11 +251,10 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// now write it
 		bRet = AdbHelper::Write(m_pClient, GetBuffer(), readCount + SYNC_REQ_LENGTH, timeOut);
-		LogDEx(SYNC, _T("writecount=%d"), readCount + SYNC_REQ_LENGTH);
 		if (!bRet)
 		{
 			// write error
-			errCode = AdbHelper::GetLastError();
+			bError = true;
 			break;
 		}
 
@@ -210,21 +266,19 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	fRead.Close();
 	fRead.Delete();
 
-	delete[] msg;
-	if (errCode != 0)
+	if (bError)
 	{
 		return false;
 	}
 
 	// create the DONE message
 	int time = static_cast<int>(file.GetLastModifiedTime() / 1000);
-	msg = CreateReq(ID_DONE, time);
+	len = 0;
+	msg = CreateReq(ID_DONE, time, len);
 
 	// and send it.
-	bRet = AdbHelper::Write(m_pClient, msg, SYNC_REQ_LENGTH, timeOut);
-
+	bRet = AdbHelper::Write(m_pClient, msg, len, timeOut);
 	delete[] msg;
-
 	if (!bRet)
 	{
 		return false;
@@ -241,7 +295,136 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
  	return true;
 }
 
-char* SyncService::CreateSendFileReq(const char* command, const TString path, int mode)
+bool SyncService::DoPullFile(const TString remotePath, const TString localPath, ISyncProgressMonitor* monitor)
+{
+// 	byte[] msg = null;
+// 	byte[] pullResult = new byte[8];
+// 
+// 	final int timeOut = DdmPreferences.getTimeOut();
+// 
+// 	try {
+// 		byte[] remotePathContent = remotePath.getBytes(AdbHelper.DEFAULT_ENCODING);
+// 
+// 		if (remotePathContent.length > REMOTE_PATH_MAX_LENGTH) {
+// 			throw new SyncException(SyncError.REMOTE_PATH_LENGTH);
+// 		}
+// 
+// 		// create the full request message
+// 		msg = createFileReq(ID_RECV, remotePathContent);
+// 
+// 		// and send it.
+// 		AdbHelper.write(mChannel, msg, -1, timeOut);
+// 
+// 		// read the result, in a byte array containing 2 ints
+// 		// (id, size)
+// 		AdbHelper.read(mChannel, pullResult, -1, timeOut);
+// 
+// 		// check we have the proper data back
+// 		if (!checkResult(pullResult, ID_DATA) &&
+// 			!checkResult(pullResult, ID_DONE)) {
+// 			throw new SyncException(SyncError.TRANSFER_PROTOCOL_ERROR,
+// 				readErrorMessage(pullResult, timeOut));
+// 		}
+// 	}
+// 	catch (UnsupportedEncodingException e) {
+// 		throw new SyncException(SyncError.REMOTE_PATH_ENCODING, e);
+// 	}
+// 
+// 	// access the destination file
+// 	File f = new File(localPath);
+// 
+// 	// create the stream to write in the file. We use a new try/catch block to differentiate
+// 	// between file and network io exceptions.
+// 	FileOutputStream fos = null;
+// 	try {
+// 		fos = new FileOutputStream(f);
+// 
+// 		// the buffer to read the data
+// 		byte[] data = new byte[SYNC_DATA_MAX];
+// 
+// 		// loop to get data until we're done.
+// 		while (true) {
+// 			// check if we're cancelled
+// 			if (monitor.isCanceled()) {
+// 				throw new SyncException(SyncError.CANCELED);
+// 			}
+// 
+// 			// if we're done, we stop the loop
+// 			if (checkResult(pullResult, ID_DONE)) {
+// 				break;
+// 			}
+// 			if (!checkResult(pullResult, ID_DATA)) {
+// 				// hmm there's an error
+// 				throw new SyncException(SyncError.TRANSFER_PROTOCOL_ERROR,
+// 					readErrorMessage(pullResult, timeOut));
+// 			}
+// 			int length = ArrayHelper.swap32bitFromArray(pullResult, 4);
+// 			if (length > SYNC_DATA_MAX) {
+// 				// buffer overrun!
+// 				// error and exit
+// 				throw new SyncException(SyncError.BUFFER_OVERRUN);
+// 			}
+// 
+// 			// now read the length we received
+// 			AdbHelper.read(mChannel, data, length, timeOut);
+// 
+// 			// get the header for the next packet.
+// 			AdbHelper.read(mChannel, pullResult, -1, timeOut);
+// 
+// 			// write the content in the file
+// 			fos.write(data, 0, length);
+// 
+// 			monitor.advance(length);
+// 		}
+// 
+// 		fos.flush();
+// 	}
+// 	catch (IOException e) {
+// 		Log.e("ddms", String.format("Failed to open local file %s for writing, Reason: %s",
+// 			f.getAbsolutePath(), e.toString()));
+// 		throw new SyncException(SyncError.FILE_WRITE_ERROR);
+// 	}
+// 	finally {
+// 		if (fos != null) {
+// 			fos.close();
+// 		}
+// 	}
+	return false;
+}
+
+char* SyncService::CreateReq(const char* command, int value, int& len)
+{
+	char* array = new char[SYNC_REQ_LENGTH];
+
+	strncpy(array, command, 4);
+	ArrayUtils::Swap32bitsToArray(value, array, 4);
+	len = SYNC_REQ_LENGTH;
+
+	return array;
+}
+
+char* SyncService::CreateFileReq(const char* command, const TString path, int& len)
+{
+	const char* filePath;
+#ifdef _UNICODE
+	std::string strPath;
+	ConvertUtils::WstringToString(path, strPath);
+	filePath = strPath.c_str();
+#else
+	filePath = remotePath;
+#endif
+	const int pathLength = strlen(filePath);
+	len = SYNC_REQ_LENGTH + pathLength;
+	char* array = new char[len];
+
+	strncpy(array, command, 4);
+	ArrayUtils::Swap32bitsToArray(pathLength, array, 4);
+	strncpy(array + SYNC_REQ_LENGTH, filePath, pathLength);
+
+	return array;
+}
+
+char* SyncService::CreateSendFileReq(const char* command, const TString path, int mode, int& len)
 {
 	// make the mode into a string
 	std::ostringstream oss;
@@ -260,22 +443,13 @@ char* SyncService::CreateSendFileReq(const char* command, const TString path, in
 
 	const int pathLength = strlen(remotePathContent);
 	const int modeLength = strlen(modeContent);
-	char* array = new char[SYNC_REQ_LENGTH + pathLength + modeLength];
+	len = SYNC_REQ_LENGTH + pathLength + modeLength;
+	char* array = new char[len];
 
 	strncpy(array, command, 4);
 	ArrayUtils::Swap32bitsToArray(pathLength + modeLength, array, 4);
 	strncpy(array + SYNC_REQ_LENGTH, remotePathContent, pathLength);
 	strncpy(array + SYNC_REQ_LENGTH + pathLength, modeContent, modeLength);
-
-	return array;
-}
-
-char* SyncService::CreateReq(const char* command, int value)
-{
-	char* array = new char[SYNC_REQ_LENGTH];
-
-	strncpy(array, command, 4);
-	ArrayUtils::Swap32bitsToArray(value, array, 4);
 
 	return array;
 }
@@ -297,4 +471,29 @@ char* SyncService::GetBuffer()
 		m_pBuffer = new char[SYNC_DATA_MAX + SYNC_REQ_LENGTH];
 	}
 	return m_pBuffer;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// implements for FileStat
+
+SyncService::FileStat::FileStat(int mode, int size, int lastModifiedSecs) :
+	m_nMode(mode),
+	m_nSize(size),
+	m_tLastModified(static_cast<time_t>(lastModifiedSecs) * 1000)
+{
+}
+
+int SyncService::FileStat::GetMode() const
+{
+	return m_nMode;
+}
+
+int SyncService::FileStat::GetSize() const
+{
+	return m_nSize;
+}
+
+time_t SyncService::FileStat::GetLastModified() const
+{
+	return m_tLastModified;
 }

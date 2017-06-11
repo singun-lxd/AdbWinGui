@@ -128,6 +128,46 @@ int Device::GetApiLevel()
 	return m_nApiLevel;
 }
 
+int Device::PushFile(const TString local, const TString remote)
+{
+	const TString targetFileName = GetFileName(local);
+
+	LogDEx(DEVICE, _T("Uploading %s onto device '%s'"), targetFileName, GetSerialNumber());
+
+	std::unique_ptr<SyncService> sync(GetSyncService());
+	if (sync)
+	{
+		LogDEx(DEVICE, _T("Uploading file onto device '%s'"), GetSerialNumber());
+		bool bSync = sync->PushFile(local, remote, SyncService::GetNullProgressMonitor());
+		sync->Close();
+		if (!bSync)
+		{
+			return -1;
+		}
+	}
+	return 0;
+}
+
+int Device::PullFile(const TString remote, const TString local)
+{
+	const TString targetFileName = GetFileName(remote);
+
+	LogDEx(DEVICE, _T("Downloading %s from device '%s'"), targetFileName, GetSerialNumber());
+
+	std::unique_ptr<SyncService> sync(GetSyncService());
+	if (sync)
+	{
+		LogDEx(DEVICE, _T("Downloading file from device '%s'"), GetSerialNumber());
+		bool bSync = sync->PushFile(local, remote, SyncService::GetNullProgressMonitor());
+		sync->Close();
+		if (!bSync)
+		{
+			return -1;
+		}
+	}
+	return 0;
+}
+
 int Device::InstallPackage(const TString packageFilePath, bool reinstall, const TString args[], int argCount)
 {
 	int nRetCode = -1;
@@ -246,10 +286,10 @@ int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, c
 	std::chrono::minutes minute(INSTALL_TIMEOUT_MINUTES);
 	long timeout = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(minute).count());
 	std::tstring& cmd = oss.str();
-	ExecuteShellCommand(cmd.c_str(), &receiver, timeout);
+	int nRet = ExecuteShellCommand(cmd.c_str(), &receiver, timeout);
 	const TString errMsg = receiver.GetErrorMessage();
 	// todo error code
-	return 0;
+	return nRet;
 }
 
 int Device::RemoveRemotePackage(const TString remoteFilePath)

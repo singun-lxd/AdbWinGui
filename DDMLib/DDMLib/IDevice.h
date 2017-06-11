@@ -55,6 +55,8 @@ public:
 	virtual bool IsOffline() const = 0;
 	virtual bool IsBootLoader() const = 0;
 
+	virtual int PushFile(const TString local, const TString remote) = 0;
+	virtual int PullFile(const TString remote, const TString local) = 0;
 	virtual int InstallPackage(const TString packageFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
 	virtual int InstallPackages(const TString apkFilePaths[], int apkCount, int timeOutInMs,
 		bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
