@@ -92,7 +92,7 @@ bool AdbVersion::operator < (const AdbVersion& o)
 
 AdbVersion* AdbVersion::ParseFrom(const TString input)
 {
-	std::tregex rxAdb(ADB_VERSION_PATTERN, std::tregex::icase);
+	std::tregex rxAdb(ADB_VERSION_PATTERN);
 	std::tsmatch results;
 	std::tstring parseLine(input);
 	if (std::regex_match(parseLine, results, rxAdb) && results.size() == 4)
