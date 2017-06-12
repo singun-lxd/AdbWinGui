@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "..\System\StreamReader.h"
 #include "DdmPreferences.h"
 #include "AdbHelper.h"
-#include "ArrayUtils.h"
+#include "ArrayHelper.h"
 
 #define SYNC						_T("sync")
 
@@ -182,9 +182,9 @@ bool SyncService::StatFile(const TString path, FileStat** fileStat)
 		return false;
 	}
 
-	const int mode = ArrayUtils::Swap32bitFromArray(statResult, 4);
-	const int size = ArrayUtils::Swap32bitFromArray(statResult, 8);
-	const int lastModifiedSecs = ArrayUtils::Swap32bitFromArray(statResult, 12);
+	const int mode = ArrayHelper::Swap32bitFromArray(statResult, 4);
+	const int size = ArrayHelper::Swap32bitFromArray(statResult, 8);
+	const int lastModifiedSecs = ArrayHelper::Swap32bitFromArray(statResult, 12);
 	*fileStat = new FileStat(mode, size, lastModifiedSecs);
 	return true;
 }
@@ -247,7 +247,7 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 		// now send the data to the device
 		// first write the amount read
-		ArrayUtils::Swap32bitsToArray(readCount, GetBuffer(), 4);
+		ArrayHelper::Swap32bitsToArray(readCount, GetBuffer(), 4);
 
 		// now write it
 		bRet = AdbHelper::Write(m_pClient, GetBuffer(), readCount + SYNC_REQ_LENGTH, timeOut);
@@ -397,7 +397,7 @@ char* SyncService::CreateReq(const char* command, int value, int& len)
 	char* array = new char[SYNC_REQ_LENGTH];
 
 	strncpy(array, command, 4);
-	ArrayUtils::Swap32bitsToArray(value, array, 4);
+	ArrayHelper::Swap32bitsToArray(value, array, 4);
 	len = SYNC_REQ_LENGTH;
 
 	return array;
@@ -418,7 +418,7 @@ char* SyncService::CreateFileReq(const char* command, const TString path, int& l
 	char* array = new char[len];
 
 	strncpy(array, command, 4);
-	ArrayUtils::Swap32bitsToArray(pathLength, array, 4);
+	ArrayHelper::Swap32bitsToArray(pathLength, array, 4);
 	strncpy(array + SYNC_REQ_LENGTH, filePath, pathLength);
 
 	return array;
@@ -447,7 +447,7 @@ char* SyncService::CreateSendFileReq(const char* command, const TString path, in
 	char* array = new char[len];
 
 	strncpy(array, command, 4);
-	ArrayUtils::Swap32bitsToArray(pathLength + modeLength, array, 4);
+	ArrayHelper::Swap32bitsToArray(pathLength + modeLength, array, 4);
 	strncpy(array + SYNC_REQ_LENGTH, remotePathContent, pathLength);
 	strncpy(array + SYNC_REQ_LENGTH + pathLength, modeContent, modeLength);
 

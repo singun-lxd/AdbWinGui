@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-class ArrayUtils
+class ArrayHelper
 {
 public:
 	static void Swap32bitsToArray(int value, char* dest, int offset)
@@ -29,7 +29,8 @@ public:
 		dest[offset + 3] = (char)((value & 0xFF000000) >> 24);
 	}
 
-	static int Swap32bitFromArray(char* value, int offset) {
+	static int Swap32bitFromArray(char* value, int offset)
+	{
 		int v = 0;
 		v |= ((int)value[offset]) & 0x000000FF;
 		v |= (((int)value[offset + 1]) & 0x000000FF) << 8;

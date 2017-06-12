@@ -157,7 +157,7 @@
     <ClInclude Include="DDMLib\AdbVersion.h" />
     <ClInclude Include="DDMLib\AndroidDebugBridge.h" />
     <ClInclude Include="DDMLib\AndroidEnvVar.h" />
-    <ClInclude Include="DDMLib\ArrayUtils.h" />
+    <ClInclude Include="DDMLib\ArrayHelper.h" />
     <ClInclude Include="DDMLib\CommonDefine.h" />
     <ClInclude Include="DDMLib\DdmPreferences.h" />
     <ClInclude Include="DDMLib\Device.h" />

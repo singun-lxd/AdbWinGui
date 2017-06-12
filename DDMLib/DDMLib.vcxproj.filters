@@ -111,13 +111,13 @@
     <ClInclude Include="System\SysLog.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="DDMLib\ArrayUtils.h">
-      <Filter>DDMLib</Filter>
-    </ClInclude>
     <ClInclude Include="DDMLib\NullOutputReceiver.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
     <ClInclude Include="DDMLib\FileListingService.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
+    <ClInclude Include="DDMLib\ArrayHelper.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
   </ItemGroup>
