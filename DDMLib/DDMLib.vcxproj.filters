@@ -120,6 +120,9 @@
     <ClInclude Include="DDMLib\ArrayHelper.h">
       <Filter>DDMLib</Filter>
     </ClInclude>
+    <ClInclude Include="System\StreamWriter.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

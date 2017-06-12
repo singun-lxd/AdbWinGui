@@ -176,6 +176,7 @@
     <ClInclude Include="System\ConvertUtils.h" />
     <ClInclude Include="System\File.h" />
     <ClInclude Include="System\FileReadWrite.h" />
+    <ClInclude Include="System\StreamWriter.h" />
     <ClInclude Include="System\SysLog.h" />
     <ClInclude Include="System\Process.h" />
     <ClInclude Include="System\SocketAddress.h" />

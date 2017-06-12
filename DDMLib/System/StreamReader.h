@@ -49,7 +49,8 @@ public:
 
 	void Clear()
 	{
-		m_tss.clear();
+		T szEmpty[1] = { 0 };
+		m_tss.str(szEmpty);
 	}
 
 	std::tstringstream& ReadData()

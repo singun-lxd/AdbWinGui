@@ -17,7 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "SyncService.h"
-#include "..\System\StreamReader.h"
+#include "../System/StreamReader.h"
+#include "../System/StreamWriter.h"
 #include "DdmPreferences.h"
 #include "AdbHelper.h"
 #include "ArrayHelper.h"
@@ -140,8 +141,10 @@ bool SyncService::PullFile(const TString remote, const TString local, ISyncProgr
 	}
 	if (fileStat->GetMode() == 0)
 	{
+		delete fileStat;
 		return false;
 	}
+	delete fileStat;
 
 	monitor->Start(0);
 	//TODO: use the {@link FileListingService} to get the file size.
@@ -205,10 +208,9 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 	// create the stream to read the file
 	CharStreamReader fsr(fRead, SYNC_DATA_MAX);
 
-	char* msg = NULL;
 	int len = 0;
 	// create the header for the action
-	msg = CreateSendFileReq(ID_SEND, remotePath, 0644, len);
+	char* msg = CreateSendFileReq(ID_SEND, remotePath, 0644, len);
 
 	// and send it. We use a custom try/catch block to make the difference between
 	// file and network IO exceptions.
@@ -228,7 +230,8 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 		// check if we're canceled
 		if (monitor->IsCanceled())
 		{
-			return false;
+			bError = true;
+			break;
 		}
 
 		// read up to SYNC_DATA_MAX
@@ -297,99 +300,126 @@ bool SyncService::DoPushFile(const File& file, const TString remotePath, ISyncPr
 
 bool SyncService::DoPullFile(const TString remotePath, const TString localPath, ISyncProgressMonitor* monitor)
 {
-// 	byte[] msg = null;
-// 	byte[] pullResult = new byte[8];
-// 
-// 	final int timeOut = DdmPreferences.getTimeOut();
-// 
-// 	try {
-// 		byte[] remotePathContent = remotePath.getBytes(AdbHelper.DEFAULT_ENCODING);
-// 
-// 		if (remotePathContent.length > REMOTE_PATH_MAX_LENGTH) {
-// 			throw new SyncException(SyncError.REMOTE_PATH_LENGTH);
-// 		}
-// 
-// 		// create the full request message
-// 		msg = createFileReq(ID_RECV, remotePathContent);
-// 
-// 		// and send it.
-// 		AdbHelper.write(mChannel, msg, -1, timeOut);
-// 
-// 		// read the result, in a byte array containing 2 ints
-// 		// (id, size)
-// 		AdbHelper.read(mChannel, pullResult, -1, timeOut);
-// 
-// 		// check we have the proper data back
-// 		if (!checkResult(pullResult, ID_DATA) &&
-// 			!checkResult(pullResult, ID_DONE)) {
-// 			throw new SyncException(SyncError.TRANSFER_PROTOCOL_ERROR,
-// 				readErrorMessage(pullResult, timeOut));
-// 		}
-// 	}
-// 	catch (UnsupportedEncodingException e) {
-// 		throw new SyncException(SyncError.REMOTE_PATH_ENCODING, e);
-// 	}
-// 
-// 	// access the destination file
-// 	File f = new File(localPath);
-// 
-// 	// create the stream to write in the file. We use a new try/catch block to differentiate
-// 	// between file and network io exceptions.
-// 	FileOutputStream fos = null;
-// 	try {
-// 		fos = new FileOutputStream(f);
-// 
-// 		// the buffer to read the data
-// 		byte[] data = new byte[SYNC_DATA_MAX];
-// 
-// 		// loop to get data until we're done.
-// 		while (true) {
-// 			// check if we're cancelled
-// 			if (monitor.isCanceled()) {
-// 				throw new SyncException(SyncError.CANCELED);
-// 			}
-// 
-// 			// if we're done, we stop the loop
-// 			if (checkResult(pullResult, ID_DONE)) {
-// 				break;
-// 			}
-// 			if (!checkResult(pullResult, ID_DATA)) {
-// 				// hmm there's an error
-// 				throw new SyncException(SyncError.TRANSFER_PROTOCOL_ERROR,
-// 					readErrorMessage(pullResult, timeOut));
-// 			}
-// 			int length = ArrayHelper.swap32bitFromArray(pullResult, 4);
-// 			if (length > SYNC_DATA_MAX) {
-// 				// buffer overrun!
-// 				// error and exit
-// 				throw new SyncException(SyncError.BUFFER_OVERRUN);
-// 			}
-// 
-// 			// now read the length we received
-// 			AdbHelper.read(mChannel, data, length, timeOut);
-// 
-// 			// get the header for the next packet.
-// 			AdbHelper.read(mChannel, pullResult, -1, timeOut);
-// 
-// 			// write the content in the file
-// 			fos.write(data, 0, length);
-// 
-// 			monitor.advance(length);
-// 		}
-// 
-// 		fos.flush();
-// 	}
-// 	catch (IOException e) {
-// 		Log.e("ddms", String.format("Failed to open local file %s for writing, Reason: %s",
-// 			f.getAbsolutePath(), e.toString()));
-// 		throw new SyncException(SyncError.FILE_WRITE_ERROR);
-// 	}
-// 	finally {
-// 		if (fos != null) {
-// 			fos.close();
-// 		}
-// 	}
-	return false;
+	const int timeOut = DdmPreferences::GetTimeOut();
+
+	int pathLen = _tcslen(remotePath);
+	if (pathLen > REMOTE_PATH_MAX_LENGTH)
+	{
+		return false;
+	}
+
+	// create the full request message
+	int len = 0;
+	char* msg = CreateFileReq(ID_RECV, remotePath, len);
+
+	// and send it.
+	bool bRet = AdbHelper::Write(m_pClient, msg, len, timeOut);
+	delete[] msg;
+	if (!bRet)
+	{
+		return false;
+	}
+
+	// read the result, in a byte array containing 2 ints
+	// (id, size)
+	char pullResult[SYNC_REQ_LENGTH] = { 0 };
+	bRet = AdbHelper::Read(m_pClient, pullResult, SYNC_REQ_LENGTH, timeOut);
+	if (!bRet)
+	{
+		return false;
+	}
+
+	// check we have the proper data back
+	if (!CheckResult(pullResult, ID_DATA) &&
+		!CheckResult(pullResult, ID_DONE))
+	{
+		return false;
+	}
+
+	// access the destination file
+	File f(localPath);
+
+	// create the stream to write in the file. We use a new try/catch block to differentiate
+	// between file and network io exceptions.
+	FileReadWrite fWrite = f.GetWrite();
+	CharStreamWriter fsw(fWrite, 0);
+
+	// the buffer to read the data
+	char data[SYNC_DATA_MAX] = { 0 };
+
+	bool bError = false;
+	// loop to get data until we're done.
+	while (true)
+	{
+		// check if we're cancelled
+		if (monitor->IsCanceled())
+		{
+			bError = true;
+			break;
+		}
+
+		// if we're done, we stop the loop
+		if (CheckResult(pullResult, ID_DONE))
+		{
+			break;
+		}
+		if (!CheckResult(pullResult, ID_DATA))
+		{
+			// hmm there's an error
+			bError = true;
+			break;
+		}
+		int length = ArrayHelper::Swap32bitFromArray(pullResult, 4);
+		if (length > SYNC_DATA_MAX)
+		{
+			// buffer overrun!
+			// error and exit
+			bError = true;
+			break;
+		}
+
+		// now read the length we received
+		bRet = AdbHelper::Read(m_pClient, data, length, timeOut);
+		if (!bRet)
+		{
+			bError = true;
+			break;
+		}
+
+		// get the header for the next packet.
+		bRet = AdbHelper::Read(m_pClient, pullResult, SYNC_REQ_LENGTH, timeOut);
+		if (!bRet)
+		{
+			bError = true;
+			break;
+		}
+
+		// write the content in the file
+		long lWrite = fsw.WriteData(data, length);
+		if (lWrite < 0)
+		{
+			bError = true;
+			break;
+		}
+
+		monitor->Advance(length);
+	}
+
+	long lWrite = fsw.Flush();
+	if (lWrite < 0)
+	{
+		bError = true;
+	}
+
+	// close the local file
+	fWrite.Close();
+	fWrite.Delete();
+
+	if (bError)
+	{
+		return false;
+	}
+	return true;
 }
 
 char* SyncService::CreateReq(const char* command, int value, int& len)
