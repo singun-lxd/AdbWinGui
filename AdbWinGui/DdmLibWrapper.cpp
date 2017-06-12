@@ -42,6 +42,7 @@ DdmLibWrapper::DdmLibWrapper()
 	m_hModule = NULL;
 	m_pAdbInstance = NULL;
 	m_pCallback = NULL;
+	m_nSelectedIndex = -1;
 }
 
 DdmLibWrapper::~DdmLibWrapper()
@@ -121,6 +122,24 @@ void DdmLibWrapper::DeviceChanged(const IDevice* device, int changeMask)
 	NotifyDeviceChange();
 }
 
+void DdmLibWrapper::SelectDevice(int nIndex)
+{
+	if (nIndex < m_arrDevice.GetSize())
+	{
+		m_nSelectedIndex = nIndex;
+	}
+}
+
+int DdmLibWrapper::GetSelectedDeviceIndex()
+{
+	return m_nSelectedIndex;
+}
+
+IDevice* DdmLibWrapper::GetSelectedDevice()
+{
+	return m_arrDevice[m_nSelectedIndex];
+}
+
 BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
 {
 	TCHAR szFileName[MAX_PATH] = { 0 };
@@ -144,6 +163,15 @@ BOOL DdmLibWrapper::InitAdb(const TString szLocation, BOOL bClientSupport)
 
 void DdmLibWrapper::NotifyDeviceChange()
 {
+	int nSize = m_arrDevice.GetSize();
+	if (nSize == 0)
+	{
+		m_nSelectedIndex = -1;
+	}
+	else if (nSize == 1)
+	{
+		m_nSelectedIndex = 0;
+	}
 	if (m_pCallback != NULL)
 	{
 		m_pCallback->OnDeviceUpdated(m_arrDevice);

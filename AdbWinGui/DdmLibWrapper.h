@@ -35,6 +35,7 @@ private:
 	std::future<BOOL> m_taskInit;
 	DdmCallback* m_pCallback;
 	CSimpleArray<IDevice*> m_arrDevice;
+	int m_nSelectedIndex;
 
 	static DdmLibWrapper s_libDdm;
 
@@ -53,6 +54,10 @@ public:
 	virtual void DeviceConnected(const IDevice* device) override;
 	virtual void DeviceDisconnected(const IDevice* device) override;
 	virtual void DeviceChanged(const IDevice* device, int changeMask) override;
+
+	void SelectDevice(int nIndex);
+	int GetSelectedDeviceIndex();
+	IDevice* GetSelectedDevice();
 
 private:
 	BOOL InitAdb(const TString szLocation, BOOL bClienntSupport);

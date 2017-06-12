@@ -212,4 +212,9 @@ void CMainFrame::UpdateDeviceList(const CSimpleArray<IDevice*>& arrDevice)
 	}
 
 	m_glyDevices.InvalidateItems();
+
+	if (nSize == 1)
+	{
+		m_glyDevices.Select(0, true);
+	}
 }
