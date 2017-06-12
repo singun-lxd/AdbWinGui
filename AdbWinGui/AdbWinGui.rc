@@ -59,11 +59,18 @@ BEGIN
     CTEXT           "singun(c) Copyright 2017\nPublished under GPL License",IDC_STATIC,43,68,101,20
 END
 
-IDD_MAIN_TAB DIALOGEX 0, 0, 185, 93
+IDD_MAIN_TAB DIALOGEX 0, 0, 390, 185
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+EXSTYLE WS_EX_ACCEPTFILES
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    LTEXT           "TODO: Layout Window View",IDC_STATIC_PATH,44,42,97,8
+    GROUPBOX        "Install APK",IDC_FRAME_APK,9,10,371,90
+    LTEXT           "Drag and drop APK file here.",IDC_STATIC_APK,20,25,128,10
+    CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,40,354,52
+    LTEXT           "Filter:",IDC_STATIC_FILTER,262,24,22,11
+    EDITTEXT        IDC_EDIT_APK_FILTER,284,22,88,13,ES_AUTOHSCROLL
+    PUSHBUTTON      "Install",IDC_BUTTON_INSTALL,225,22,32,13
+    CONTROL         "",IDC_PROGRESS_INSTALL,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,144,24,77,10
 END
 
 
@@ -91,6 +98,8 @@ BEGIN
 
     IDD_MAIN_TAB, DIALOG
     BEGIN
+        RIGHTMARGIN, 338
+        BOTTOMMARGIN, 183
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -284,8 +293,7 @@ END
 
 IDD_MAIN_TAB AFX_DIALOG_LAYOUT
 BEGIN
-    0,
-    100, 100, 0, 0
+    0
 END
 
 
@@ -305,6 +313,7 @@ BEGIN
     IDS_DOWNLOAD_ADB        "Download adb from <a href=""https://developer.android.com/studio/releases/platform-tools.html"">developer.android.com</a>"
     IDS_ADB_PREPARING       "Preparing adb, please wait..."
     IDS_DEVICE_EMPTY        "No Device"
+    IDS_NOT_SUPPORTED_FILE  "Not supported file type."
 END
 
 STRINGTABLE

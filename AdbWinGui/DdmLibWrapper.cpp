@@ -35,6 +35,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma comment(lib, DDMLIB_PATH)
 
+DdmLibWrapper DdmLibWrapper::s_libDdm;
+
 DdmLibWrapper::DdmLibWrapper()
 {
 	m_hModule = NULL;
@@ -52,6 +54,11 @@ DdmLibWrapper::~DdmLibWrapper()
 		::FreeLibrary(m_hModule);
 		m_hModule = NULL;
 	}
+}
+
+DdmLibWrapper& DdmLibWrapper::GetInstance()
+{
+	return s_libDdm;
 }
 
 void DdmLibWrapper::Init(const TString szLocation, BOOL bClienntSupport)

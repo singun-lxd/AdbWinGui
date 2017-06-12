@@ -29,6 +29,7 @@ public:
 	BOOL OnButtonClicked(int buttonId);
 	void OnVerificationClicked(bool bChecked);
 	int DoModal(HWND hWnd, LPCTSTR lpszText, UINT nType, BOOL* pbChecked = NULL);
+	int DoModal(HWND hWnd, UINT nTextId, UINT nType, BOOL* pbChecked = NULL);
 
 protected:
 	inline void SetButton(UINT nType);

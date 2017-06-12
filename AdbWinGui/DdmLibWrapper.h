@@ -36,9 +36,14 @@ private:
 	DdmCallback* m_pCallback;
 	CSimpleArray<IDevice*> m_arrDevice;
 
-public:
+	static DdmLibWrapper s_libDdm;
+
+private:
 	DdmLibWrapper();
+public:
 	~DdmLibWrapper();
+
+	static DdmLibWrapper& GetInstance();
 
 	void Init(const TString szLocation, BOOL bClienntSupport = FALSE);
 	void Release();

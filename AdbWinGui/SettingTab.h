@@ -31,7 +31,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class SettingTab : public CDialogImpl<SettingTab>, public CDialogResize<SettingTab>
 {
 public:
-	enum {
+	enum
+	{
 		IDD = IDD_SETTING_TAB
 	};
 

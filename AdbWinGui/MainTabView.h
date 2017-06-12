@@ -40,7 +40,7 @@ protected:
 	};
 	CSimpleArray<CWindow*> m_arrWnd;
 	AdbPreparingDlg m_dlgPreparing;
-	DdmLibWrapper m_ddmLibWrapper;
+	DdmLibWrapper& m_ddmLibWrapper;
 
 public:
 	DECLARE_WND_SUPERCLASS(NULL, CTabViewImpl<MainTabView>::GetWndClassName())
@@ -59,6 +59,7 @@ public:
 	END_MSG_MAP()
 
 public:
+	MainTabView();
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);

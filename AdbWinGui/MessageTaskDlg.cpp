@@ -64,6 +64,22 @@ int MessageTaskDlg::DoModal(HWND hWnd, LPCTSTR lpszText, UINT nType, BOOL* pbChe
 	return m_nReturn;
 }
 
+int MessageTaskDlg::DoModal(HWND hWnd, UINT nTextId, UINT nType, BOOL* pbChecked /*= NULL*/)
+{
+	SetButton(nType);
+	SetIcon(nType);
+	SetMainInstructionText(nTextId);
+	if (pbChecked != NULL)
+	{
+		ModifyFlags(TDF_VERIFICATION_FLAG_CHECKED, 0);
+		SetVerificationText(IDS_NOT_ASK_ME);
+	}
+
+	CTaskDialogImpl::DoModal(hWnd, NULL, NULL, pbChecked);
+
+	return m_nReturn;
+}
+
 void MessageTaskDlg::SetButton(UINT nType)
 {
 	if ((nType & MB_OKCANCEL) == MB_OKCANCEL)

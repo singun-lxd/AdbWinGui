@@ -25,27 +25,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atlctrls.h>
 #include <atlframe.h>
 #include "resource.h"
+#include "DdmLibWrapper.h"
 
 class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>
 {
 public:
-	enum {
+	enum
+	{
 		IDD = IDD_MAIN_TAB
 	};
+
+	DdmLibWrapper& m_ddmLibWrapper;
+	CStatic m_stcNoticeApk;
+	CButton m_btnInstallApk;
+	CProgressBarCtrl m_pgbInstall;
 
 public:
 	BEGIN_MSG_MAP(MainTab)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
+		MESSAGE_HANDLER(WM_DROPFILES, OnDropFiles)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
 
 	BEGIN_DLGRESIZE_MAP(MainTab)
-		DLGRESIZE_CONTROL(IDC_STATIC_PATH, DLSZ_CENTER_X | DLSZ_CENTER_Y)
+		DLGRESIZE_CONTROL(IDC_FRAME_APK, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_LIST_APK, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_STATIC_APK, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_PROGRESS_INSTALL, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_EDIT_APK_FILTER, DLSZ_MOVE_X)
+		DLGRESIZE_CONTROL(IDC_STATIC_FILTER, DLSZ_MOVE_X)
+		DLGRESIZE_CONTROL(IDC_BUTTON_INSTALL, DLSZ_MOVE_X)
 	END_DLGRESIZE_MAP()
 
 public:
+	MainTab();
 	BOOL PreTranslateMessage(MSG* pMsg);
 	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 private:
 	void PrepareAdb();
+	void InitControls();
 };

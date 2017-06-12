@@ -32,6 +32,10 @@ BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 	return FALSE;
 }
 
+MainTabView::MainTabView() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
+{
+}
+
 LRESULT MainTabView::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	return 0;

@@ -13,6 +13,7 @@
 #define IDS_DOWNLOAD_ADB                134
 #define IDS_ADB_PREPARING               135
 #define IDS_DEVICE_EMPTY                136
+#define IDS_NOT_SUPPORTED_FILE          137
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000
@@ -22,6 +23,13 @@
 #define IDC_BUTTON_SEL                  1004
 #define IDC_STATIC_GITHUB               1005
 #define IDC_FRAME_PATH                  1006
+#define IDC_FRAME_APK                   1007
+#define IDC_LIST_APK                    1008
+#define IDC_STATIC_APK                  1009
+#define IDC_EDIT_APK_FILTER             1010
+#define IDC_PROGRESS_INSTALL            1011
+#define IDC_BUTTON_INSTALL              1012
+#define IDC_STATIC_FILTER               1013
 
 // Next default values for new objects
 // 
@@ -29,7 +37,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        208
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1007
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
