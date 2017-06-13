@@ -125,6 +125,9 @@
     <ClInclude Include="DdmLibWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Config\ApkDirectoryConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc">

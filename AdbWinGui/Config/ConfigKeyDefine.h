@@ -22,3 +22,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define PATH_MODE_KEY		_T("PATH_MODE")
 #define ADB_PATH_KEY		_T("ADB_PATH")
+#define DIR_MODE_KEY		_T("DIR_MODE")
+#define APK_DIR_KEY		_T("APK_DIR")

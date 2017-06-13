@@ -41,11 +41,17 @@ public:
 	CStatic m_stcAdbPath;
 	CEdit m_edtAdbPath;
 
+	CButton m_btnRadioCurrent;
+	CButton m_btnRadioCustom;
+	CStatic m_stcApkDir;
+	CEdit m_edtApkDir;
+
 public:
 	BEGIN_MSG_MAP(SettingTab)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(MSG_SETTING_SELECT_ADB, OnShowSelectAdbDialog)
-		COMMAND_RANGE_HANDLER(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnRadioSelected)
+		COMMAND_RANGE_HANDLER(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnAdbRadioSelected)
+		COMMAND_RANGE_HANDLER(IDC_RADIO_CURRET, IDC_RADIO_CUSTOM, OnApkRadioSelected)
 		//COMMAND_ID_HANDLER(IDC_EDIT_PATH, OnPathClick)
 		CHAIN_MSG_MAP(CDialogResize<SettingTab>)
 	END_MSG_MAP()
@@ -54,21 +60,29 @@ public:
 		DLGRESIZE_CONTROL(IDC_FRAME_PATH, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_STATIC_PATH, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_EDIT_PATH, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_FRAME_DIRECTORY, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_STATIC_DIRECTORY, DLSZ_SIZE_X)
+		DLGRESIZE_CONTROL(IDC_EDIT_DIRECTORY, DLSZ_SIZE_X)
 	END_DLGRESIZE_MAP()
 
 public:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-	//LRESULT OnPathClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnAdbRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnApkRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 private:
 	void InitControls();
 	void UpdateControlStatus();
 	void CheckSettingValid();
-	void SwitchToAutoMode(LPCTSTR lpszePath);
-	void SwitchToManualMode(LPCTSTR lpszePath);
-	void SwitchRadioButton(BOOL bAuto);
+	void SwitchToAutoMode(LPCTSTR lpszPath);
+	void SwitchToManualMode(LPCTSTR lpszPath);
+	void SwitchAdbRadioButton(BOOL bAuto);
 	void AutoUpdateAdbPath(ConfigManager& cfgManager);
 	BOOL ShowSelectAdbDialog(ConfigManager& cfgManager);
+	void SwitchToCurrentMode(LPCTSTR lpszDir);
+	void SwitchToCustomMode(LPCTSTR lpszDir);
+	void SwitchApkRadioButton(BOOL bCurrent);
+	void AutoUpdateApkDir(ConfigManager& cfgManager);
+	BOOL ShowSelectApkDialog(ConfigManager& cfgManager);
 };

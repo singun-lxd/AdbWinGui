@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "AdbPathConfig.h"
+#include "ApkDirectoryConfig.h"
 
 class ConfigManager
 {
@@ -27,6 +28,7 @@ private:
 	static ConfigManager* s_pInstance;
 private:
 	AdbPathConfig m_configPath;
+	ApkDirectoryConfig m_configDirectory;
 
 public:
 	static ConfigManager& GetInstance();
@@ -37,4 +39,8 @@ public:
 	const CString& GetAdbPath();
 	const CString& AutoAdbPath();
 	void SetAdbPath(const CString& strPath);
+	ApkDirectoryConfig::DirectoryMode GetApkDirMode();
+	const CString& GetApkDir();
+	const CString& CurrentApkDir();
+	void SetApkDir(const CString& strPath);
 };

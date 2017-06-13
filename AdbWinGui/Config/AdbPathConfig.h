@@ -55,7 +55,7 @@ public:
 	}
 
 public:
-	const CString& GetConfigValue()
+	virtual const CString& GetConfigValue() override
 	{
 		if (!m_strAdbPath.IsEmpty())
 		{
@@ -91,7 +91,7 @@ public:
 		}
 	}
 
-	BOOL SetConfigValue(const CString& value)
+	virtual BOOL SetConfigValue(const CString& value) override
 	{
 		BOOL bRet = FALSE;
 		if (value.IsEmpty())
@@ -99,7 +99,6 @@ public:
 			m_emPathMode = em_PathModeAuto;
 			BOOL modeSaved = SetConfigInt(PATH_MODE_KEY, m_emPathMode);
 			BOOL pathSaved = SetConfigString(ADB_PATH_KEY, _T(""));
-			DWORD dwRet = ::GetLastError();
 			bRet = modeSaved && pathSaved;
 		}
 		else
@@ -107,8 +106,11 @@ public:
 			m_emPathMode = em_PathModeManual;
 			BOOL modeSaved = SetConfigInt(PATH_MODE_KEY, m_emPathMode);
 			BOOL pathSaved = SetConfigString(ADB_PATH_KEY, value);
-			DWORD dwRet = ::GetLastError();
 			bRet = modeSaved && pathSaved;
+		}
+		if (bRet)
+		{
+			m_strAdbPath = value;
 		}
 		return bRet;
 	}

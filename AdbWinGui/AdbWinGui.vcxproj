@@ -238,6 +238,7 @@
     <ClInclude Include="AdbPathErrorDlg.h" />
     <ClInclude Include="AdbPreparingDlg.h" />
     <ClInclude Include="Config\AdbPathConfig.h" />
+    <ClInclude Include="Config\ApkDirectoryConfig.h" />
     <ClInclude Include="Config\ConfigKeyDefine.h" />
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />

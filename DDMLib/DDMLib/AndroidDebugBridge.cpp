@@ -81,8 +81,15 @@ void AndroidDebugBridge::CheckAdbVersion()
 	}
 	else
 	{
-		LogEEx(DDMS, _T("Required minimum version of adb: %s. Current version is %d.%d.%d"),
-			MIN_ADB_VERSION, pVersion->m_nMajor, pVersion->m_nMinor, pVersion->m_nMicro);
+		if (pVersion == NULL)
+		{
+			LogE(DDMS, _T("Get adb version failed."));
+		}
+		else
+		{
+			LogEEx(DDMS, _T("Required minimum version of adb: %s. Current version is %d.%d.%d"),
+				MIN_ADB_VERSION, pVersion->m_nMajor, pVersion->m_nMinor, pVersion->m_nMicro);
+		}
 	}
 	delete pVersion;
 	return;

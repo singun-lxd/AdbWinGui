@@ -48,7 +48,7 @@ LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lPara
 	BOOL bRet = ShowSelectAdbDialog(cfgManager);
 	if (bRet == TRUE)
 	{
-		SwitchRadioButton(FALSE);
+		SwitchAdbRadioButton(FALSE);
 	}
 	else
 	{
@@ -58,7 +58,7 @@ LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lPara
 	return 0;
 }
 
-LRESULT SettingTab::OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+LRESULT SettingTab::OnAdbRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
 	ConfigManager& cfgManager = ConfigManager::GetInstance();
 	switch (wID)
@@ -73,12 +73,20 @@ LRESULT SettingTab::OnRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 	return 0;
 }
 
-// LRESULT SettingTab::OnPathClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
-// {
-// 	ConfigManager& cfgManager = ConfigManager::GetInstance();
-// 	ShowSelectAdbDialog(cfgManager);
-// 	return 0;
-// }
+LRESULT SettingTab::OnApkRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	ConfigManager& cfgManager = ConfigManager::GetInstance();
+	switch (wID)
+	{
+	case IDC_RADIO_CURRET:
+		AutoUpdateApkDir(cfgManager);
+		break;
+	case IDC_RADIO_CUSTOM:
+		ShowSelectApkDialog(cfgManager);
+		break;
+	}
+	return 0;
+}
 
 void SettingTab::InitControls()
 {
@@ -86,6 +94,11 @@ void SettingTab::InitControls()
 	m_btnRadioManual.Attach(GetDlgItem(IDC_RADIO_MANUAL));
 	m_stcAdbPath.Attach(GetDlgItem(IDC_STATIC_PATH));
 	m_edtAdbPath.Attach(GetDlgItem(IDC_EDIT_PATH));
+
+	m_btnRadioCurrent.Attach(GetDlgItem(IDC_RADIO_CURRET));
+	m_btnRadioCustom.Attach(GetDlgItem(IDC_RADIO_CUSTOM));
+	m_stcApkDir.Attach(GetDlgItem(IDC_STATIC_DIRECTORY));
+	m_edtApkDir.Attach(GetDlgItem(IDC_EDIT_DIRECTORY));
 }
 
 void SettingTab::UpdateControlStatus()
@@ -104,6 +117,18 @@ void SettingTab::UpdateControlStatus()
 		m_btnRadioManual.SetCheck(TRUE);
 		SwitchToManualMode(strAdbPath);
 	}
+
+	const CString& strApkDir = cfgManager.GetApkDir();
+	if (cfgManager.GetApkDirMode() == ApkDirectoryConfig::em_DirModeCurrent)
+	{
+		m_btnRadioCurrent.SetCheck(TRUE);
+		SwitchToCurrentMode(strApkDir);
+	}
+	else
+	{
+		m_btnRadioCustom.SetCheck(TRUE);
+		SwitchToCustomMode(strApkDir);
+	}
 }
 
 void SettingTab::CheckSettingValid()
@@ -121,23 +146,23 @@ void SettingTab::CheckSettingValid()
 	}
 }
 
-void SettingTab::SwitchToAutoMode(LPCTSTR lpszePath)
+void SettingTab::SwitchToAutoMode(LPCTSTR lpszPath)
 {
-	m_stcAdbPath.SetWindowText(lpszePath);
+	m_stcAdbPath.SetWindowText(lpszPath);
 	m_stcAdbPath.EnableWindow(TRUE);
 	m_edtAdbPath.EnableWindow(FALSE);
 	m_edtAdbPath.SetWindowText(_T(""));
 }
 
-void SettingTab::SwitchToManualMode(LPCTSTR lpszePath)
+void SettingTab::SwitchToManualMode(LPCTSTR lpszPath)
 {
 	m_stcAdbPath.SetWindowText(_T(""));
 	m_stcAdbPath.EnableWindow(FALSE);
 	m_edtAdbPath.EnableWindow(TRUE);
-	m_edtAdbPath.SetWindowText(lpszePath);
+	m_edtAdbPath.SetWindowText(lpszPath);
 }
 
-void SettingTab::SwitchRadioButton(BOOL bAuto)
+void SettingTab::SwitchAdbRadioButton(BOOL bAuto)
 {
 	CheckRadioButton(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, bAuto ? IDC_RADIO_AUTO : IDC_RADIO_MANUAL);
 	SetFocus();	// set focus on the tab to avoid infinite messages
@@ -153,7 +178,7 @@ void SettingTab::AutoUpdateAdbPath(ConfigManager& cfgManager)
 	}
 	else
 	{
-		SwitchRadioButton(FALSE);
+		SwitchAdbRadioButton(FALSE);
 
 		CString strMsg;
 		strMsg.LoadString(IDS_ADB_PATH_ERROR);
@@ -183,7 +208,69 @@ BOOL SettingTab::ShowSelectAdbDialog(ConfigManager& cfgManager)
 	}
 	else
 	{
-		SwitchRadioButton(TRUE);
+		SwitchAdbRadioButton(TRUE);
+		return FALSE;
+	}
+}
+
+void SettingTab::SwitchToCurrentMode(LPCTSTR lpszDir)
+{
+	m_stcApkDir.SetWindowText(lpszDir);
+	m_stcApkDir.EnableWindow(TRUE);
+	m_edtApkDir.EnableWindow(FALSE);
+	m_edtApkDir.SetWindowText(_T(""));
+}
+
+void SettingTab::SwitchToCustomMode(LPCTSTR lpszDir)
+{
+	m_stcApkDir.SetWindowText(_T(""));
+	m_stcApkDir.EnableWindow(FALSE);
+	m_edtApkDir.EnableWindow(TRUE);
+	m_edtApkDir.SetWindowText(lpszDir);
+}
+
+void SettingTab::SwitchApkRadioButton(BOOL bCurrent)
+{
+	CheckRadioButton(IDC_RADIO_CURRET, IDC_RADIO_CUSTOM, bCurrent ? IDC_RADIO_CURRET : IDC_RADIO_CUSTOM);
+	SetFocus();	// set focus on the tab to avoid infinite messages
+}
+
+void SettingTab::AutoUpdateApkDir(ConfigManager& cfgManager)
+{
+	const CString& strPath = cfgManager.CurrentApkDir();
+	if (!strPath.IsEmpty())
+	{
+		SwitchToCurrentMode(strPath);
+		cfgManager.SetApkDir(_T(""));
+	}
+	else
+	{
+		SwitchApkRadioButton(FALSE);
+
+		CString strMsg;
+		strMsg.LoadString(IDS_ADB_PATH_ERROR);
+		MessageTaskDlg msgDlg;
+		msgDlg.DoModal(m_hWnd, strMsg, MB_ICONEXCLAMATION);
+	}
+}
+
+BOOL SettingTab::ShowSelectApkDialog(ConfigManager& cfgManager)
+{
+	CShellFileOpenDialog fileDialog(NULL, FOS_PICKFOLDERS | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST);
+	CString strTitle;
+	strTitle.LoadString(IDS_SELECT_ADB_PATH);
+	fileDialog.m_spFileDlg->SetTitle(strTitle);
+	if (fileDialog.DoModal() == IDOK)
+	{
+		CString strDirPath;
+		fileDialog.GetFilePath(strDirPath);
+		SwitchToCustomMode(strDirPath);
+		cfgManager.SetApkDir(strDirPath);
+		return TRUE;
+	}
+	else
+	{
+		SwitchAdbRadioButton(TRUE);
 		return FALSE;
 	}
 }

@@ -36,7 +36,9 @@ ConfigManager& ConfigManager::GetInstance()
 	return *s_pInstance;
 }
 
-ConfigManager::ConfigManager(LPCTSTR lpszFileName) : m_configPath(lpszFileName)
+ConfigManager::ConfigManager(LPCTSTR lpszFileName) : 
+	m_configPath(lpszFileName),
+	m_configDirectory(lpszFileName)
 {
 }
 
@@ -58,4 +60,24 @@ const CString& ConfigManager::AutoAdbPath()
 void ConfigManager::SetAdbPath(const CString& strPath)
 {
 	m_configPath.SetConfigValue(strPath);
+}
+
+ApkDirectoryConfig::DirectoryMode ConfigManager::GetApkDirMode()
+{
+	return m_configDirectory.GetApkDirMode();
+}
+
+const CString& ConfigManager::GetApkDir()
+{
+	return m_configDirectory.GetConfigValue();
+}
+
+const CString& ConfigManager::CurrentApkDir()
+{
+	return m_configDirectory.CurrentApkDir();
+}
+
+void ConfigManager::SetApkDir(const CString& strPath)
+{
+	m_configDirectory.SetConfigValue(strPath);
 }

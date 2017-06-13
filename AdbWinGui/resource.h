@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by AdbWinGui.rc
+// Microsoft Visual C++ 生成的包含文件。
+// 供 AdbWinGui.rc 使用
 //
 #define IDD_ABOUTBOX                    100
 #define IDD_SETTING_TAB                 101
@@ -21,11 +21,16 @@
 #define IDC_EDIT_PATH                   1002
 #define IDC_STATIC_PATH                 1003
 #define IDC_BUTTON_SEL                  1004
+#define IDC_RADIO_CURRET                1004
 #define IDC_STATIC_GITHUB               1005
+#define IDC_RADIO_CUSTOM                1005
 #define IDC_FRAME_PATH                  1006
 #define IDC_FRAME_APK                   1007
+#define IDC_FRAME_DIRECTORY             1007
 #define IDC_LIST_APK                    1008
+#define IDC_STATIC_DIRECTORY            1008
 #define IDC_STATIC_APK                  1009
+#define IDC_EDIT_DIRECTORY              1009
 #define IDC_EDIT_APK_FILTER             1010
 #define IDC_PROGRESS_INSTALL            1011
 #define IDC_BUTTON_INSTALL              1012
