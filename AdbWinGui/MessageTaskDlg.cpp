@@ -20,15 +20,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MessageTaskDlg.h"
 #include "resource.h"
 
-MessageTaskDlg::MessageTaskDlg()
+MessageTaskDlg::MessageTaskDlg(UINT nTextId, UINT nType)
 {
-	m_nReturn = 0;
-	m_bNotAsk = FALSE;
+	InitDialog(nType);
+	SetMainInstructionText(nTextId);
+}
 
-	m_strTitle.LoadString(IDR_MAINFRAME);
-	SetWindowTitle(m_strTitle);
-
-	ModifyFlags(0, TDF_POSITION_RELATIVE_TO_WINDOW);
+MessageTaskDlg::MessageTaskDlg(LPCTSTR lpszText, UINT nType)
+{
+	InitDialog(nType);
+	SetMainInstructionText(lpszText);
 }
 
 BOOL MessageTaskDlg::OnButtonClicked(int buttonId)
@@ -48,33 +49,13 @@ void MessageTaskDlg::OnVerificationClicked(bool bChecked)
 		m_bNotAsk = FALSE;
 }
 
-int MessageTaskDlg::DoModal(HWND hWnd, LPCTSTR lpszText, UINT nType, BOOL* pbChecked)
+int MessageTaskDlg::DoModal(HWND hWnd, BOOL* pbChecked)
 {
- 	SetButton(nType);
-	SetIcon(nType);
-	SetMainInstructionText(lpszText);
 	if (pbChecked != NULL)
 	{
 		ModifyFlags(TDF_VERIFICATION_FLAG_CHECKED, 0);
 		SetVerificationText(IDS_NOT_ASK_ME);
 	}
-
-	CTaskDialogImpl::DoModal(hWnd, NULL, NULL, pbChecked);
-
-	return m_nReturn;
-}
-
-int MessageTaskDlg::DoModal(HWND hWnd, UINT nTextId, UINT nType, BOOL* pbChecked /*= NULL*/)
-{
-	SetButton(nType);
-	SetIcon(nType);
-	SetMainInstructionText(nTextId);
-	if (pbChecked != NULL)
-	{
-		ModifyFlags(TDF_VERIFICATION_FLAG_CHECKED, 0);
-		SetVerificationText(IDS_NOT_ASK_ME);
-	}
-
 	CTaskDialogImpl::DoModal(hWnd, NULL, NULL, pbChecked);
 
 	return m_nReturn;
@@ -132,4 +113,18 @@ void MessageTaskDlg::SetIcon(UINT nType)
 	{
 		SetMainIcon(TD_SHIELD_ICON);
 	}
+}
+
+void MessageTaskDlg::InitDialog(UINT nType)
+{
+	m_nReturn = 0;
+	m_bNotAsk = FALSE;
+
+	ModifyFlags(0, TDF_POSITION_RELATIVE_TO_WINDOW);
+
+	m_strTitle.LoadString(IDR_MAINFRAME);
+	SetWindowTitle(m_strTitle);
+
+	SetButton(nType);
+	SetIcon(nType);
 }

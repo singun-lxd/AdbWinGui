@@ -324,6 +324,7 @@ BEGIN
     IDS_ADB_PREPARING       "Preparing adb, please wait..."
     IDS_DEVICE_EMPTY        "No Device"
     IDS_NOT_SUPPORTED_FILE  "Not supported file type."
+    IDS_SELECT_APK_DIRECTORY "Select Custom Apk Directory"
 END
 
 STRINGTABLE

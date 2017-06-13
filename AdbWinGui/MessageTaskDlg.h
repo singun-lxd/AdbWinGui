@@ -24,16 +24,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class MessageTaskDlg : public CTaskDialogImpl<MessageTaskDlg>
 {
 public:
-	MessageTaskDlg();
+	MessageTaskDlg(UINT nTextId, UINT nType);
+	MessageTaskDlg(LPCTSTR lpszText, UINT nType);
 
 	BOOL OnButtonClicked(int buttonId);
 	void OnVerificationClicked(bool bChecked);
-	int DoModal(HWND hWnd, LPCTSTR lpszText, UINT nType, BOOL* pbChecked = NULL);
-	int DoModal(HWND hWnd, UINT nTextId, UINT nType, BOOL* pbChecked = NULL);
+	int DoModal(HWND hWnd = ::GetActiveWindow(), BOOL* pbChecked = NULL);
 
 protected:
 	inline void SetButton(UINT nType);
 	inline void SetIcon(UINT nType);
+
+private:
+	void InitDialog(UINT nType);
 
 protected:
 	int m_nReturn;

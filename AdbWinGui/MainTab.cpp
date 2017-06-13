@@ -56,8 +56,8 @@ LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	}
 	else
 	{
-		MessageTaskDlg dlg;
-		dlg.DoModal(GetParent(), IDS_NOT_SUPPORTED_FILE, MB_ICONWARNING);
+		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, MB_ICONWARNING);
+		dlg.DoModal();
 	}
 
 	return 0;

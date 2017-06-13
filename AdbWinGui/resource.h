@@ -14,6 +14,7 @@
 #define IDS_ADB_PREPARING               135
 #define IDS_DEVICE_EMPTY                136
 #define IDS_NOT_SUPPORTED_FILE          137
+#define IDS_SELECT_APK_DIRECTORY        138
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000

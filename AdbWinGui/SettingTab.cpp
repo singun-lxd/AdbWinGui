@@ -182,8 +182,8 @@ void SettingTab::AutoUpdateAdbPath(ConfigManager& cfgManager)
 
 		CString strMsg;
 		strMsg.LoadString(IDS_ADB_PATH_ERROR);
-		MessageTaskDlg msgDlg;
-		msgDlg.DoModal(m_hWnd, strMsg, MB_ICONEXCLAMATION);
+		MessageTaskDlg msgDlg(strMsg, MB_ICONEXCLAMATION);
+		msgDlg.DoModal();
 	}
 }
 
@@ -249,8 +249,8 @@ void SettingTab::AutoUpdateApkDir(ConfigManager& cfgManager)
 
 		CString strMsg;
 		strMsg.LoadString(IDS_ADB_PATH_ERROR);
-		MessageTaskDlg msgDlg;
-		msgDlg.DoModal(m_hWnd, strMsg, MB_ICONEXCLAMATION);
+		MessageTaskDlg msgDlg(strMsg, MB_ICONEXCLAMATION);
+		msgDlg.DoModal();
 	}
 }
 
@@ -258,7 +258,7 @@ BOOL SettingTab::ShowSelectApkDialog(ConfigManager& cfgManager)
 {
 	CShellFileOpenDialog fileDialog(NULL, FOS_PICKFOLDERS | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST);
 	CString strTitle;
-	strTitle.LoadString(IDS_SELECT_ADB_PATH);
+	strTitle.LoadString(IDS_SELECT_APK_DIRECTORY);
 	fileDialog.m_spFileDlg->SetTitle(strTitle);
 	if (fileDialog.DoModal() == IDOK)
 	{
@@ -270,7 +270,7 @@ BOOL SettingTab::ShowSelectApkDialog(ConfigManager& cfgManager)
 	}
 	else
 	{
-		SwitchAdbRadioButton(TRUE);
+		SwitchApkRadioButton(TRUE);
 		return FALSE;
 	}
 }
