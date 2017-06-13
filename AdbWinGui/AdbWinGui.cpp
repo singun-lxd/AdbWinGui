@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
 
+#include <WinBase.h>
 #include <atlframe.h>
 #include <atlctrls.h>
 #include <atldlgs.h>
@@ -63,6 +64,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 //	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	ATLASSERT(SUCCEEDED(hRes));
 
+	// support restart manager
+	RegisterApplicationRestart(_T("/restart"), 0);
+
 	// this resolves ATL window thunking problem when Microsoft Layer for Unicode (MSLU) is used
 	::DefWindowProc(NULL, 0, 0, 0L);
 
@@ -74,6 +78,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
 	_Module.Term();
+
+	//UnregisterApplicationRestart();
 	::CoUninitialize();
 
 	return nRet;

@@ -42,6 +42,13 @@ BOOL CMainFrame::OnIdle()
 	return FALSE;
 }
 
+LRESULT CMainFrame::OnQueryEndSession(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	// todo Save data
+
+	return TRUE; // allow automatic close
+}
+
 LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	bool bRibbonUI = RunTimeHelper::IsRibbonUIAvailable();
