@@ -243,6 +243,7 @@
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
     <ClInclude Include="DdmLibWrapper.h" />
+    <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="MainTab.h" />
     <ClInclude Include="MessageDefine.h" />
     <ClInclude Include="MessageTaskDlg.h" />

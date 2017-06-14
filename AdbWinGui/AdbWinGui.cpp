@@ -32,6 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "resource.h"
 #include "MainFrm.h"
+#include "ExceptionHandler.h"
 
 CAppModule _Module;
 
@@ -63,6 +64,9 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 // make the EXE free threaded. This means that calls come in on a random RPC thread.
 //	HRESULT hRes = ::CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	ATLASSERT(SUCCEEDED(hRes));
+
+	// exception handler
+	ExceptionHandler::InitExceptionDump();
 
 	// support restart manager
 	RegisterApplicationRestart(_T("/restart"), 0);
