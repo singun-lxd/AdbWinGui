@@ -19,6 +19,7 @@
 #define IDS_COPY_AND_INSTALL            140
 #define IDS_CANCEL                      141
 #define IDS_INSTALL_APK_FILE_NOTICE     142
+#define IDS_REMEMBER_MY_CHOICE          143
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000

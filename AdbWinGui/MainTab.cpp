@@ -103,8 +103,9 @@ void MainTab::InitControls()
 
 void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 {
+	BOOL bChecked = FALSE;
 	InstallNotifyDlg dlg(lpszApkPath);
-	int nClick = dlg.DoModal(m_hWnd);
+	int nClick = dlg.DoModal(m_hWnd, &bChecked);
 	switch (nClick)
 	{
 	case InstallNotifyDlg::em_Button_Install_Direct:

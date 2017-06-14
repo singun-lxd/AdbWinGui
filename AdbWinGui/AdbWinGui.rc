@@ -329,6 +329,7 @@ BEGIN
     IDS_COPY_AND_INSTALL    "Copy And Install\nCopy this file to Apk Directory and install"
     IDS_CANCEL              "Cancel"
     IDS_INSTALL_APK_FILE_NOTICE "Install Apk file"
+    IDS_REMEMBER_MY_CHOICE  "Remember my choice"
 END
 
 STRINGTABLE

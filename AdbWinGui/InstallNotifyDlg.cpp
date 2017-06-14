@@ -37,7 +37,7 @@ BOOL InstallNotifyDlg::OnButtonClicked(int buttonId)
 	return TRUE;
 }
 
-INT InstallNotifyDlg::DoModal(HWND hWnd)
+INT InstallNotifyDlg::DoModal(HWND hWnd, BOOL* pbChecked)
 {
 	const TASKDIALOG_BUTTON buttons[] =
 	{
@@ -48,7 +48,12 @@ INT InstallNotifyDlg::DoModal(HWND hWnd)
 
 	SetButtons(buttons, _countof(buttons));
 
-	CTaskDialogImpl::DoModal(hWnd);
+	if (pbChecked != NULL)
+	{
+		ModifyFlags(TDF_VERIFICATION_FLAG_CHECKED, 0);
+		SetVerificationText(IDS_REMEMBER_MY_CHOICE);
+	}
+	CTaskDialogImpl::DoModal(hWnd, NULL, NULL, pbChecked);
 
 	return m_nClickedId;
 }
