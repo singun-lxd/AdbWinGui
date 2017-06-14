@@ -76,8 +76,6 @@ LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 		case em_InstallWithCopy:
 			OnCopyAndInstallApk(szFilePathName);
 			break;
-		case em_InstallNone:
-			break;
 		}
 	}
 	else
@@ -103,6 +101,7 @@ void MainTab::InitControls()
 
 void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 {
+	InstallNotify emNotify = em_InstallDefault;
 	BOOL bChecked = FALSE;
 	InstallNotifyDlg dlg(lpszApkPath);
 	int nClick = dlg.DoModal(m_hWnd, &bChecked);
@@ -110,12 +109,18 @@ void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 	{
 	case InstallNotifyDlg::em_Button_Install_Direct:
 		OnInstallApkDirect(lpszApkPath);
+		emNotify = em_InstallDirect;
 		break;
 	case InstallNotifyDlg::em_Button_Install_With_Copy:
 		OnCopyAndInstallApk(lpszApkPath);
+		emNotify = em_InstallWithCopy;
 		break;
 	case InstallNotifyDlg::em_Button_Install_Cancel:
 		break;
+	}
+	if (bChecked)
+	{
+		ConfigManager::GetInstance().SetInstallNotifyConfig(emNotify);
 	}
 }
 

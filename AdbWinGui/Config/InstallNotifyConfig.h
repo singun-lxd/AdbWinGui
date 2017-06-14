@@ -29,7 +29,6 @@ enum InstallNotify
 	em_InstallDefault = -1,
 	em_InstallDirect = 0,
 	em_InstallWithCopy = 1,
-	em_InstallNone = 2
 };
 
 class InstallNotifyConfig : public IConfig<InstallNotify>
