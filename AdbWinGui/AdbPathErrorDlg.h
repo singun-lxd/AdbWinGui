@@ -22,19 +22,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class AdbPathErrorDlg : public CTaskDialogImpl<AdbPathErrorDlg>
 {
-public:
-	AdbPathErrorDlg();
-
-    BOOL OnButtonClicked(int buttonId);
-	void OnHyperlinkClicked(LPCTSTR pszHREF);
-	int DoModal();
-
 private:
-	int m_nClickedId;
 	enum
 	{
 		em_Button_Select = 101,
 		em_Button_Exit
 	};
+public:
+	AdbPathErrorDlg();
 
+    BOOL OnButtonClicked(int buttonId)/* override */;
+	void OnHyperlinkClicked(LPCTSTR pszHREF)/* override */;
+	INT DoModal()/* override */;
+
+private:
+	INT m_nClickedId;
 };

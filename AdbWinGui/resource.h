@@ -15,6 +15,10 @@
 #define IDS_DEVICE_EMPTY                136
 #define IDS_NOT_SUPPORTED_FILE          137
 #define IDS_SELECT_APK_DIRECTORY        138
+#define IDS_INSTALL_APK                 139
+#define IDS_COPY_AND_INSTALL            140
+#define IDS_CANCEL                      141
+#define IDS_INSTALL_APK_FILE_NOTICE     142
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000

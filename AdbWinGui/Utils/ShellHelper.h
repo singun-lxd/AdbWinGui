@@ -18,28 +18,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include <atldlgs.h>
-#include <windef.h>
+#include <windows.h>
 
-class MessageTaskDlg : public CTaskDialogImpl<MessageTaskDlg>
+class ShellHelper
 {
 public:
-	MessageTaskDlg(UINT nTextId, UINT nType);
-	MessageTaskDlg(LPCTSTR lpszText, UINT nType);
-
-	BOOL OnButtonClicked(int buttonId)/* override */;
-	void OnVerificationClicked(bool bChecked)/* override */;
-	INT DoModal(HWND hWnd = ::GetActiveWindow(), BOOL* pbChecked = NULL)/* override */;
-
-protected:
-	inline void SetButton(UINT nType);
-	inline void SetIcon(UINT nType);
-
-private:
-	void InitDialog(UINT nType);
-
-protected:
-	INT m_nReturn;
-	BOOL m_bNotAsk;
-	CString m_strTitle;
+	static INT CopyFile(LPCTSTR lpszFrom, LPCTSTR lpszTo, HWND hWnd = ::GetActiveWindow())
+	{
+		SHFILEOPSTRUCT op;
+		ZeroMemory(&op, sizeof(op));
+		op.hwnd = hWnd;
+		op.wFunc = FO_COPY;
+		op.pFrom = lpszFrom;
+		op.pTo = lpszTo;
+		op.fFlags = 0;
+		return ::SHFileOperation(&op);
+	}
 };

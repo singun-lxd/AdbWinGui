@@ -325,6 +325,10 @@ BEGIN
     IDS_DEVICE_EMPTY        "No Device"
     IDS_NOT_SUPPORTED_FILE  "Not supported file type."
     IDS_SELECT_APK_DIRECTORY "Select Custom Apk Directory"
+    IDS_INSTALL_APK         "Install Directly\nInstall this Apk file to device"
+    IDS_COPY_AND_INSTALL    "Copy And Install\nCopy this file to Apk Directory and install"
+    IDS_CANCEL              "Cancel"
+    IDS_INSTALL_APK_FILE_NOTICE "Install Apk file"
 END
 
 STRINGTABLE

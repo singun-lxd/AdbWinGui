@@ -137,6 +137,10 @@ int DdmLibWrapper::GetSelectedDeviceIndex()
 
 IDevice* DdmLibWrapper::GetSelectedDevice()
 {
+	if (m_nSelectedIndex == -1 || m_nSelectedIndex >= m_arrDevice.GetSize())
+	{
+		return NULL;
+	}
 	return m_arrDevice[m_nSelectedIndex];
 }
 

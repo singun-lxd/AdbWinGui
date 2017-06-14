@@ -49,7 +49,7 @@ void MessageTaskDlg::OnVerificationClicked(bool bChecked)
 		m_bNotAsk = FALSE;
 }
 
-int MessageTaskDlg::DoModal(HWND hWnd, BOOL* pbChecked)
+INT MessageTaskDlg::DoModal(HWND hWnd, BOOL* pbChecked)
 {
 	if (pbChecked != NULL)
 	{

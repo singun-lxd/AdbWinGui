@@ -36,6 +36,7 @@ public:
 	};
 
 	DdmLibWrapper& m_ddmLibWrapper;
+	std::future<BOOL> m_taskInstall;
 	CStatic m_stcNoticeApk;
 	CButton m_btnInstallApk;
 	CProgressBarCtrl m_pgbInstall;
@@ -59,10 +60,14 @@ public:
 
 public:
 	MainTab();
+	~MainTab();
 	BOOL PreTranslateMessage(MSG* pMsg);
 	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 private:
 	void PrepareAdb();
 	void InitControls();
+	void OnDefaultInstallDialog(LPCTSTR lpszApkPath);
+	void OnInstallApkDirect(LPCTSTR lpszApkPath);
+	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
 };

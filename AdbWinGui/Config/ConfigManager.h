@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AdbPathConfig.h"
 #include "ApkDirectoryConfig.h"
+#include "InstallNotifyConfig.h"
 
 class ConfigManager
 {
@@ -29,6 +30,7 @@ private:
 private:
 	AdbPathConfig m_configPath;
 	ApkDirectoryConfig m_configDirectory;
+	InstallNotifyConfig m_configInstallNotify;
 
 public:
 	static ConfigManager& GetInstance();
@@ -43,4 +45,6 @@ public:
 	const CString& GetApkDir();
 	const CString& CurrentApkDir();
 	void SetApkDir(const CString& strPath);
+	InstallNotify GetInstallNotifyConfig();
+	void SetInstallNotifyConfig(InstallNotify notify);
 };

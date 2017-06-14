@@ -42,6 +42,7 @@ private:
 public:
 	AdbPathConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName, MAIN_SECTION)
 	{
+		m_emPathMode = em_PathModeAuto;
 		m_pAdbPath = NULL;
 	}
 

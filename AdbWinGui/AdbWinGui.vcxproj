@@ -221,6 +221,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DdmLibWrapper.cpp" />
+    <ClCompile Include="InstallNotifyDlg.cpp" />
     <ClCompile Include="MainTab.cpp" />
     <ClCompile Include="MessageTaskDlg.cpp" />
     <ClCompile Include="SettingTab.cpp" />
@@ -242,8 +243,10 @@
     <ClInclude Include="Config\ConfigKeyDefine.h" />
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
+    <ClInclude Include="Config\InstallApkConfig.h" />
     <ClInclude Include="DdmLibWrapper.h" />
     <ClInclude Include="ExceptionHandler.h" />
+    <ClInclude Include="InstallNotifyDlg.h" />
     <ClInclude Include="MainTab.h" />
     <ClInclude Include="MessageDefine.h" />
     <ClInclude Include="MessageTaskDlg.h" />
@@ -256,6 +259,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utils\AdbPath.h" />
     <ClInclude Include="Utils\AndroidEnvVarEx.h" />
+    <ClInclude Include="Utils\ShellHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc" />

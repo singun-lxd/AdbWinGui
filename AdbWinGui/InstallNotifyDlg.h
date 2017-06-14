@@ -21,25 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atldlgs.h>
 #include <windef.h>
 
-class MessageTaskDlg : public CTaskDialogImpl<MessageTaskDlg>
+class InstallNotifyDlg : public CTaskDialogImpl<InstallNotifyDlg>
 {
 public:
-	MessageTaskDlg(UINT nTextId, UINT nType);
-	MessageTaskDlg(LPCTSTR lpszText, UINT nType);
+	enum
+	{
+		em_Button_Install_Direct = 101,
+		em_Button_Install_With_Copy,
+		em_Button_Install_Cancel,
+	};
+
+public:
+	InstallNotifyDlg(LPCTSTR lpszApkPath);
 
 	BOOL OnButtonClicked(int buttonId)/* override */;
-	void OnVerificationClicked(bool bChecked)/* override */;
-	INT DoModal(HWND hWnd = ::GetActiveWindow(), BOOL* pbChecked = NULL)/* override */;
-
-protected:
-	inline void SetButton(UINT nType);
-	inline void SetIcon(UINT nType);
+	INT DoModal()/* override */;
 
 private:
-	void InitDialog(UINT nType);
-
-protected:
-	INT m_nReturn;
-	BOOL m_bNotAsk;
-	CString m_strTitle;
+	INT m_nClickedId;
 };

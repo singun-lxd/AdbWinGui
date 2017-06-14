@@ -24,3 +24,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ADB_PATH_KEY		_T("ADB_PATH")
 #define DIR_MODE_KEY		_T("DIR_MODE")
 #define APK_DIR_KEY		_T("APK_DIR")
+#define INSTALL_CFG_KEY	_T("INSTALL_CFG")

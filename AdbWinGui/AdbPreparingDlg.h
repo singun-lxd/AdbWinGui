@@ -27,12 +27,12 @@ public:
 	AdbPreparingDlg();
 
 	void OnCreated();
-	BOOL OnButtonClicked(int buttonId);
-	int DoModal();
+	BOOL OnButtonClicked(int buttonId)/* override */;
+	INT DoModal()/* override */;
 	BOOL EndDialog(int nRetCode);
 	BOOL IsShowing();
 
 protected:
-	int m_nReturn;
+	INT m_nReturn;
 	CString m_strTitle;
 };

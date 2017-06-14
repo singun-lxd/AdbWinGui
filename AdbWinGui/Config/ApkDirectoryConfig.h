@@ -38,12 +38,9 @@ private:
 	CString m_strApkDir;
 
 public:
-	ApkDirectoryConfig(LPCTSTR lpszDirectoryName) : IConfig(lpszDirectoryName, MAIN_SECTION)
+	ApkDirectoryConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName, MAIN_SECTION)
 	{
-	}
-
-	~ApkDirectoryConfig()
-	{
+		m_emDirMode = em_DirModeCurrent;
 	}
 
 public:

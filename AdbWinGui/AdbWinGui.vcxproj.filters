@@ -63,6 +63,9 @@
     <ClCompile Include="DdmLibWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InstallNotifyDlg.cpp">
+      <Filter>Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -130,6 +133,15 @@
     </ClInclude>
     <ClInclude Include="ExceptionHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\InstallApkConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ShellHelper.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="InstallNotifyDlg.h">
+      <Filter>Dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

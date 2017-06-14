@@ -38,7 +38,8 @@ ConfigManager& ConfigManager::GetInstance()
 
 ConfigManager::ConfigManager(LPCTSTR lpszFileName) : 
 	m_configPath(lpszFileName),
-	m_configDirectory(lpszFileName)
+	m_configDirectory(lpszFileName),
+	m_configInstallNotify(lpszFileName)
 {
 }
 
@@ -80,4 +81,14 @@ const CString& ConfigManager::CurrentApkDir()
 void ConfigManager::SetApkDir(const CString& strPath)
 {
 	m_configDirectory.SetConfigValue(strPath);
+}
+
+InstallNotify ConfigManager::GetInstallNotifyConfig()
+{
+	return m_configInstallNotify.GetConfigValue();
+}
+
+void ConfigManager::SetInstallNotifyConfig(InstallNotify notify)
+{
+	m_configInstallNotify.SetConfigValue(notify);
 }

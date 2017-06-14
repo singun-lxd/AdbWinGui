@@ -17,45 +17,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "stdafx.h"
+#include "InstallNotifyDlg.h"
 #include "resource.h"
-#include "AdbPreparingDlg.h"
 
-AdbPreparingDlg::AdbPreparingDlg()
+InstallNotifyDlg::InstallNotifyDlg(LPCTSTR lpszApkPath)
 {
 	SetWindowTitle(IDR_MAINFRAME);
-	SetMainInstructionText(IDS_ADB_PREPARING);
-	//SetMainIcon(TD_INFORMATION_ICON);
-	SetCommonButtons(TDCBF_CANCEL_BUTTON);
+	SetMainInstructionText(IDS_INSTALL_APK_FILE_NOTICE);
+	SetMainIcon(TD_INFORMATION_ICON);
+	SetContentText(lpszApkPath);
 
-	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION |
-		TDF_SHOW_MARQUEE_PROGRESS_BAR | TDF_POSITION_RELATIVE_TO_WINDOW);
+	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION | TDF_USE_COMMAND_LINKS |
+		TDF_POSITION_RELATIVE_TO_WINDOW);
 }
 
-void AdbPreparingDlg::OnCreated()
+BOOL InstallNotifyDlg::OnButtonClicked(int buttonId)
 {
-	SetProgressBarMarquee(TRUE, 1);
-}
-
-BOOL AdbPreparingDlg::OnButtonClicked(int buttonId)
-{
-	m_nReturn = buttonId;
+	m_nClickedId = buttonId;
 	return TRUE;
 }
 
-INT AdbPreparingDlg::DoModal()
+INT InstallNotifyDlg::DoModal()
 {
+	const TASKDIALOG_BUTTON buttons[] =
+	{
+		{ em_Button_Install_Direct, MAKEINTRESOURCE(IDS_INSTALL_APK) },
+		{ em_Button_Install_With_Copy, MAKEINTRESOURCE(IDS_COPY_AND_INSTALL) },
+		{ em_Button_Install_Cancel, MAKEINTRESOURCE(IDS_CANCEL) },
+	};
+
+	SetButtons(buttons, _countof(buttons));
+
 	CTaskDialogImpl::DoModal();
-	return m_nReturn;
-}
 
-BOOL AdbPreparingDlg::EndDialog(int nRetCode)
-{
-	m_nReturn = nRetCode;
-	return ::EndDialog(this->m_hWnd, nRetCode);
+	return m_nClickedId;
 }
-
-BOOL AdbPreparingDlg::IsShowing()
-{
-	return m_hWnd != NULL;
-}
-

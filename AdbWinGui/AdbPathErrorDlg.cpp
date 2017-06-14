@@ -54,12 +54,8 @@ void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
 	::ShellExecute(NULL, _T("open"), pszHREF, NULL, NULL, SW_SHOWNORMAL);
 }
 
-int AdbPathErrorDlg::DoModal()
+INT AdbPathErrorDlg::DoModal()
 {
-	CString strCmdSelect, strCmdExit;
-	strCmdSelect.LoadString(IDS_SELECT_ADB_PATH);
-	strCmdExit.LoadString(IDS_EXIT_ADBWINGUI);
-
 	const TASKDIALOG_BUTTON buttons[] =
 	{
 		
