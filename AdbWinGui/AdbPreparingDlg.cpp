@@ -24,6 +24,7 @@ AdbPreparingDlg::AdbPreparingDlg()
 {
 	SetWindowTitle(IDR_MAINFRAME);
 	SetMainInstructionText(IDS_ADB_PREPARING);
+	SetContentText(IDS_DO_NOT_CANCEL_THIS_PROGRESS);
 	//SetMainIcon(TD_INFORMATION_ICON);
 	SetCommonButtons(TDCBF_CANCEL_BUTTON);
 

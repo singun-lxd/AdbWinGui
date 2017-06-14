@@ -23,6 +23,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class ShellHelper
 {
 public:
+	static LPCTSTR GetErrorMessage(DWORD dwErr)
+	{
+		LPTSTR lpBuffer;
+		::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_IGNORE_INSERTS |
+			FORMAT_MESSAGE_FROM_SYSTEM,
+			NULL,
+			dwErr,
+			LANG_NEUTRAL,
+			(LPTSTR)&lpBuffer,
+			0,
+			NULL);
+		return const_cast<LPCTSTR>(lpBuffer);
+	}
+
 	static INT CopyFile(LPCTSTR lpszFrom, LPCTSTR lpszTo, HWND hWnd = ::GetActiveWindow())
 	{
 		SHFILEOPSTRUCT op;
@@ -32,6 +47,11 @@ public:
 		op.pFrom = lpszFrom;
 		op.pTo = lpszTo;
 		op.fFlags = 0;
-		return ::SHFileOperation(&op);
+		int nRet = ::SHFileOperation(&op);
+		if (op.fAnyOperationsAborted)
+		{
+			nRet = -1;
+		}
+		return nRet;
 	}
 };

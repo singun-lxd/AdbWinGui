@@ -20,16 +20,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MessageTaskDlg.h"
 #include "resource.h"
 
-MessageTaskDlg::MessageTaskDlg(UINT nTextId, UINT nType)
+MessageTaskDlg::MessageTaskDlg(UINT nTextId, UINT nSubTextId, UINT nType /*= MB_OK*/)
 {
 	InitDialog(nType);
 	SetMainInstructionText(nTextId);
+	SetContentText(nSubTextId);
 }
 
-MessageTaskDlg::MessageTaskDlg(LPCTSTR lpszText, UINT nType)
+MessageTaskDlg::MessageTaskDlg(LPCTSTR lpszText, LPCTSTR lpszSubText, UINT nType /*= MB_OK*/)
 {
 	InitDialog(nType);
 	SetMainInstructionText(lpszText);
+	SetContentText(lpszSubText);
+}
+
+MessageTaskDlg::MessageTaskDlg(UINT nTextId, LPCTSTR lpszSubText /* = _T("") */, UINT nType /*= MB_OK*/)
+{
+	InitDialog(nType);
+	SetMainInstructionText(nTextId);
+	SetContentText(lpszSubText);
+}
+
+MessageTaskDlg::MessageTaskDlg(LPCTSTR lpszText, UINT nSubTextId /*= 0*/, UINT nType /*= MB_OK*/)
+{
+	InitDialog(nType);
+	SetMainInstructionText(lpszText);
+	SetContentText(nSubTextId);
 }
 
 BOOL MessageTaskDlg::OnButtonClicked(int buttonId)

@@ -70,4 +70,5 @@ private:
 	void OnDefaultInstallDialog(LPCTSTR lpszApkPath);
 	void OnInstallApkDirect(LPCTSTR lpszApkPath);
 	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
+	void ShowCopyFailDialog(DWORD dwErrCode);
 };

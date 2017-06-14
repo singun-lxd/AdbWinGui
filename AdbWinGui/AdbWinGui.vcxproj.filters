@@ -134,14 +134,14 @@
     <ClInclude Include="ExceptionHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Config\InstallApkConfig.h">
-      <Filter>Config</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\ShellHelper.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="InstallNotifyDlg.h">
       <Filter>Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\InstallNotifyConfig.h">
+      <Filter>Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,8 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class MessageTaskDlg : public CTaskDialogImpl<MessageTaskDlg>
 {
 public:
-	MessageTaskDlg(UINT nTextId, UINT nType);
-	MessageTaskDlg(LPCTSTR lpszText, UINT nType);
+	MessageTaskDlg(UINT nTextId, UINT nSubTextId, UINT nType = MB_OK);
+	MessageTaskDlg(LPCTSTR lpszText, LPCTSTR lpszSubText, UINT nType = MB_OK);
+	MessageTaskDlg(UINT nTextId, LPCTSTR lpszSubText = _T(""), UINT nType = MB_OK);
+	MessageTaskDlg(LPCTSTR lpszText, UINT nSubTextId = 0, UINT nType = MB_OK);
 
 	BOOL OnButtonClicked(int buttonId)/* override */;
 	void OnVerificationClicked(bool bChecked)/* override */;

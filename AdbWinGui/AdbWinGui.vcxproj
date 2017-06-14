@@ -243,7 +243,7 @@
     <ClInclude Include="Config\ConfigKeyDefine.h" />
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
-    <ClInclude Include="Config\InstallApkConfig.h" />
+    <ClInclude Include="Config\InstallNotifyConfig.h" />
     <ClInclude Include="DdmLibWrapper.h" />
     <ClInclude Include="ExceptionHandler.h" />
     <ClInclude Include="InstallNotifyDlg.h" />

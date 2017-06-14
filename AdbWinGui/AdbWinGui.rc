@@ -322,13 +322,14 @@ BEGIN
     IDS_ADB_PATH_ERROR      "Searching adb.exe path failed"
     IDS_DOWNLOAD_ADB        "Download adb from <a href=""https://developer.android.com/studio/releases/platform-tools.html"">developer.android.com</a>"
     IDS_ADB_PREPARING       "Preparing adb, please wait..."
+    IDS_DO_NOT_CANCEL_THIS_PROGRESS 
+                            "It is necessary to prepare adb environment, do not cancel this progress please."
     IDS_DEVICE_EMPTY        "No Device"
-    IDS_NOT_SUPPORTED_FILE  "Not supported file type."
     IDS_SELECT_APK_DIRECTORY "Select Custom Apk Directory"
-    IDS_INSTALL_APK         "Install Directly\nInstall this Apk file to device"
-    IDS_COPY_AND_INSTALL    "Copy And Install\nCopy this file to Apk Directory and install"
+    IDS_INSTALL_APK         "Install Directly\nInstall this apk file to device"
+    IDS_COPY_AND_INSTALL    "Copy And Install\nCopy to ""Apk File Directory"" and install"
     IDS_CANCEL              "Cancel"
-    IDS_INSTALL_APK_FILE_NOTICE "Install Apk file"
+    IDS_INSTALL_APK_FILE_NOTICE "Install selected apk file to device."
     IDS_REMEMBER_MY_CHOICE  "Remember my choice"
 END
 
@@ -421,6 +422,15 @@ STRINGTABLE
 BEGIN
     ID_DEVICE_DEVICELIST    "Show all devices and details"
     ID_DEVICE_REFRESH       "Refresh device list"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_NOT_SUPPORTED_FILE  "Not supported file type."
+    IDS_ONLY_APK_SUPPORTED  "Only apk file is supported to be installed."
+    IDS_FILE_COPY_FAILED    "Failed to copy file."
+    IDS_NO_AVAILABLE_DEVICE "No available device found."
+    IDS_CONNECT_AND_RETRY   "Please connect to a device and try again."
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

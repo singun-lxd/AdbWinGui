@@ -180,9 +180,7 @@ void SettingTab::AutoUpdateAdbPath(ConfigManager& cfgManager)
 	{
 		SwitchAdbRadioButton(FALSE);
 
-		CString strMsg;
-		strMsg.LoadString(IDS_ADB_PATH_ERROR);
-		MessageTaskDlg msgDlg(strMsg, MB_ICONEXCLAMATION);
+		MessageTaskDlg msgDlg(IDS_ADB_PATH_ERROR, _T(""), MB_ICONEXCLAMATION);
 		msgDlg.DoModal();
 	}
 }
@@ -247,9 +245,7 @@ void SettingTab::AutoUpdateApkDir(ConfigManager& cfgManager)
 	{
 		SwitchApkRadioButton(FALSE);
 
-		CString strMsg;
-		strMsg.LoadString(IDS_ADB_PATH_ERROR);
-		MessageTaskDlg msgDlg(strMsg, MB_ICONEXCLAMATION);
+		MessageTaskDlg msgDlg(IDS_ADB_PATH_ERROR, _T(""), MB_ICONEXCLAMATION);
 		msgDlg.DoModal();
 	}
 }

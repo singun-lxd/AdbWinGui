@@ -82,7 +82,7 @@ LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	}
 	else
 	{
-		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, MB_ICONWARNING);
+		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, IDS_ONLY_APK_SUPPORTED, MB_ICONWARNING);
 		dlg.DoModal();
 	}
 
@@ -121,37 +121,76 @@ void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 
 void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 {
+	TCHAR* szApkPath = new TCHAR[MAX_PATH];
+	_tcsncpy_s(szApkPath, MAX_PATH, lpszApkPath, MAX_PATH);
+
 	IDevice* pDevice = m_ddmLibWrapper.GetSelectedDevice();
 	if (pDevice != NULL)
 	{
+		HWND hWnd = m_hWnd;
 		// create a thread to run install task
-		std::packaged_task<int()> ptInstall([&pDevice, &lpszApkPath]
+		std::packaged_task<int(TCHAR*)> ptInstall([&pDevice, &hWnd](TCHAR* szApkPath)
 		{
-			return pDevice->InstallPackage(lpszApkPath, true);
+			int nRet = pDevice->InstallPackage(szApkPath, true);
+			if (nRet == 0)
+			{
+			}
+			// need to free string here
+			delete[] szApkPath;
+			return nRet;
 		});
 		m_taskInstall = ptInstall.get_future();
-		std::thread(std::move(ptInstall)).detach();
+		std::thread(std::move(ptInstall), szApkPath).detach();
 	}
 	else
 	{
-
+		MessageTaskDlg dlg(IDS_NO_AVAILABLE_DEVICE, IDS_CONNECT_AND_RETRY, MB_ICONERROR);
+		dlg.DoModal();
+		delete[] szApkPath;
 	}
 }
 
 void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 {
+	TCHAR* szSrcPath = new TCHAR[MAX_PATH];
+	_tcsncpy_s(szSrcPath, MAX_PATH, lpszApkPath, MAX_PATH);
+
 	LPCTSTR lpszFileName = ::PathFindFileName(lpszApkPath);
-	CString strApkDir = ConfigManager::GetInstance().GetApkDir();
-	LPTSTR szPath = strApkDir.GetBuffer(MAX_PATH);
-	::PathAppend(szPath, lpszFileName);
-	strApkDir.ReleaseBuffer();
-	INT nRet = ShellHelper::CopyFile(lpszApkPath, strApkDir, m_hWnd);
-	if (nRet == ERROR_SUCCESS)
+	LPCTSTR lpszApkDir = ConfigManager::GetInstance().GetApkDir();
+	TCHAR* szDescPath = new TCHAR[MAX_PATH];
+	_tcsncpy_s(szDescPath, MAX_PATH, lpszApkDir, MAX_PATH);
+	::PathAppend(szDescPath, lpszFileName);
+
+	if (::PathFileExists(szDescPath))
 	{
-		OnInstallApkDirect(strApkDir);
+		ShowCopyFailDialog(ERROR_FILE_EXISTS);
+		delete[] szSrcPath;
+		delete[] szDescPath;
 	}
 	else
 	{
+		HWND hWnd = m_hWnd;
+		// create a thread to run copy task
+		std::packaged_task<BOOL(TCHAR*, TCHAR*)> ptCopy([&hWnd](TCHAR* lpszSrc, TCHAR* lpszDesc)
+		{
+			BOOL bRet = ::CopyFile(lpszSrc, lpszDesc, FALSE);
+			if (bRet)
+			{
 
+			}
+			// need to free string here
+			delete[] lpszSrc;
+			delete[] lpszDesc;
+			return bRet;
+		});
+		m_taskInstall = ptCopy.get_future();
+		std::thread(std::move(ptCopy), szSrcPath, szDescPath).detach();
 	}
+}
+
+void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
+{
+	LPCTSTR lpszErrMsg = ShellHelper::GetErrorMessage(dwErrCode);
+	MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, lpszErrMsg, MB_ICONERROR);
+	dlg.DoModal();
 }
