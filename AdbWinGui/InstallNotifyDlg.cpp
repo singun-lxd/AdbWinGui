@@ -37,7 +37,7 @@ BOOL InstallNotifyDlg::OnButtonClicked(int buttonId)
 	return TRUE;
 }
 
-INT InstallNotifyDlg::DoModal()
+INT InstallNotifyDlg::DoModal(HWND hWnd)
 {
 	const TASKDIALOG_BUTTON buttons[] =
 	{
@@ -48,7 +48,7 @@ INT InstallNotifyDlg::DoModal()
 
 	SetButtons(buttons, _countof(buttons));
 
-	CTaskDialogImpl::DoModal();
+	CTaskDialogImpl::DoModal(hWnd);
 
 	return m_nClickedId;
 }

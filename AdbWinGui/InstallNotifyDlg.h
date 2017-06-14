@@ -35,7 +35,7 @@ public:
 	InstallNotifyDlg(LPCTSTR lpszApkPath);
 
 	BOOL OnButtonClicked(int buttonId)/* override */;
-	INT DoModal()/* override */;
+	INT DoModal(HWND hWnd = ::GetActiveWindow())/* override */;
 
 private:
 	INT m_nClickedId;

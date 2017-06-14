@@ -28,7 +28,7 @@ public:
 
 	void OnCreated();
 	BOOL OnButtonClicked(int buttonId)/* override */;
-	INT DoModal()/* override */;
+	INT DoModal(HWND hWnd = ::GetActiveWindow())/* override */;
 	BOOL EndDialog(int nRetCode);
 	BOOL IsShowing();
 

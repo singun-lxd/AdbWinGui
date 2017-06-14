@@ -33,7 +33,7 @@ public:
 
     BOOL OnButtonClicked(int buttonId)/* override */;
 	void OnHyperlinkClicked(LPCTSTR pszHREF)/* override */;
-	INT DoModal()/* override */;
+	INT DoModal(HWND hWnd = ::GetActiveWindow())/* override */;
 
 private:
 	INT m_nClickedId;

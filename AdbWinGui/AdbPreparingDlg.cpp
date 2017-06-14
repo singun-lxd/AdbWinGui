@@ -42,9 +42,9 @@ BOOL AdbPreparingDlg::OnButtonClicked(int buttonId)
 	return TRUE;
 }
 
-INT AdbPreparingDlg::DoModal()
+INT AdbPreparingDlg::DoModal(HWND hWnd)
 {
-	CTaskDialogImpl::DoModal();
+	CTaskDialogImpl::DoModal(hWnd);
 	return m_nReturn;
 }
 

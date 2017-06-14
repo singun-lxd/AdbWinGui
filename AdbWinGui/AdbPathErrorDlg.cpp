@@ -54,7 +54,7 @@ void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
 	::ShellExecute(NULL, _T("open"), pszHREF, NULL, NULL, SW_SHOWNORMAL);
 }
 
-INT AdbPathErrorDlg::DoModal()
+INT AdbPathErrorDlg::DoModal(HWND hWnd)
 {
 	const TASKDIALOG_BUTTON buttons[] =
 	{
@@ -65,7 +65,7 @@ INT AdbPathErrorDlg::DoModal()
 
 	SetButtons(buttons, _countof(buttons));
 
-	CTaskDialogImpl::DoModal();
+	CTaskDialogImpl::DoModal(hWnd);
 
 	return m_nClickedId;
 }

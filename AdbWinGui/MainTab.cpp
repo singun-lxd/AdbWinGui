@@ -104,7 +104,7 @@ void MainTab::InitControls()
 void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 {
 	InstallNotifyDlg dlg(lpszApkPath);
-	int nClick = dlg.DoModal();
+	int nClick = dlg.DoModal(m_hWnd);
 	switch (nClick)
 	{
 	case InstallNotifyDlg::em_Button_Install_Direct:
@@ -144,7 +144,7 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 	LPTSTR szPath = strApkDir.GetBuffer(MAX_PATH);
 	::PathAppend(szPath, lpszFileName);
 	strApkDir.ReleaseBuffer();
-	INT nRet = ShellHelper::CopyFile(lpszApkPath, strApkDir);
+	INT nRet = ShellHelper::CopyFile(lpszApkPath, strApkDir, m_hWnd);
 	if (nRet == ERROR_SUCCESS)
 	{
 		OnInstallApkDirect(strApkDir);
