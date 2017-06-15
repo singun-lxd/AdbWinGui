@@ -221,6 +221,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="DdmLibWrapper.cpp" />
+    <ClCompile Include="FileExistsDlg.cpp" />
     <ClCompile Include="InstallNotifyDlg.cpp" />
     <ClCompile Include="MainTab.cpp" />
     <ClCompile Include="MessageTaskDlg.cpp" />
@@ -244,8 +245,10 @@
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Config\IConfig.h" />
     <ClInclude Include="Config\InstallNotifyConfig.h" />
+    <ClInclude Include="Config\ReplaceNotifyConfig.h" />
     <ClInclude Include="DdmLibWrapper.h" />
     <ClInclude Include="ExceptionHandler.h" />
+    <ClInclude Include="FileExistsDlg.h" />
     <ClInclude Include="InstallNotifyDlg.h" />
     <ClInclude Include="MainTab.h" />
     <ClInclude Include="MessageDefine.h" />

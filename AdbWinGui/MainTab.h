@@ -83,6 +83,7 @@ private:
 	void OnInstallApkDirect(LPCTSTR lpszApkPath);
 	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
 	void ShowCopyFailDialog(DWORD dwErrCode);
+	BOOL CheckAndShowReplaceDialog(LPCTSTR lpszFromPath, LPCTSTR lpszToPath);
 	void SwitchToCopyingMode();
 	void SwitchToInstallingMode();
 	void SwitchToIdleMode();

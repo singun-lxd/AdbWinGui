@@ -31,6 +31,8 @@
 #define IDS_NOTICE_COPYING              152
 #define IDS_NOTICE_INSTALLING           153
 #define IDS_INSTALL_SUCCESS             154
+#define IDS_FILE_EXISTS                 155
+#define IDS_REPLACE_FILE                156
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000

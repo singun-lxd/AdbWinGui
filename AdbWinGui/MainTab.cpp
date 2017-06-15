@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Config/ConfigManager.h"
 #include "Utils/ShellHelper.h"
 #include "InstallNotifyDlg.h"
+#include "FileExistsDlg.h"
 
 MainTab::MainTab() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
@@ -230,37 +231,47 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 	_tcsncpy_s(szDescPath, MAX_PATH, lpszApkDir, MAX_PATH);
 	::PathAppend(szDescPath, lpszFileName);
 
-	if (::PathFileExists(szDescPath))
+	if (_tcscmp(lpszApkPath, szDescPath) == 0)
 	{
+		// the same file
 		ShowCopyFailDialog(ERROR_FILE_EXISTS);
 		delete[] szSrcPath;
 		delete[] szDescPath;
+		return;
 	}
-	else
+	if (::PathFileExists(szDescPath))
 	{
-		SwitchToCopyingMode();
-		HWND& hWnd = m_hWnd;
-		// create a thread to run copy task
-		std::packaged_task<BOOL(TCHAR*, TCHAR*)> ptCopy([&hWnd](TCHAR* lpszSrc, TCHAR* lpszDesc)
+		// file exists
+		if (!CheckAndShowReplaceDialog(lpszApkPath, szDescPath))
 		{
-			DWORD dwErrCode = 0;
-			BOOL bRet = ::CopyFile(lpszSrc, lpszDesc, FALSE);
-			if (bRet)
-			{
-
-			}
-			else
-			{
-				dwErrCode = ::GetLastError();
-			}
-			::PostMessage(hWnd, MSG_INSTALL_COPY_APK, (WPARAM)dwErrCode, (LPARAM)lpszDesc);
-			// need to free string here
-			delete[] lpszSrc;
-			return bRet;
-		});
-		m_taskCopy = ptCopy.get_future();
-		std::thread(std::move(ptCopy), szSrcPath, szDescPath).detach();
+			delete[] szSrcPath;
+			delete[] szDescPath;
+			return;
+		}
 	}
+
+	SwitchToCopyingMode();
+	HWND& hWnd = m_hWnd;
+	// create a thread to run copy task
+	std::packaged_task<BOOL(TCHAR*, TCHAR*)> ptCopy([&hWnd](TCHAR* lpszSrc, TCHAR* lpszDesc)
+	{
+		DWORD dwErrCode = 0;
+		BOOL bRet = ::CopyFile(lpszSrc, lpszDesc, FALSE);
+		if (bRet)
+		{
+
+		}
+		else
+		{
+			dwErrCode = ::GetLastError();
+		}
+		::PostMessage(hWnd, MSG_INSTALL_COPY_APK, (WPARAM)dwErrCode, (LPARAM)lpszDesc);
+		// need to free string here
+		delete[] lpszSrc;
+		return bRet;
+	});
+	m_taskCopy = ptCopy.get_future();
+	std::thread(std::move(ptCopy), szSrcPath, szDescPath).detach();
 }
 
 void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
@@ -268,6 +279,34 @@ void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
 	LPCTSTR lpszErrMsg = ShellHelper::GetErrorMessage(dwErrCode);
 	MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, lpszErrMsg, MB_ICONERROR);
 	dlg.DoModal();
+}
+
+BOOL MainTab::CheckAndShowReplaceDialog(LPCTSTR lpszFromPath, LPCTSTR lpszToPath)
+{
+	ConfigManager& cfgManager = ConfigManager::GetInstance();
+	if (cfgManager.GetForceReplace())
+	{
+		::DeleteFile(lpszToPath);
+	}
+	else
+	{
+		// notify file exist
+		BOOL bCheck = FALSE;
+		FileExistsDlg dlg(lpszFromPath, lpszToPath);
+		if (dlg.DoModal(m_hWnd, &bCheck) == IDOK)
+		{
+			::DeleteFile(lpszToPath);
+			if (bCheck)
+			{
+				cfgManager.SetForceReplace(TRUE);
+			}
+		}
+		else
+		{
+			return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 void MainTab::SwitchToCopyingMode()

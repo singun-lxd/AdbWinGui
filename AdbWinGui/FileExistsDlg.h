@@ -18,11 +18,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define MAIN_SECTION			_T("Main")
+#include <atldlgs.h>
 
-#define PATH_MODE_KEY			_T("PATH_MODE")
-#define ADB_PATH_KEY			_T("ADB_PATH")
-#define DIR_MODE_KEY			_T("DIR_MODE")
-#define APK_DIR_KEY			_T("APK_DIR")
-#define INSTALL_CFG_KEY		_T("INSTALL_CFG")
-#define FORCE_REPLACE_KEY	_T("FORCE_REPLACE")
+class FileExistsDlg : public CTaskDialogImpl<FileExistsDlg>
+{
+private:
+	enum
+	{
+		em_Button_Replace = 101,
+		em_Button_Cancel
+	};
+	CString m_strTarget;
+
+public:
+	FileExistsDlg(LPCTSTR lpszFrom, LPCTSTR lpszTo);
+
+	BOOL OnButtonClicked(int buttonId)/* override */;
+	INT DoModal(HWND hWnd = ::GetActiveWindow(), BOOL* pbChecked = NULL)/* override */;
+
+private:
+	INT m_nClickedId;
+};

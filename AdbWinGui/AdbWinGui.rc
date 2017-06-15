@@ -439,6 +439,8 @@ BEGIN
     IDS_NOTICE_COPYING      "Copying apk to target directory..."
     IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
     IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
+    IDS_FILE_EXISTS         "File exists in target directory."
+    IDS_REPLACE_FILE        "Replace target file with:"
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

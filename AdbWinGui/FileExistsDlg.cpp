@@ -17,28 +17,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "stdafx.h"
-#include "AdbPathErrorDlg.h"
+#include "FileExistsDlg.h"
 #include "resource.h"
 
-
-AdbPathErrorDlg::AdbPathErrorDlg()
+FileExistsDlg::FileExistsDlg(LPCTSTR lpszFrom, LPCTSTR lpszTo)
 {
 	SetWindowTitle(IDR_MAINFRAME);
-	SetMainInstructionText(IDS_ADB_PATH_ERROR);
-	SetMainIcon(TD_ERROR_ICON);
-	SetContentText(IDS_ADB_PATH_INVALID);
-	SetFooterText(IDS_DOWNLOAD_ADB);
-	SetFooterIcon(TD_INFORMATION_ICON);
+	SetMainInstructionText(IDS_FILE_EXISTS);
+	SetMainIcon(TD_WARNING_ICON);
+	SetContentText(lpszTo);
+	m_strTarget = lpszFrom;
 
 	ModifyFlags(0, TDF_ALLOW_DIALOG_CANCELLATION | TDF_USE_COMMAND_LINKS |
-		TDF_ENABLE_HYPERLINKS | TDF_POSITION_RELATIVE_TO_WINDOW);
+		TDF_POSITION_RELATIVE_TO_WINDOW);
 }
 
-BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
+BOOL FileExistsDlg::OnButtonClicked(int buttonId)
 {
 	switch (buttonId)
 	{
-	case em_Button_Select:
+	case em_Button_Replace:
 		m_nClickedId = IDOK;
 		break;
 	default:
@@ -49,23 +47,26 @@ BOOL AdbPathErrorDlg::OnButtonClicked(int buttonId)
 	return TRUE;
 }
 
-void AdbPathErrorDlg::OnHyperlinkClicked(LPCTSTR pszHREF)
+INT FileExistsDlg::DoModal(HWND hWnd, BOOL* pbChecked)
 {
-	::ShellExecute(NULL, _T("open"), pszHREF, NULL, NULL, SW_SHOWNORMAL);
-}
+	CString strButtonReplace;
+	strButtonReplace.LoadString(IDS_REPLACE_FILE);
+	strButtonReplace.AppendFormat(_T("\n%s"), m_strTarget);
 
-INT AdbPathErrorDlg::DoModal(HWND hWnd)
-{
 	const TASKDIALOG_BUTTON buttons[] =
 	{
-		{ em_Button_Select, MAKEINTRESOURCE(IDS_SELECT_ADB_PATH) },
-		{ em_Button_Exit, MAKEINTRESOURCE(IDS_EXIT_ADBWINGUI) },
+		{ em_Button_Replace, strButtonReplace },
+		{ em_Button_Cancel, MAKEINTRESOURCE(IDS_CANCEL) },
 	};
 
 	SetButtons(buttons, _countof(buttons));
 
-	CTaskDialogImpl::DoModal(hWnd);
+	if (pbChecked != NULL)
+	{
+		ModifyFlags(TDF_VERIFICATION_FLAG_CHECKED, 0);
+		SetVerificationText(IDS_REMEMBER_MY_CHOICE);
+	}
+	CTaskDialogImpl::DoModal(hWnd, NULL, NULL, pbChecked);
 
 	return m_nClickedId;
 }
-

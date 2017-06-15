@@ -39,12 +39,12 @@ public:
 	virtual BOOL SetConfigValue(T value) = 0;
 
 protected:
-	INT GetConfigInt(LPCTSTR lpszKeyName, int nDefault)
+	INT GetConfigInt(LPCTSTR lpszKeyName, INT nDefault)
 	{
 		return ::GetPrivateProfileInt(m_szSection, lpszKeyName, nDefault, m_szFileName);
 	}
 
-	BOOL SetConfigInt(LPCTSTR lpszKeyName, int nValue)
+	BOOL SetConfigInt(LPCTSTR lpszKeyName, INT nValue)
 	{
 		TCHAR szValue[MAX_PATH] = { 0 };
 		_itot_s(nValue, szValue, 10);

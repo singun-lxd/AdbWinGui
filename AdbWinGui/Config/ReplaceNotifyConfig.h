@@ -24,41 +24,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "IConfig.h"
 #include "ConfigKeyDefine.h"
 
-enum InstallNotify
-{
-	em_InstallDefault = -1,
-	em_InstallDirect = 0,
-	em_InstallWithCopy = 1,
-};
-
-class InstallNotifyConfig : public IConfig<InstallNotify>
+class ReplaceNotifyConfig : public IConfig<BOOL>
 {
 private:
-	InstallNotify m_emInstallNotify;
+	INT m_nReplace;
 
 public:
-	InstallNotifyConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName, MAIN_SECTION)
+	ReplaceNotifyConfig(LPCTSTR lpszFileName) : IConfig(lpszFileName, MAIN_SECTION)
 	{
-		m_emInstallNotify = em_InstallDefault;
+		m_nReplace = -1;
 	}
 
-	virtual InstallNotify GetConfigValue() override
+	virtual BOOL GetConfigValue() override
 	{
-		if (m_emInstallNotify != em_InstallDefault)
+		if (m_nReplace != -1)
 		{
-			return m_emInstallNotify;
+			return m_nReplace;
 		}
-		m_emInstallNotify = static_cast<InstallNotify>(GetConfigInt(INSTALL_CFG_KEY, em_InstallDefault));
-		return m_emInstallNotify;
+		m_nReplace = GetConfigInt(FORCE_REPLACE_KEY, FALSE);
+		return static_cast<BOOL>(m_nReplace);
 	}
 
-	virtual BOOL SetConfigValue(InstallNotify value) override
+	virtual BOOL SetConfigValue(BOOL value) override
 	{
 		INT nCfgValue = static_cast<INT>(value);
-		BOOL bCfgSaved = SetConfigInt(INSTALL_CFG_KEY, nCfgValue);
+		BOOL bCfgSaved = SetConfigInt(FORCE_REPLACE_KEY, nCfgValue);
 		if (bCfgSaved)
 		{
-			m_emInstallNotify = value;
+			m_nReplace = static_cast<INT>(value);
 		}
 		return bCfgSaved;
 	}

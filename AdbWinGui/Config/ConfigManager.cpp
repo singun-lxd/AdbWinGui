@@ -39,7 +39,8 @@ ConfigManager& ConfigManager::GetInstance()
 ConfigManager::ConfigManager(LPCTSTR lpszFileName) : 
 	m_configPath(lpszFileName),
 	m_configDirectory(lpszFileName),
-	m_configInstallNotify(lpszFileName)
+	m_configInstallNotify(lpszFileName),
+	m_configReplaceNotify(lpszFileName)
 {
 }
 
@@ -91,4 +92,14 @@ InstallNotify ConfigManager::GetInstallNotifyConfig()
 void ConfigManager::SetInstallNotifyConfig(InstallNotify notify)
 {
 	m_configInstallNotify.SetConfigValue(notify);
+}
+
+BOOL ConfigManager::GetForceReplace()
+{
+	return m_configReplaceNotify.GetConfigValue();
+}
+
+void ConfigManager::SetForceReplace(BOOL bForce)
+{
+	m_configReplaceNotify.SetConfigValue(bForce);
 }

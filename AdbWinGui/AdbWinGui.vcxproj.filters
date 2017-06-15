@@ -66,6 +66,9 @@
     <ClCompile Include="InstallNotifyDlg.cpp">
       <Filter>Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="FileExistsDlg.cpp">
+      <Filter>Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -141,6 +144,12 @@
       <Filter>Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="Config\InstallNotifyConfig.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="FileExistsDlg.h">
+      <Filter>Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="Config\ReplaceNotifyConfig.h">
       <Filter>Config</Filter>
     </ClInclude>
   </ItemGroup>
