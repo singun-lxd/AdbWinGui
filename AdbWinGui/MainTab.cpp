@@ -118,6 +118,7 @@ LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		BOOL bRet = m_taskCopy.get();
 		if (bRet)
 		{
+			RefreshApkDirectory();
 			OnInstallApkDirect(lpszDesc);
 		}
 		else
@@ -135,6 +136,25 @@ LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	// need to free string here
 	delete[] lpszDesc;
+	return 0;
+}
+
+LRESULT MainTab::OnListDblClick(LPNMHDR pnmh)
+{
+	LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) pnmh;
+	if (lpnmitem->iItem >= 0)
+	{
+		CString strApkName;
+		m_lvApkDir.GetItemText(lpnmitem->iItem, 0, strApkName);
+
+		CString strApkPath = ConfigManager::GetInstance().GetApkDir();
+		LPTSTR szApkPath = strApkPath.GetBuffer(MAX_PATH);
+		::PathAppend(szApkPath, strApkName);
+		strApkPath.ReleaseBuffer();
+
+		OnInstallApkDirect(strApkPath);
+	}
+
 	return 0;
 }
 

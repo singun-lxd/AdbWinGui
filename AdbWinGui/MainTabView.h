@@ -55,7 +55,7 @@ public:
 		MESSAGE_HANDLER(MSG_MAIN_ADB_PATH, OnAdbPath)
 		MESSAGE_HANDLER(MSG_MAIN_PREPARE_ADB, OnPrepareAdb)
 		MESSAGE_HANDLER(MSG_MAIN_ADB_FINISH, OnAdbPrepareFinish)
-	ALT_MSG_MAP(1)   // tab control
+		ALT_MSG_MAP(1)   // tab control
 	END_MSG_MAP()
 
 public:

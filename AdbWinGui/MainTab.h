@@ -55,6 +55,7 @@ public:
 		MSG_WM_DROPFILES(OnDropFiles)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
+		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
 
@@ -77,6 +78,7 @@ public:
 	void OnDropFiles(HDROP hDropInfo);
 	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT OnListDblClick(LPNMHDR pnmh);
 
 private:
 	void PrepareAdb();
