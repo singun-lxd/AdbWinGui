@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <atlctrls.h>
 #include <atlframe.h>
+#include <atlcrack.h>
 #include "resource.h"
 #include "Config/ConfigManager.h"
 #include "MessageDefine.h"
@@ -48,10 +49,10 @@ public:
 
 public:
 	BEGIN_MSG_MAP(SettingTab)
-		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-		MESSAGE_HANDLER(MSG_SETTING_SELECT_ADB, OnShowSelectAdbDialog)
-		COMMAND_RANGE_HANDLER(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnAdbRadioSelected)
-		COMMAND_RANGE_HANDLER(IDC_RADIO_CURRET, IDC_RADIO_CUSTOM, OnApkRadioSelected)
+		MSG_WM_INITDIALOG(OnInitDialog)
+		MESSAGE_HANDLER_EX(MSG_SETTING_SELECT_ADB, OnShowSelectAdbDialog)
+		COMMAND_RANGE_HANDLER_EX(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnAdbRadioSelected)
+		COMMAND_RANGE_HANDLER_EX(IDC_RADIO_CURRET, IDC_RADIO_CUSTOM, OnApkRadioSelected)
 		//COMMAND_ID_HANDLER(IDC_EDIT_PATH, OnPathClick)
 		CHAIN_MSG_MAP(CDialogResize<SettingTab>)
 	END_MSG_MAP()
@@ -67,10 +68,10 @@ public:
 
 public:
 	BOOL PreTranslateMessage(MSG* pMsg);
-	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnAdbRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-	LRESULT OnApkRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
+	LRESULT OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void OnAdbRadioSelected(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnApkRadioSelected(UINT uNotifyCode, int nID, CWindow wndCtl);
 private:
 	void InitControls();
 	void UpdateControlStatus();

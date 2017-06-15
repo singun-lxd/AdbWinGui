@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <atlctrls.h>
 #include <atlframe.h>
+#include <atlcrack.h>
 #include "resource.h"
 #include "DdmLibWrapper.h"
 #include "MessageDefine.h"
@@ -50,10 +51,10 @@ public:
 
 public:
 	BEGIN_MSG_MAP(MainTab)
-		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
-		MESSAGE_HANDLER(WM_DROPFILES, OnDropFiles)
-		MESSAGE_HANDLER(MSG_INSTALL_APK, OnApkInstalled)
-		MESSAGE_HANDLER(MSG_INSTALL_COPY_APK, OnApkCopied)
+		MSG_WM_INITDIALOG(OnInitDialog)
+		MSG_WM_DROPFILES(OnDropFiles)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
 
@@ -72,10 +73,11 @@ public:
 	MainTab();
 	~MainTab();
 	BOOL PreTranslateMessage(MSG* pMsg);
-	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
-	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
+	void OnDropFiles(HDROP hDropInfo);
+	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
 private:
 	void PrepareAdb();
 	void InitControls();
@@ -87,4 +89,5 @@ private:
 	void SwitchToCopyingMode();
 	void SwitchToInstallingMode();
 	void SwitchToIdleMode();
+	BOOL RefreshApkDirectory();
 };

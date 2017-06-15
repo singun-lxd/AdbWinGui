@@ -42,14 +42,14 @@ BOOL CMainFrame::OnIdle()
 	return FALSE;
 }
 
-LRESULT CMainFrame::OnQueryEndSession(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+BOOL CMainFrame::OnQueryEndSession(UINT nSource, UINT uLogOff)
 {
 	// todo Save data
 
 	return TRUE; // allow automatic close
 }
 
-LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	bool bRibbonUI = RunTimeHelper::IsRibbonUIAvailable();
 	if (bRibbonUI)
@@ -94,7 +94,7 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 	return 0;
 }
 
-LRESULT CMainFrame::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+void CMainFrame::OnDestroy()
 {
 	// unregister message filtering and idle updates
 	CMessageLoop* pLoop = _Module.GetMessageLoop();
@@ -102,21 +102,17 @@ LRESULT CMainFrame::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*
 	pLoop->RemoveMessageFilter(this);
 	pLoop->RemoveIdleHandler(this);
 
-	bHandled = FALSE;
-	return 1;
+	SetMsgHandled(FALSE);
 }
 
-LRESULT CMainFrame::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+void CMainFrame::OnGetMinMaxInfo(LPMINMAXINFO lpMMI)
 {
-	MINMAXINFO* lpMMI = (MINMAXINFO*) lParam;
 	// set min window size
 	lpMMI->ptMinTrackSize.x = MIN_WINDOW_WIDTH;
 	lpMMI->ptMinTrackSize.y = MIN_WINDOW_HEIGHT;
-
-	return 0;
 }
 
-LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
 {
 	const CSimpleArray<IDevice*>* pArrDevice = (CSimpleArray<IDevice*>*) lParam;
 	if (pArrDevice != NULL)
@@ -134,20 +130,18 @@ LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, 
 	return 0;
 }
 
-LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnFileExit(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	PostMessage(WM_CLOSE);
-	return 0;
 }
 
-LRESULT CMainFrame::OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnFileNew(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	// TODO: add code to initialize document
 
-	return 0;
 }
 
-LRESULT CMainFrame::OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnViewToolBar(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	static BOOL bVisible = TRUE;	// initially visible
 	bVisible = !bVisible;
@@ -156,30 +150,26 @@ LRESULT CMainFrame::OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWn
 	rebar.ShowBand(nBandIndex, bVisible);
 	UISetCheck(ID_VIEW_TOOLBAR, bVisible);
 	UpdateLayout();
-	return 0;
 }
 
-LRESULT CMainFrame::OnViewStatusBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnViewStatusBar(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	BOOL bVisible = !::IsWindowVisible(m_hWndStatusBar);
 	::ShowWindow(m_hWndStatusBar, bVisible ? SW_SHOWNOACTIVATE : SW_HIDE);
 	UISetCheck(ID_VIEW_STATUS_BAR, bVisible);
 	UpdateLayout();
-	return 0;
 }
 
-LRESULT CMainFrame::OnViewRibbon(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnViewRibbon(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	ShowRibbonUI(!IsRibbonUI());
 	UISetCheck(ID_VIEW_RIBBON, IsRibbonUI());
-	return 0;
 }
 
-LRESULT CMainFrame::OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+void CMainFrame::OnAppAbout(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	CAboutDlg dlg;
 	dlg.DoModal();
-	return 0;
 }
 
 void CMainFrame::InitRibbonUI()

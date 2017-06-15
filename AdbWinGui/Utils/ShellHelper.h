@@ -38,6 +38,27 @@ public:
 		return const_cast<LPCTSTR>(lpBuffer);
 	}
 
+	static BOOL GetFilesInDirectory(LPCTSTR lpszFindPath, CSimpleArray<CString>& arrFiles)
+	{
+		WIN32_FIND_DATA fileData;
+		HANDLE hFile = ::FindFirstFile(lpszFindPath, &fileData);
+		if (hFile != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+				{
+					continue;
+				}
+				arrFiles.Add(fileData.cFileName);
+			} while(::FindNextFile(hFile, &fileData));
+
+			::FindClose(hFile);
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 	static INT CopyFile(LPCTSTR lpszFrom, LPCTSTR lpszTo, HWND hWnd = ::GetActiveWindow())
 	{
 		SHFILEOPSTRUCT op;

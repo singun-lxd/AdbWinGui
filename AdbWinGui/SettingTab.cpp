@@ -32,7 +32,7 @@ BOOL SettingTab::PreTranslateMessage(MSG* pMsg)
 	return IsDialogMessage(pMsg);
 }
 
-LRESULT SettingTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+BOOL SettingTab::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
 	DlgResize_Init(false, false, WS_CHILD);
 	InitControls();
@@ -42,7 +42,7 @@ LRESULT SettingTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	return FALSE;
 }
 
-LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	ConfigManager& cfgManager = ConfigManager::GetInstance();
 	BOOL bRet = ShowSelectAdbDialog(cfgManager);
@@ -58,10 +58,10 @@ LRESULT SettingTab::OnShowSelectAdbDialog(UINT uMsg, WPARAM wParam, LPARAM lPara
 	return 0;
 }
 
-LRESULT SettingTab::OnAdbRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+void SettingTab::OnAdbRadioSelected(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	ConfigManager& cfgManager = ConfigManager::GetInstance();
-	switch (wID)
+	switch (nID)
 	{
 	case IDC_RADIO_AUTO:
 		AutoUpdateAdbPath(cfgManager);
@@ -70,13 +70,12 @@ LRESULT SettingTab::OnAdbRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 		ShowSelectAdbDialog(cfgManager);
 		break;
 	}
-	return 0;
 }
 
-LRESULT SettingTab::OnApkRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+void SettingTab::OnApkRadioSelected(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	ConfigManager& cfgManager = ConfigManager::GetInstance();
-	switch (wID)
+	switch (nID)
 	{
 	case IDC_RADIO_CURRET:
 		AutoUpdateApkDir(cfgManager);
@@ -85,7 +84,6 @@ LRESULT SettingTab::OnApkRadioSelected(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 		ShowSelectApkDialog(cfgManager);
 		break;
 	}
-	return 0;
 }
 
 void SettingTab::InitControls()

@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <atlribbon.h>
+#include <atlcrack.h>
 #include "resource.h"
 #include "ribbon.h"
 #include "MainTabView.h"
@@ -59,17 +60,17 @@ public:
 	END_UPDATE_UI_MAP()
 
 	BEGIN_MSG_MAP(CMainFrame)
-		MESSAGE_HANDLER(WM_QUERYENDSESSION, OnQueryEndSession)
-		MESSAGE_HANDLER(WM_CREATE, OnCreate)
-		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
-		MESSAGE_HANDLER(MSG_RIBBON_DEVICE_LIST, OnDeviceUpdate)
-		COMMAND_ID_HANDLER(ID_APP_EXIT, OnFileExit)
-		COMMAND_ID_HANDLER(ID_FILE_NEW, OnFileNew)
-		COMMAND_ID_HANDLER(ID_VIEW_TOOLBAR, OnViewToolBar)
-		COMMAND_ID_HANDLER(ID_VIEW_STATUS_BAR, OnViewStatusBar)
-		COMMAND_ID_HANDLER(ID_VIEW_RIBBON, OnViewRibbon)
-		COMMAND_ID_HANDLER(ID_APP_ABOUT, OnAppAbout)	
+		MSG_WM_QUERYENDSESSION(OnQueryEndSession)
+		MSG_WM_CREATE(OnCreate)
+		MSG_WM_DESTROY(OnDestroy)
+		MSG_WM_GETMINMAXINFO(OnGetMinMaxInfo)
+		MESSAGE_HANDLER_EX(MSG_RIBBON_DEVICE_LIST, OnDeviceUpdate)
+		COMMAND_ID_HANDLER_EX(ID_APP_EXIT, OnFileExit)
+		COMMAND_ID_HANDLER_EX(ID_FILE_NEW, OnFileNew)
+		COMMAND_ID_HANDLER_EX(ID_VIEW_TOOLBAR, OnViewToolBar)
+		COMMAND_ID_HANDLER_EX(ID_VIEW_STATUS_BAR, OnViewStatusBar)
+		COMMAND_ID_HANDLER_EX(ID_VIEW_RIBBON, OnViewRibbon)
+		COMMAND_ID_HANDLER_EX(ID_APP_ABOUT, OnAppAbout)
 		RIBBON_GALLERY_CONTROL_HANDLER(ID_VIEW_DEVICES, OnRibbonGalleryCtrl)
 		REFLECT_NOTIFICATIONS()
 		CHAIN_MSG_MAP(CRibbonFrameWindowImpl<CMainFrame>)
@@ -80,18 +81,18 @@ public:
 //	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 //	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
 
-	LRESULT OnQueryEndSession(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnDeviceUpdate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	BOOL OnQueryEndSession(UINT nSource, UINT uLogOff);
+	int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	void OnDestroy();
+	void OnGetMinMaxInfo(LPMINMAXINFO lpMMI);
+	LRESULT OnDeviceUpdate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 
-	LRESULT OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnViewToolBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnViewStatusBar(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnViewRibbon(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	void OnFileExit(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnFileNew(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnViewToolBar(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnViewStatusBar(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnViewRibbon(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnAppAbout(UINT uNotifyCode, int nID, CWindow wndCtl);
 
 	void InitRibbonUI();
 	LRESULT OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled);

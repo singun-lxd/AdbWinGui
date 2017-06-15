@@ -51,17 +51,16 @@ BOOL MainTab::PreTranslateMessage(MSG* pMsg)
 	return FALSE;
 }
 
-LRESULT MainTab::OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+BOOL MainTab::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
 	DlgResize_Init(false, false, WS_CHILD);
 	PrepareAdb();
 	InitControls();
-	return 0;
+	return TRUE;
 }
 
-LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+void MainTab::OnDropFiles(HDROP hDropInfo)
 {
-	HDROP hDropInfo = (HDROP)wParam;
 	TCHAR szFilePathName[MAX_PATH] = { 0 };
 	::DragQueryFile(hDropInfo, 0, szFilePathName, MAX_PATH);
 	::DragFinish(hDropInfo);
@@ -88,11 +87,9 @@ LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, IDS_ONLY_APK_SUPPORTED, MB_ICONWARNING);
 		dlg.DoModal();
 	}
-
-	return 0;
 }
 
-LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	TCHAR* szApkPath = (TCHAR*)lParam;
 	int nRet = (int)wParam;
@@ -113,7 +110,7 @@ LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& b
 	return 0;
 }
 
-LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	TCHAR* lpszDesc = (TCHAR*)lParam;
 	if (m_taskCopy.valid())
@@ -159,6 +156,7 @@ void MainTab::InitControls()
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
 
 	m_chkReistall.SetCheck(TRUE);
+	RefreshApkDirectory();
 	SwitchToIdleMode();
 }
 
@@ -357,4 +355,26 @@ void MainTab::SwitchToIdleMode()
 	m_stcListInstall.EnableWindow(TRUE);
 	m_lvApkDir.EnableWindow(TRUE);
 	DragAcceptFiles(TRUE);
+}
+
+BOOL MainTab::RefreshApkDirectory()
+{
+	m_lvApkDir.DeleteAllItems();
+
+	CString strApkDirectory = ConfigManager::GetInstance().GetApkDir();
+	LPTSTR szFindData = strApkDirectory.GetBuffer(MAX_PATH);
+	::PathAppend(szFindData, _T("*.apk"));
+	strApkDirectory.ReleaseBuffer();
+
+	CSimpleArray<CString> arrFiles;
+	BOOL bRet = ShellHelper::GetFilesInDirectory(strApkDirectory, arrFiles);
+	if (bRet)
+	{
+		for (int i = 0; i < arrFiles.GetSize(); i++)
+		{
+			CString& file = arrFiles[i];
+			m_lvApkDir.AddItem(i, 0, file);
+		}
+	}
+	return bRet;
 }
