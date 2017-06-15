@@ -38,6 +38,10 @@ MainTab::~MainTab()
 	{
 		m_taskInstall.get();
 	}
+	if (m_taskCopy.valid())
+	{
+		m_taskCopy.get();
+	}
 }
 
 BOOL MainTab::PreTranslateMessage(MSG* pMsg)
@@ -87,6 +91,55 @@ LRESULT MainTab::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHan
 	return 0;
 }
 
+LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	TCHAR* szApkPath = (TCHAR*)lParam;
+	int nRet = (int)wParam;
+	SwitchToIdleMode();
+	if (nRet == 0)
+	{
+		// install success
+		MessageTaskDlg dlg(IDS_INSTALL_SUCCESS, szApkPath, MB_ICONINFORMATION);
+		dlg.DoModal();
+	}
+	else
+	{
+		MessageTaskDlg dlg(IDS_INSTALL_FAILED, szApkPath, MB_ICONERROR);
+		dlg.DoModal();
+	}
+	// need to free string here
+	delete[] szApkPath;
+	return 0;
+}
+
+LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	TCHAR* lpszDesc = (TCHAR*)lParam;
+	if (m_taskCopy.valid())
+	{
+		BOOL bRet = m_taskCopy.get();
+		if (bRet)
+		{
+			OnInstallApkDirect(lpszDesc);
+		}
+		else
+		{
+			SwitchToIdleMode();
+			DWORD dwErrCode = (DWORD)wParam;
+			ShowCopyFailDialog(dwErrCode);
+		}
+	}
+	else
+	{
+		SwitchToIdleMode();
+		MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, IDS_THREAD_EXCEPTION, MB_ICONERROR);
+		dlg.DoModal();
+	}
+	// need to free string here
+	delete[] lpszDesc;
+	return 0;
+}
+
 void MainTab::PrepareAdb()
 {
 	GetParent().PostMessage(MSG_MAIN_PREPARE_ADB);
@@ -96,7 +149,13 @@ void MainTab::InitControls()
 {
 	m_stcNoticeApk.Attach(GetDlgItem(IDC_STATIC_APK));
 	m_btnInstallApk.Attach(GetDlgItem(IDC_BUTTON_INSTALL));
+	m_stcFilter.Attach(GetDlgItem(IDC_STATIC_FILTER));
+	m_ediFilter.Attach(GetDlgItem(IDC_EDIT_APK_FILTER));
 	m_pgbInstall.Attach(GetDlgItem(IDC_PROGRESS_INSTALL));
+	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
+	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
+
+	SwitchToIdleMode();
 }
 
 void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
@@ -132,23 +191,24 @@ void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 	IDevice* pDevice = m_ddmLibWrapper.GetSelectedDevice();
 	if (pDevice != NULL)
 	{
-		HWND hWnd = m_hWnd;
+		SwitchToInstallingMode();
+		HWND& hWnd = m_hWnd;
 		// create a thread to run install task
-		std::packaged_task<int(TCHAR*)> ptInstall([&pDevice, &hWnd](TCHAR* szApkPath)
+		std::packaged_task<int(TCHAR*, IDevice*)> ptInstall([&hWnd](TCHAR* szApkPath, IDevice* pDevice)
 		{
 			int nRet = pDevice->InstallPackage(szApkPath, true);
 			if (nRet == 0)
 			{
 			}
-			// need to free string here
-			delete[] szApkPath;
+			::PostMessage(hWnd, MSG_INSTALL_APK, (WPARAM)nRet, (LPARAM)szApkPath);
 			return nRet;
 		});
 		m_taskInstall = ptInstall.get_future();
-		std::thread(std::move(ptInstall), szApkPath).detach();
+		std::thread(std::move(ptInstall), szApkPath, pDevice).detach();
 	}
 	else
 	{
+		SwitchToIdleMode();
 		MessageTaskDlg dlg(IDS_NO_AVAILABLE_DEVICE, IDS_CONNECT_AND_RETRY, MB_ICONERROR);
 		dlg.DoModal();
 		delete[] szApkPath;
@@ -174,21 +234,27 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 	}
 	else
 	{
-		HWND hWnd = m_hWnd;
+		SwitchToCopyingMode();
+		HWND& hWnd = m_hWnd;
 		// create a thread to run copy task
 		std::packaged_task<BOOL(TCHAR*, TCHAR*)> ptCopy([&hWnd](TCHAR* lpszSrc, TCHAR* lpszDesc)
 		{
+			DWORD dwErrCode = 0;
 			BOOL bRet = ::CopyFile(lpszSrc, lpszDesc, FALSE);
 			if (bRet)
 			{
 
 			}
+			else
+			{
+				dwErrCode = ::GetLastError();
+			}
+			::PostMessage(hWnd, MSG_INSTALL_COPY_APK, (WPARAM)dwErrCode, (LPARAM)lpszDesc);
 			// need to free string here
 			delete[] lpszSrc;
-			delete[] lpszDesc;
 			return bRet;
 		});
-		m_taskInstall = ptCopy.get_future();
+		m_taskCopy = ptCopy.get_future();
 		std::thread(std::move(ptCopy), szSrcPath, szDescPath).detach();
 	}
 }
@@ -198,4 +264,48 @@ void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
 	LPCTSTR lpszErrMsg = ShellHelper::GetErrorMessage(dwErrCode);
 	MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, lpszErrMsg, MB_ICONERROR);
 	dlg.DoModal();
+}
+
+void MainTab::SwitchToCopyingMode()
+{
+	CString strWinText;
+	strWinText.LoadString(IDS_NOTICE_COPYING);
+	m_stcNoticeApk.SetWindowText(strWinText);
+	strWinText.LoadString(IDS_STOP_INSTALL);
+	m_btnInstallApk.SetWindowText(strWinText);
+	m_pgbInstall.SetMarquee(TRUE, 10);
+	m_pgbInstall.ShowWindow(SW_SHOW);
+	m_pgbInstall.Invalidate();
+	m_stcFilter.EnableWindow(FALSE);
+	m_ediFilter.EnableWindow(FALSE);
+	m_lvApkDir.EnableWindow(FALSE);
+}
+
+void MainTab::SwitchToInstallingMode()
+{
+	CString strWinText;
+	strWinText.LoadString(IDS_NOTICE_INSTALLING);
+	m_stcNoticeApk.SetWindowText(strWinText);
+	strWinText.LoadString(IDS_STOP_INSTALL);
+	m_btnInstallApk.SetWindowText(strWinText);
+	m_pgbInstall.SetMarquee(TRUE, 10);
+	m_pgbInstall.ShowWindow(SW_SHOW);
+	m_pgbInstall.Invalidate();
+	m_stcFilter.EnableWindow(FALSE);
+	m_ediFilter.EnableWindow(FALSE);
+	m_lvApkDir.EnableWindow(FALSE);
+}
+
+void MainTab::SwitchToIdleMode()
+{
+	CString strWinText;
+	strWinText.LoadString(IDS_NOTICE_DRAG_DROP);
+	m_stcNoticeApk.SetWindowText(strWinText);
+	strWinText.LoadString(IDS_INSTALL);
+	m_btnInstallApk.SetWindowText(strWinText);
+	m_pgbInstall.SetMarquee(FALSE);
+	m_pgbInstall.ShowWindow(SW_HIDE);
+	m_stcFilter.EnableWindow(TRUE);
+	m_ediFilter.EnableWindow(TRUE);
+	m_lvApkDir.EnableWindow(TRUE);
 }

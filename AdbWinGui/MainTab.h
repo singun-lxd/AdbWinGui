@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atlframe.h>
 #include "resource.h"
 #include "DdmLibWrapper.h"
+#include "MessageDefine.h"
 
 class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>
 {
@@ -37,14 +38,20 @@ public:
 
 	DdmLibWrapper& m_ddmLibWrapper;
 	std::future<BOOL> m_taskInstall;
+	std::future<BOOL> m_taskCopy;
 	CStatic m_stcNoticeApk;
 	CButton m_btnInstallApk;
+	CStatic m_stcFilter;
+	CEdit m_ediFilter;
 	CProgressBarCtrl m_pgbInstall;
+	CListViewCtrl m_lvApkDir;
 
 public:
 	BEGIN_MSG_MAP(MainTab)
 		MESSAGE_HANDLER(WM_INITDIALOG, OnInitDialog)
 		MESSAGE_HANDLER(WM_DROPFILES, OnDropFiles)
+		MESSAGE_HANDLER(MSG_INSTALL_APK, OnApkInstalled)
+		MESSAGE_HANDLER(MSG_INSTALL_COPY_APK, OnApkCopied)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
 
@@ -64,6 +71,8 @@ public:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 private:
 	void PrepareAdb();
 	void InitControls();
@@ -71,4 +80,7 @@ private:
 	void OnInstallApkDirect(LPCTSTR lpszApkPath);
 	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
 	void ShowCopyFailDialog(DWORD dwErrCode);
+	void SwitchToCopyingMode();
+	void SwitchToInstallingMode();
+	void SwitchToIdleMode();
 };

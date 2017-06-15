@@ -25,6 +25,14 @@
 #define IDS_FILE_COPY_FAILED            146
 #define IDS_NO_AVAILABLE_DEVICE         147
 #define IDS_CONNECT_AND_RETRY           148
+#define IDS_STOP_INSTALL                149
+#define IDS_INSTALL                     150
+#define IDS_NOTICE_DRAG_DROP            151
+#define IDS_THREAD_EXCEPTION            152
+#define IDS_INSTALL_FAILED              153
+#define IDS_INSTALL_SUCCESS             154
+#define IDS_NOTICE_INSTALLING           155
+#define IDS_NOTICE_COPYING              156
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000

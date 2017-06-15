@@ -69,8 +69,8 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 EXSTYLE WS_EX_ACCEPTFILES
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Install Apk File",IDC_FRAME_APK,9,10,371,90
-    LTEXT           "Drag and drop Apk file here.",IDC_STATIC_APK,20,25,128,10
+    GROUPBOX        "Install Apk File",IDC_FRAME_APK,10,10,369,90
+    CONTROL         "Noitce",IDC_STATIC_APK,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | SS_ENDELLIPSIS | WS_GROUP,20,25,128,10
     CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,40,354,52
     LTEXT           "Filter:",IDC_STATIC_FILTER,262,24,22,11
     EDITTEXT        IDC_EDIT_APK_FILTER,284,22,88,13,ES_AUTOHSCROLL
@@ -103,7 +103,7 @@ BEGIN
 
     IDD_MAIN_TAB, DIALOG
     BEGIN
-        RIGHTMARGIN, 338
+        RIGHTMARGIN, 386
         BOTTOMMARGIN, 183
     END
 END
@@ -431,6 +431,14 @@ BEGIN
     IDS_FILE_COPY_FAILED    "Failed to copy file."
     IDS_NO_AVAILABLE_DEVICE "No available device found."
     IDS_CONNECT_AND_RETRY   "Please connect to a device and try again."
+    IDS_STOP_INSTALL        "Stop"
+    IDS_INSTALL             "Install"
+    IDS_NOTICE_DRAG_DROP    "Drag and drop Apk file here."
+    IDS_THREAD_EXCEPTION    "Failed to run task."
+    IDS_INSTALL_FAILED      "Failed to install apk file"
+    IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
+    IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
+    IDS_NOTICE_COPYING      "Copying apk to target directory..."
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources
