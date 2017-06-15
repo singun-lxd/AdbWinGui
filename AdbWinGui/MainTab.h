@@ -44,6 +44,8 @@ public:
 	CStatic m_stcFilter;
 	CEdit m_ediFilter;
 	CProgressBarCtrl m_pgbInstall;
+	CButton m_chkReistall;
+	CStatic m_stcListInstall;
 	CListViewCtrl m_lvApkDir;
 
 public:
@@ -63,6 +65,7 @@ public:
 		DLGRESIZE_CONTROL(IDC_EDIT_APK_FILTER, DLSZ_MOVE_X)
 		DLGRESIZE_CONTROL(IDC_STATIC_FILTER, DLSZ_MOVE_X)
 		DLGRESIZE_CONTROL(IDC_BUTTON_INSTALL, DLSZ_MOVE_X)
+		DLGRESIZE_CONTROL(IDC_CHECK_REINSTALL, DLSZ_MOVE_X)		
 	END_DLGRESIZE_MAP()
 
 public:

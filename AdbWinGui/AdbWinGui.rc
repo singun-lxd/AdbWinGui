@@ -69,13 +69,15 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 EXSTYLE WS_EX_ACCEPTFILES
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    GROUPBOX        "Install Apk File",IDC_FRAME_APK,10,10,369,90
-    CONTROL         "Noitce",IDC_STATIC_APK,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | SS_ENDELLIPSIS | WS_GROUP,20,25,128,10
-    CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,40,354,52
-    LTEXT           "Filter:",IDC_STATIC_FILTER,262,24,22,11
-    EDITTEXT        IDC_EDIT_APK_FILTER,284,22,88,13,ES_AUTOHSCROLL
-    PUSHBUTTON      "Install",IDC_BUTTON_INSTALL,225,22,32,13
-    CONTROL         "",IDC_PROGRESS_INSTALL,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,144,24,77,10
+    GROUPBOX        "Install Apk File",IDC_FRAME_APK,10,10,369,104
+    LTEXT           "Double left-click on the apks below in Apk Directory to install.",IDC_STATIC_NOTICE_LIST,20,24,238,10
+    CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,38,354,52
+    LTEXT           "Filter:",IDC_STATIC_FILTER,263,23,22,11
+    EDITTEXT        IDC_EDIT_APK_FILTER,285,21,88,13,ES_AUTOHSCROLL
+    CONTROL         "Noitce",IDC_STATIC_APK,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | SS_ENDELLIPSIS | WS_GROUP,20,97,144,10
+    CONTROL         "",IDC_PROGRESS_INSTALL,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,169,96,127,10
+    PUSHBUTTON      "Stop",IDC_BUTTON_INSTALL,300,94,32,13
+    CONTROL         "Reinstall",IDC_CHECK_REINSTALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,95,35,12
 END
 
 
@@ -431,14 +433,12 @@ BEGIN
     IDS_FILE_COPY_FAILED    "Failed to copy file."
     IDS_NO_AVAILABLE_DEVICE "No available device found."
     IDS_CONNECT_AND_RETRY   "Please connect to a device and try again."
-    IDS_STOP_INSTALL        "Stop"
-    IDS_INSTALL             "Install"
-    IDS_NOTICE_DRAG_DROP    "Drag and drop Apk file here."
     IDS_THREAD_EXCEPTION    "Failed to run task."
     IDS_INSTALL_FAILED      "Failed to install apk file"
-    IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
-    IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
+    IDS_NOTICE_DRAG_DROP    "Or drag and drop Apk file here to install."
     IDS_NOTICE_COPYING      "Copying apk to target directory..."
+    IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
+    IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

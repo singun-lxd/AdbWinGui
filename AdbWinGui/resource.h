@@ -25,14 +25,12 @@
 #define IDS_FILE_COPY_FAILED            146
 #define IDS_NO_AVAILABLE_DEVICE         147
 #define IDS_CONNECT_AND_RETRY           148
-#define IDS_STOP_INSTALL                149
-#define IDS_INSTALL                     150
+#define IDS_THREAD_EXCEPTION            149
+#define IDS_INSTALL_FAILED              150
 #define IDS_NOTICE_DRAG_DROP            151
-#define IDS_THREAD_EXCEPTION            152
-#define IDS_INSTALL_FAILED              153
+#define IDS_NOTICE_COPYING              152
+#define IDS_NOTICE_INSTALLING           153
 #define IDS_INSTALL_SUCCESS             154
-#define IDS_NOTICE_INSTALLING           155
-#define IDS_NOTICE_COPYING              156
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
 #define IDC_RADIO_AUTO                  1000
@@ -54,6 +52,8 @@
 #define IDC_PROGRESS_INSTALL            1011
 #define IDC_BUTTON_INSTALL              1012
 #define IDC_STATIC_FILTER               1013
+#define IDC_STATIC_NOTICE_LIST          1015
+#define IDC_CHECK_REINSTALL             1016
 
 // Next default values for new objects
 // 
@@ -61,7 +61,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        208
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1015
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
