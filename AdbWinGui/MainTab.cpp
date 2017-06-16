@@ -104,7 +104,7 @@ void MainTab::OnEditFilterChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 		CString& file = m_arrApkPath[i];
 		if (bEmpty || file.Find(strFilter) >= 0)
 		{
-			m_lvApkDir.AddItem(i, 0, file);
+			m_lvApkDir.AddItem(i, 0, file, 0);
 		}
 	}
 }
@@ -226,11 +226,17 @@ void MainTab::InitControls()
 	m_stcListInstall.Attach(GetDlgItem(IDC_STATIC_NOTICE_LIST));
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
 
+	m_bmpApkIco = (HBITMAP)::LoadImage(ModuleHelper::GetResourceInstance(),
+		MAKEINTRESOURCE(IDB_DEVICE), IMAGE_BITMAP, REFRESH_ICON_SIZE, REFRESH_ICON_SIZE, NULL);
+	m_ilApkIcon.Create(REFRESH_ICON_SIZE, REFRESH_ICON_SIZE, ILC_COLOR32, 1, 1);
+	m_ilApkIcon.Add(m_bmpApkIco);
+	m_lvApkDir.SetImageList(m_ilApkIcon, LVSIL_SMALL);
+
 	::SetWindowTheme(m_lvApkDir, _T("Explorer"), NULL);
 
-	m_icoHandle = (HICON)::LoadImage(ModuleHelper::GetResourceInstance(),
+	m_icoRefresh = (HICON)::LoadImage(ModuleHelper::GetResourceInstance(),
 		MAKEINTRESOURCE(IDI_ICON_REFRESH), IMAGE_ICON, REFRESH_ICON_SIZE, REFRESH_ICON_SIZE, NULL);
-	m_btnRefresh.SetIcon(m_icoHandle);
+	m_btnRefresh.SetIcon(m_icoRefresh);
 
 	m_chkReistall.SetCheck(TRUE);
 
@@ -466,7 +472,7 @@ BOOL MainTab::RefreshApkDirectoryWithArray(CSimpleArray<CString>& arrApkPath)
 		for (int i = 0; i < arrApkPath.GetSize(); i++)
 		{
 			CString& file = arrApkPath[i];
-			m_lvApkDir.AddItem(i, 0, file);
+			m_lvApkDir.AddItem(i, 0, file, 0);
 		}
 	}
 	return bRet;

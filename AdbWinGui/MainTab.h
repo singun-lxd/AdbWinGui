@@ -51,8 +51,10 @@ public:
 	CButton m_chkReistall;
 	CStatic m_stcListInstall;
 	CListViewCtrl m_lvApkDir;
+	CImageList m_ilApkIcon;
 
-	CIconHandle m_icoHandle;
+	CBitmapHandle m_bmpApkIco;
+	CIconHandle m_icoRefresh;
 	CSimpleArray<CString> m_arrApkPath;
 
 public:
