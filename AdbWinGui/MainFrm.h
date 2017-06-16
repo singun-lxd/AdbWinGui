@@ -63,6 +63,7 @@ public:
 		MSG_WM_QUERYENDSESSION(OnQueryEndSession)
 		MSG_WM_CREATE(OnCreate)
 		MSG_WM_DESTROY(OnDestroy)
+		MSG_WM_TIMER(OnTimer)
 		MSG_WM_GETMINMAXINFO(OnGetMinMaxInfo)
 		MESSAGE_HANDLER_EX(MSG_RIBBON_DEVICE_LIST, OnDeviceUpdate)
 		COMMAND_ID_HANDLER_EX(ID_APP_EXIT, OnFileExit)
@@ -84,6 +85,7 @@ public:
 	BOOL OnQueryEndSession(UINT nSource, UINT uLogOff);
 	int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	void OnDestroy();
+	void OnTimer(UINT_PTR nIDEvent);
 	void OnGetMinMaxInfo(LPMINMAXINFO lpMMI);
 	LRESULT OnDeviceUpdate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 

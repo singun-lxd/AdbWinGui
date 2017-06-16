@@ -30,6 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MIN_WINDOW_WIDTH		640
 #define MIN_WINDOW_HEIGHT	480
 
+#define	 MIN_REFRESH_TIME		500
+#define	 REFRESH_TIMER_ID		0x10
+
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
 	if (CRibbonFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
@@ -105,6 +108,18 @@ void CMainFrame::OnDestroy()
 	pLoop->RemoveIdleHandler(this);
 
 	SetMsgHandled(FALSE);
+}
+
+void CMainFrame::OnTimer(UINT_PTR nIDEvent)
+{
+	switch (nIDEvent)
+	{
+	case REFRESH_TIMER_ID:
+		KillTimer(REFRESH_TIMER_ID);
+		int nSel = m_glyDevices.GetSelected();
+		m_glyDevices.Select(nSel, true);
+		break;
+	}
 }
 
 void CMainFrame::OnGetMinMaxInfo(LPMINMAXINFO lpMMI)
@@ -193,6 +208,7 @@ void CMainFrame::UpdateNoneDevice()
 	m_glyDevices.Resize(1);
 	m_glyDevices.SetItemImage(0, m_bmpDevice);
 	m_glyDevices.SetItemText(0, strError);
+	m_glyDevices.Select(0);
 	m_glyDevices.InvalidateItems();
 }
 
@@ -209,11 +225,12 @@ void CMainFrame::UpdateDeviceList(const CSimpleArray<IDevice*>& arrDevice)
 		m_glyDevices.SetItemImage(i, m_bmpDevice);
 		m_glyDevices.SetItemText(i, arrDevice[i]->GetSerialNumber());
 	}
-
-	m_glyDevices.InvalidateItems();
-
 	if (nSize == 1)
 	{
-		m_glyDevices.Select(0, true);
+		m_glyDevices.Select(0);
 	}
+	m_glyDevices.InvalidateItems();
+
+	// wait for invalidate event and select item
+	SetTimer(REFRESH_TIMER_ID, MIN_REFRESH_TIME);
 }

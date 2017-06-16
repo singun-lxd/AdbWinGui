@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MSG_SETTING_SELECT_ADB		WM_USER + 200
 
 #define MSG_RIBBON_DEVICE_LIST		WM_USER + 300
+#define MSG_RIBBON_DEVICE_SELECT		WM_USER + 301
 
 #define MSG_INSTALL_COPY_APK			WM_USER + 400
 #define MSG_INSTALL_APK				WM_USER + 401
