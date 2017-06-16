@@ -28,8 +28,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "resource.h"
 #include "Config/ConfigManager.h"
 #include "MessageDefine.h"
+#include "CDialogColor.h"
 
-class SettingTab : public CDialogImpl<SettingTab>, public CDialogResize<SettingTab>
+class SettingTab : public CDialogImpl<SettingTab>,
+					public CDialogResize<SettingTab>, public CDialogColor<SettingTab>
 {
 public:
 	enum
@@ -53,11 +55,11 @@ public:
 		MESSAGE_HANDLER_EX(MSG_SETTING_SELECT_ADB, OnShowSelectAdbDialog)
 		COMMAND_RANGE_HANDLER_EX(IDC_RADIO_AUTO, IDC_RADIO_MANUAL, OnAdbRadioSelected)
 		COMMAND_RANGE_HANDLER_EX(IDC_RADIO_CURRET, IDC_RADIO_CUSTOM, OnApkRadioSelected)
-		//COMMAND_ID_HANDLER(IDC_EDIT_PATH, OnPathClick)
 		CHAIN_MSG_MAP(CDialogResize<SettingTab>)
+		CHAIN_MSG_MAP(CDialogColor<SettingTab>)
 	END_MSG_MAP()
 	
-	BEGIN_DLGRESIZE_MAP(MainTab)
+	BEGIN_DLGRESIZE_MAP(SettingTab)
 		DLGRESIZE_CONTROL(IDC_FRAME_PATH, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_STATIC_PATH, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_EDIT_PATH, DLSZ_SIZE_X)

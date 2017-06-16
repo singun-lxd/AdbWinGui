@@ -16,7 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// MainFrm.cpp : implemennt of the CMainFrame class
+// MainFrm.cpp : implement of the CMainFrame class
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MainFrm.h"
 #include "AboutDlg.h"
 #include "resource.h"
+
+#pragma comment(lib, "UxTheme.lib")
 
 #define MIN_WINDOW_WIDTH		640
 #define MIN_WINDOW_HEIGHT	480

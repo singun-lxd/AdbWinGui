@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include <Uxtheme.h>
 #include "MainTab.h"
 #include "MessageDefine.h"
 #include "MessageTaskDlg.h"
@@ -199,7 +200,10 @@ void MainTab::InitControls()
 	m_stcListInstall.Attach(GetDlgItem(IDC_STATIC_NOTICE_LIST));
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
 
+	::SetWindowTheme(m_lvApkDir, _T("Explorer"), NULL);
+
 	m_chkReistall.SetCheck(TRUE);
+
 	RefreshApkDirectory();
 	SwitchToIdleMode();
 }

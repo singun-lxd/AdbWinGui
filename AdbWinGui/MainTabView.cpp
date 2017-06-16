@@ -186,7 +186,9 @@ void MainTabView::UpdateLayout()
 		}
 
 		if (m_nActivePage != -1)
+		{
 			::SetWindowPos(GetPageHWND(m_nActivePage), NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top - cyOffset, SWP_NOZORDER);
+		}
 	}
 	else
 	{

@@ -28,8 +28,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "resource.h"
 #include "DdmLibWrapper.h"
 #include "MessageDefine.h"
+#include "CDialogColor.h"
 
-class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>
+class MainTab : public CDialogImpl<MainTab>, 
+				public CDialogResize<MainTab>, public CDialogColor<MainTab>
 {
 public:
 	enum
@@ -58,6 +60,7 @@ public:
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
+		CHAIN_MSG_MAP(CDialogColor<MainTab>)
 	END_MSG_MAP()
 
 	BEGIN_DLGRESIZE_MAP(MainTab)

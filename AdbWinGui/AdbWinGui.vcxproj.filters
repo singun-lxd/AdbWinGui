@@ -152,6 +152,9 @@
     <ClInclude Include="Config\ReplaceNotifyConfig.h">
       <Filter>Config</Filter>
     </ClInclude>
+    <ClInclude Include="CDialogColor.h">
+      <Filter>Tabs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc">
