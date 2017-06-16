@@ -26,6 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "SettingTab.h"
 #include "AdbPathErrorDlg.h"
 
+#define	 MIN_SHOW_TIME		500
+#define	 MIN_DIALOG_TIME	500
+#define	 INIT_TIMER_ID		0x20
+#define	 WAIT_TIMER_ID		0x40
+
 BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 {
 	pMsg;
@@ -34,28 +39,64 @@ BOOL MainTabView::PreTranslateMessage(MSG* pMsg)
 
 MainTabView::MainTabView() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
+	m_dwDlgStartTime = 0;
+	m_bPrepareFinish = FALSE;
 }
 
-LRESULT MainTabView::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+int MainTabView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	return 0;
 }
 
-LRESULT MainTabView::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+void MainTabView::OnDestroy()
 {
-	CTabViewImpl<MainTabView>::OnDestroy(uMsg, wParam, lParam, bHandled);
+	BOOL bHandled = false;
+	CTabViewImpl<MainTabView>::OnDestroy(WM_DESTROY, 0, 0, bHandled);
+	if (bHandled)
+	{
+		SetMsgHandled(TRUE);
+	}
 	DestroyTabs();
-	return 0;
 }
 
-LRESULT MainTabView::OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+void MainTabView::OnTimer(UINT_PTR nIDEvent)
+{
+	switch (nIDEvent)
+	{
+	case INIT_TIMER_ID:
+		KillTimer(INIT_TIMER_ID);
+		if (!m_bPrepareFinish)
+		{
+			m_dwDlgStartTime = ::GetTickCount();
+			int nRet = m_dlgPreparing.DoModal();
+			if (nRet == IDCANCEL)
+			{
+				// todo dialog canceled
+			}
+			else
+			{
+				// todo dialog finished
+			}
+		}
+		break;
+	case WAIT_TIMER_ID:
+		KillTimer(WAIT_TIMER_ID);
+		if (m_dlgPreparing.IsShowing())
+		{
+			m_dlgPreparing.EndDialog(IDOK);
+		}
+		break;
+	}
+}
+
+LRESULT MainTabView::OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	GetParent().PostMessage(WM_CLOSE);
 
 	return 0;
 }
 
-LRESULT MainTabView::OnAdbPath(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+LRESULT MainTabView::OnAdbPath(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	BOOL bResult = static_cast<BOOL>(wParam);
 	if (bResult)
@@ -69,7 +110,7 @@ LRESULT MainTabView::OnAdbPath(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
 	return 0;
 }
 
-LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
 	if (m_dlgPreparing.IsShowing())
 	{
@@ -79,24 +120,35 @@ LRESULT MainTabView::OnPrepareAdb(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*
 	{
 		return 0;
 	}
-	int nRet = m_dlgPreparing.DoModal();
-	if (nRet == IDCANCEL)
-	{
-		return 0;
-		// todo dialog canceled
-	}
-	else
-	{
-		// todo dialog finished
-	}
+	// wait MIN_SHOW_TIME to show preparing dialog
+	SetTimer(INIT_TIMER_ID, MIN_SHOW_TIME);
 	return 0;
 }
 
-LRESULT MainTabView::OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT MainTabView::OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
+	m_bPrepareFinish = TRUE;
 	if (m_dlgPreparing.IsShowing())
 	{
-		m_dlgPreparing.EndDialog(IDOK);
+		if (m_dwDlgStartTime > 0)
+		{
+			DWORD dwEndTime = ::GetTickCount();
+			DWORD dwLen = dwEndTime - m_dwDlgStartTime;
+			if (dwLen > MIN_DIALOG_TIME)
+			{
+				m_dlgPreparing.EndDialog(IDOK);
+			}
+			else
+			{
+				// wait dialog show time, at least MIN_DIALOG_TIME
+				SetTimer(WAIT_TIMER_ID, MIN_DIALOG_TIME - dwLen);
+			}
+		}
+		else
+		{
+			// error here
+			m_dlgPreparing.EndDialog(IDOK);
+		}
 	}
 	return 0;
 }

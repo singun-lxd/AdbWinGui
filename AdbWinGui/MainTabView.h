@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <atlcrack.h>
 #include <atlctrls.h>
 #include <atlctrlx.h>
+#include <atlcrack.h>
 #include "resource.h"
 #include "MessageDefine.h"
 #include "DdmLibWrapper.h"
@@ -41,6 +42,8 @@ protected:
 	CSimpleArray<CWindow*> m_arrWnd;
 	AdbPreparingDlg m_dlgPreparing;
 	DdmLibWrapper& m_ddmLibWrapper;
+	DWORD m_dwDlgStartTime;
+	BOOL m_bPrepareFinish;
 
 public:
 	DECLARE_WND_SUPERCLASS(NULL, CTabViewImpl<MainTabView>::GetWndClassName())
@@ -49,23 +52,25 @@ public:
 
 	BEGIN_MSG_MAP_EX(MainTabView)
 		CHAIN_MSG_MAP(CTabViewImpl<MainTabView>)
-		MESSAGE_HANDLER(WM_CREATE, OnCreate)
-		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
-		MESSAGE_HANDLER(MSG_MAIN_NOTIFY_EXIT, OnNotifyExit)
-		MESSAGE_HANDLER(MSG_MAIN_ADB_PATH, OnAdbPath)
-		MESSAGE_HANDLER(MSG_MAIN_PREPARE_ADB, OnPrepareAdb)
-		MESSAGE_HANDLER(MSG_MAIN_ADB_FINISH, OnAdbPrepareFinish)
+		MSG_WM_CREATE(OnCreate)
+		MSG_WM_DESTROY(OnDestroy)
+		MSG_WM_TIMER(OnTimer)
+		MESSAGE_HANDLER_EX(MSG_MAIN_NOTIFY_EXIT, OnNotifyExit)
+		MESSAGE_HANDLER_EX(MSG_MAIN_ADB_PATH, OnAdbPath)
+		MESSAGE_HANDLER_EX(MSG_MAIN_PREPARE_ADB, OnPrepareAdb)
+		MESSAGE_HANDLER_EX(MSG_MAIN_ADB_FINISH, OnAdbPrepareFinish)
 		ALT_MSG_MAP(1)   // tab control
 	END_MSG_MAP()
 
 public:
 	MainTabView();
-	LRESULT OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnAdbPath(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnPrepareAdb(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	void OnDestroy();
+	void OnTimer(UINT_PTR nIDEvent);
+	LRESULT OnNotifyExit(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnAdbPath(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnPrepareAdb(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 
 public:
 	virtual void InitFinish() override;
