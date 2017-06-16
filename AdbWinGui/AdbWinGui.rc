@@ -72,12 +72,13 @@ BEGIN
     GROUPBOX        "Install Apk File",IDC_FRAME_APK,10,10,369,104
     LTEXT           "Double left-click on the apks below in Apk Directory to install.",IDC_STATIC_NOTICE_LIST,20,24,238,10
     CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,38,354,52
-    LTEXT           "Filter:",IDC_STATIC_FILTER,263,23,22,11
-    EDITTEXT        IDC_EDIT_APK_FILTER,285,21,88,13,ES_AUTOHSCROLL
+    LTEXT           "Filter:",IDC_STATIC_FILTER,262,23,22,11
+    EDITTEXT        IDC_EDIT_APK_FILTER,283,21,75,13,ES_AUTOHSCROLL
     CONTROL         "Noitce",IDC_STATIC_APK,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | SS_ENDELLIPSIS | WS_GROUP,20,97,170,10
     CONTROL         "",IDC_PROGRESS_INSTALL,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,194,96,102,10
     PUSHBUTTON      "Stop",IDC_BUTTON_INSTALL,300,94,32,13
     CONTROL         "Reinstall",IDC_CHECK_REINSTALL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,337,95,35,12
+    PUSHBUTTON      "",IDC_BUTTON_REFRESH,358,20,15,15,BS_ICON
 END
 
 
@@ -214,6 +215,8 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\AdbWinGui.ico"
+
+IDI_ICON_REFRESH        ICON                    "res\\icon_refresh.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

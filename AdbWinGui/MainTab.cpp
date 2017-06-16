@@ -30,6 +30,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "InstallNotifyDlg.h"
 #include "FileExistsDlg.h"
 
+#define REFRESH_ICON_SIZE 16
+
 MainTab::MainTab() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
 }
@@ -88,6 +90,11 @@ void MainTab::OnDropFiles(HDROP hDropInfo)
 		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, IDS_ONLY_APK_SUPPORTED, MB_ICONWARNING);
 		dlg.DoModal();
 	}
+}
+
+void MainTab::OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	RefreshApkDirectory();
 }
 
 LRESULT MainTab::OnListKeyDown(LPNMHDR pnmh)
@@ -194,6 +201,7 @@ void MainTab::InitControls()
 	m_btnInstallApk.Attach(GetDlgItem(IDC_BUTTON_INSTALL));
 	m_stcFilter.Attach(GetDlgItem(IDC_STATIC_FILTER));
 	m_ediFilter.Attach(GetDlgItem(IDC_EDIT_APK_FILTER));
+	m_btnRefresh.Attach(GetDlgItem(IDC_BUTTON_REFRESH));
 	m_pgbInstall.Attach(GetDlgItem(IDC_PROGRESS_INSTALL));
 	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
 	m_chkReistall.Attach(GetDlgItem(IDC_CHECK_REINSTALL));
@@ -201,6 +209,10 @@ void MainTab::InitControls()
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
 
 	::SetWindowTheme(m_lvApkDir, _T("Explorer"), NULL);
+
+	m_icoHandle = (HICON)::LoadImage(ModuleHelper::GetResourceInstance(),
+		MAKEINTRESOURCE(IDI_ICON_REFRESH), IMAGE_ICON, REFRESH_ICON_SIZE, REFRESH_ICON_SIZE, NULL);
+	m_btnRefresh.SetIcon(m_icoHandle);
 
 	m_chkReistall.SetCheck(TRUE);
 

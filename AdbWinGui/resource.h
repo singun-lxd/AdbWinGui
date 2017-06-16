@@ -36,6 +36,7 @@
 #define IDS_DELETE_FILE_FAILED          157
 #define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
+#define IDI_ICON_REFRESH                208
 #define IDC_RADIO_AUTO                  1000
 #define IDC_RADIO_MANUAL                1001
 #define IDC_EDIT_PATH                   1002
@@ -57,14 +58,15 @@
 #define IDC_STATIC_FILTER               1013
 #define IDC_STATIC_NOTICE_LIST          1015
 #define IDC_CHECK_REINSTALL             1016
+#define IDC_BUTTON_REFRESH              1017
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        208
+#define _APS_NEXT_RESOURCE_VALUE        209
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

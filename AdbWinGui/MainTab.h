@@ -46,15 +46,19 @@ public:
 	CButton m_btnInstallApk;
 	CStatic m_stcFilter;
 	CEdit m_ediFilter;
+	CButton m_btnRefresh;
 	CProgressBarCtrl m_pgbInstall;
 	CButton m_chkReistall;
 	CStatic m_stcListInstall;
 	CListViewCtrl m_lvApkDir;
 
+	CIconHandle m_icoHandle;
+
 public:
 	BEGIN_MSG_MAP(MainTab)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DROPFILES(OnDropFiles)
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REFRESH, OnBtnRefreshClick);
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, LVN_KEYDOWN, OnListKeyDown)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
@@ -69,7 +73,8 @@ public:
 		DLGRESIZE_CONTROL(IDC_STATIC_APK, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_PROGRESS_INSTALL, DLSZ_SIZE_X)
 		DLGRESIZE_CONTROL(IDC_EDIT_APK_FILTER, DLSZ_MOVE_X)
-		DLGRESIZE_CONTROL(IDC_STATIC_FILTER, DLSZ_MOVE_X)
+		DLGRESIZE_CONTROL(IDC_BUTTON_REFRESH, DLSZ_MOVE_X)
+		DLGRESIZE_CONTROL(IDC_STATIC_FILTER, DLSZ_MOVE_X)		
 		DLGRESIZE_CONTROL(IDC_BUTTON_INSTALL, DLSZ_MOVE_X)
 		DLGRESIZE_CONTROL(IDC_CHECK_REINSTALL, DLSZ_MOVE_X)		
 	END_DLGRESIZE_MAP()
@@ -80,6 +85,7 @@ public:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	void OnDropFiles(HDROP hDropInfo);
+	void OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl);
 	LRESULT OnListKeyDown(LPNMHDR pnmh);
 	LRESULT OnListDblClick(LPNMHDR pnmh);
 	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
