@@ -53,9 +53,10 @@ public:
 	BEGIN_MSG_MAP(MainTab)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DROPFILES(OnDropFiles)
+		NOTIFY_HANDLER_EX(IDC_LIST_APK, LVN_KEYDOWN, OnListKeyDown)
+		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
-		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 	END_MSG_MAP()
 
@@ -76,9 +77,10 @@ public:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	void OnDropFiles(HDROP hDropInfo);
+	LRESULT OnListKeyDown(LPNMHDR pnmh);
+	LRESULT OnListDblClick(LPNMHDR pnmh);
 	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT OnListDblClick(LPNMHDR pnmh);
 
 private:
 	void PrepareAdb();
@@ -86,10 +88,13 @@ private:
 	void OnDefaultInstallDialog(LPCTSTR lpszApkPath);
 	void OnInstallApkDirect(LPCTSTR lpszApkPath);
 	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
-	void ShowCopyFailDialog(DWORD dwErrCode);
+	void ShowFileOperationFailDialog(int nId, DWORD dwErrCode);
+	void inline ShowCopyFailDialog(DWORD dwErrCode);
+	void inline ShowDeleteFailDialog(DWORD dwErrCode);
 	BOOL CheckAndShowReplaceDialog(LPCTSTR lpszFromPath, LPCTSTR lpszToPath);
 	void SwitchToCopyingMode();
 	void SwitchToInstallingMode();
 	void SwitchToIdleMode();
 	BOOL RefreshApkDirectory();
+	BOOL GetListItemApkPath(int nIndex, CString& strPath);
 };

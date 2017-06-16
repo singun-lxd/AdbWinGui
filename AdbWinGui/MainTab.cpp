@@ -89,6 +89,49 @@ void MainTab::OnDropFiles(HDROP hDropInfo)
 	}
 }
 
+LRESULT MainTab::OnListKeyDown(LPNMHDR pnmh)
+{
+	LPNMLVKEYDOWN pnkd = (LPNMLVKEYDOWN)pnmh;
+	if (pnkd->wVKey == VK_DELETE)
+	{
+		int nIndex = m_lvApkDir.GetSelectedIndex();
+		if (nIndex >= 0)
+		{
+			CString strApkPath;
+			if (GetListItemApkPath(nIndex, strApkPath))
+			{
+				strApkPath += _T('\0');
+				INT nRet = ShellHelper::DeleteFile(strApkPath);
+				if (nRet == 0)
+				{
+					m_lvApkDir.DeleteItem(nIndex);
+				}
+				else if (nRet != -1)
+				{
+					ShowDeleteFailDialog(::GetLastError());
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+LRESULT MainTab::OnListDblClick(LPNMHDR pnmh)
+{
+	LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE)pnmh;
+	if (lpnmitem->iItem >= 0)
+	{
+		CString strApkPath;
+		if (GetListItemApkPath(lpnmitem->iItem, strApkPath))
+		{
+			OnInstallApkDirect(strApkPath);
+		}
+	}
+
+	return 0;
+}
+
 LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	TCHAR* szApkPath = (TCHAR*)lParam;
@@ -136,25 +179,6 @@ LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 	// need to free string here
 	delete[] lpszDesc;
-	return 0;
-}
-
-LRESULT MainTab::OnListDblClick(LPNMHDR pnmh)
-{
-	LPNMITEMACTIVATE lpnmitem = (LPNMITEMACTIVATE) pnmh;
-	if (lpnmitem->iItem >= 0)
-	{
-		CString strApkName;
-		m_lvApkDir.GetItemText(lpnmitem->iItem, 0, strApkName);
-
-		CString strApkPath = ConfigManager::GetInstance().GetApkDir();
-		LPTSTR szApkPath = strApkPath.GetBuffer(MAX_PATH);
-		::PathAppend(szApkPath, strApkName);
-		strApkPath.ReleaseBuffer();
-
-		OnInstallApkDirect(strApkPath);
-	}
-
 	return 0;
 }
 
@@ -292,11 +316,21 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 	std::thread(std::move(ptCopy), szSrcPath, szDescPath).detach();
 }
 
-void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
+void MainTab::ShowFileOperationFailDialog(int nId, DWORD dwErrCode)
 {
 	LPCTSTR lpszErrMsg = ShellHelper::GetErrorMessage(dwErrCode);
-	MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, lpszErrMsg, MB_ICONERROR);
+	MessageTaskDlg dlg(nId, lpszErrMsg, MB_ICONERROR);
 	dlg.DoModal();
+}
+
+void MainTab::ShowCopyFailDialog(DWORD dwErrCode)
+{
+	ShowFileOperationFailDialog(IDS_FILE_COPY_FAILED, dwErrCode);
+}
+
+void MainTab::ShowDeleteFailDialog(DWORD dwErrCode)
+{
+	ShowFileOperationFailDialog(IDS_DELETE_FILE_FAILED, dwErrCode);
 }
 
 BOOL MainTab::CheckAndShowReplaceDialog(LPCTSTR lpszFromPath, LPCTSTR lpszToPath)
@@ -397,4 +431,21 @@ BOOL MainTab::RefreshApkDirectory()
 		}
 	}
 	return bRet;
+}
+
+BOOL MainTab::GetListItemApkPath(int nIndex, CString& strPath)
+{
+	if (nIndex >= 0 && nIndex < m_lvApkDir.GetItemCount())
+	{
+		CString strApkName;
+		m_lvApkDir.GetItemText(nIndex, 0, strApkName);
+
+		strPath = ConfigManager::GetInstance().GetApkDir();
+		LPTSTR szApkPath = strPath.GetBuffer(MAX_PATH);
+		::PathAppend(szApkPath, strApkName);
+		strPath.ReleaseBuffer();
+
+		return TRUE;
+	}
+	return FALSE;
 }

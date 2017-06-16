@@ -70,10 +70,10 @@ EXSTYLE WS_EX_ACCEPTFILES
 FONT 9, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
     GROUPBOX        "Install Apk File",IDC_FRAME_APK,10,10,369,104
-    LTEXT           "Double left-click on the apk files below in Apk File Directory to install.",IDC_STATIC_NOTICE_LIST,20,24,238,10
+    LTEXT           "Double left-click on the apks below in Apk Directory to install.",IDC_STATIC_NOTICE_LIST,20,24,238,10
     CONTROL         "",IDC_LIST_APK,"SysListView32",LVS_SMALLICON | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,38,354,52
-    LTEXT           "Filter:",IDC_STATIC_FILTER,272,24,22,11
-    EDITTEXT        IDC_EDIT_APK_FILTER,297,22,76,13,ES_AUTOHSCROLL
+    LTEXT           "Filter:",IDC_STATIC_FILTER,263,23,22,11
+    EDITTEXT        IDC_EDIT_APK_FILTER,285,21,88,13,ES_AUTOHSCROLL
     CONTROL         "Noitce",IDC_STATIC_APK,"Static",SS_LEFTNOWORDWRAP | SS_NOPREFIX | SS_ENDELLIPSIS | WS_GROUP,20,97,170,10
     CONTROL         "",IDC_PROGRESS_INSTALL,"msctls_progress32",NOT WS_VISIBLE | WS_BORDER,194,96,102,10
     PUSHBUTTON      "Stop",IDC_BUTTON_INSTALL,300,94,32,13
@@ -435,12 +435,13 @@ BEGIN
     IDS_CONNECT_AND_RETRY   "Please connect to a device and try again."
     IDS_THREAD_EXCEPTION    "Failed to run task."
     IDS_INSTALL_FAILED      "Failed to install apk file"
-    IDS_NOTICE_DRAG_DROP    "Or drag and drop an apk file here to install."
+    IDS_NOTICE_DRAG_DROP    "Or drag and drop Apk file here to install."
     IDS_NOTICE_COPYING      "Copying apk to target directory..."
     IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
     IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
     IDS_FILE_EXISTS         "File exists in target directory."
     IDS_REPLACE_FILE        "Replace target file with:"
+    IDS_DELETE_FILE_FAILED  "Failed to delete file."
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

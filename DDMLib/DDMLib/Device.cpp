@@ -176,7 +176,10 @@ int Device::InstallPackage(const TString packageFilePath, bool reinstall, const 
 	if (nRetCode == 0)
 	{
 		nRetCode = InstallRemotePackage(remoteFilePath.c_str(), reinstall, args, argCount);
-		RemoveRemotePackage(remoteFilePath.c_str());
+		if (nRetCode == 0)
+		{
+			RemoveRemotePackage(remoteFilePath.c_str());
+		}
 	}
 	return nRetCode;
 }

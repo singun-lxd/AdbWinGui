@@ -59,10 +59,25 @@ public:
 		return FALSE;
 	}
 
+	static INT DeleteFile(LPCTSTR lpszFrom, HWND hWnd = ::GetActiveWindow())
+	{
+		SHFILEOPSTRUCT op = { 0 };
+		op.hwnd = hWnd;
+		op.wFunc = FO_DELETE;
+		op.pFrom = lpszFrom;
+		op.pTo = NULL;
+		op.fFlags = 0;
+		int nRet = ::SHFileOperation(&op);
+		if (op.fAnyOperationsAborted)
+		{
+			nRet = -1;
+		}
+		return nRet;
+	}
+
 	static INT CopyFile(LPCTSTR lpszFrom, LPCTSTR lpszTo, HWND hWnd = ::GetActiveWindow())
 	{
-		SHFILEOPSTRUCT op;
-		ZeroMemory(&op, sizeof(op));
+		SHFILEOPSTRUCT op = { 0 };
 		op.hwnd = hWnd;
 		op.wFunc = FO_COPY;
 		op.pFrom = lpszFrom;
