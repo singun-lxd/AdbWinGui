@@ -92,8 +92,26 @@ void MainTab::OnDropFiles(HDROP hDropInfo)
 	}
 }
 
+void MainTab::OnEditFilterChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	CString strFilter;
+	m_ediFilter.GetWindowText(strFilter);
+	BOOL bEmpty = strFilter.IsEmpty();
+
+	m_lvApkDir.DeleteAllItems();
+	for (int i = 0; i < m_arrApkPath.GetSize(); i++)
+	{
+		CString& file = m_arrApkPath[i];
+		if (bEmpty || file.Find(strFilter) >= 0)
+		{
+			m_lvApkDir.AddItem(i, 0, file);
+		}
+	}
+}
+
 void MainTab::OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
+	m_ediFilter.SetWindowText(_T(""));
 	RefreshApkDirectory();
 }
 
@@ -429,6 +447,11 @@ void MainTab::SwitchToIdleMode()
 
 BOOL MainTab::RefreshApkDirectory()
 {
+	return RefreshApkDirectoryWithArray(m_arrApkPath);
+}
+
+BOOL MainTab::RefreshApkDirectoryWithArray(CSimpleArray<CString>& arrApkPath)
+{
 	m_lvApkDir.DeleteAllItems();
 
 	CString strApkDirectory = ConfigManager::GetInstance().GetApkDir();
@@ -436,13 +459,13 @@ BOOL MainTab::RefreshApkDirectory()
 	::PathAppend(szFindData, _T("*.apk"));
 	strApkDirectory.ReleaseBuffer();
 
-	CSimpleArray<CString> arrFiles;
-	BOOL bRet = ShellHelper::GetFilesInDirectory(strApkDirectory, arrFiles);
+	arrApkPath.RemoveAll();
+	BOOL bRet = ShellHelper::GetFilesInDirectory(strApkDirectory, m_arrApkPath);
 	if (bRet)
 	{
-		for (int i = 0; i < arrFiles.GetSize(); i++)
+		for (int i = 0; i < arrApkPath.GetSize(); i++)
 		{
-			CString& file = arrFiles[i];
+			CString& file = arrApkPath[i];
 			m_lvApkDir.AddItem(i, 0, file);
 		}
 	}

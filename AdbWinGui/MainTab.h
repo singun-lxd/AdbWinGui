@@ -53,12 +53,14 @@ public:
 	CListViewCtrl m_lvApkDir;
 
 	CIconHandle m_icoHandle;
+	CSimpleArray<CString> m_arrApkPath;
 
 public:
 	BEGIN_MSG_MAP(MainTab)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DROPFILES(OnDropFiles)
-		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REFRESH, OnBtnRefreshClick);
+		COMMAND_HANDLER_EX(IDC_EDIT_APK_FILTER, EN_CHANGE, OnEditFilterChange)
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REFRESH, OnBtnRefreshClick)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, LVN_KEYDOWN, OnListKeyDown)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
@@ -85,6 +87,7 @@ public:
 	BOOL PreTranslateMessage(MSG* pMsg);
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	void OnDropFiles(HDROP hDropInfo);
+	void OnEditFilterChange(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl);
 	LRESULT OnListKeyDown(LPNMHDR pnmh);
 	LRESULT OnListDblClick(LPNMHDR pnmh);
@@ -105,5 +108,6 @@ private:
 	void SwitchToInstallingMode();
 	void SwitchToIdleMode();
 	BOOL RefreshApkDirectory();
+	BOOL RefreshApkDirectoryWithArray(CSimpleArray<CString>& arrApkPath);
 	BOOL GetListItemApkPath(int nIndex, CString& strPath);
 };
