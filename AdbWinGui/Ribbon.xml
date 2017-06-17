@@ -140,12 +140,12 @@
                                        ItemHeight="48"
                                        ItemWidth="48"
                                        TextPosition="Right"
-                                       MaxColumns="4"
+                                       MaxColumns="2"
                                        MaxRows="1"
                                        MinColumnsMedium="1">
                         <InRibbonGallery.MenuLayout>
                           <FlowMenuLayout Rows="3"
-                                            Columns="4"
+                                            Columns="2"
                                             Gripper="Corner"/>
                         </InRibbonGallery.MenuLayout>
                         <InRibbonGallery.MenuGroups>
