@@ -240,6 +240,7 @@
     <ClInclude Include="AdbPathErrorDlg.h" />
     <ClInclude Include="AdbPreparingDlg.h" />
     <ClInclude Include="CDialogColor.h" />
+    <ClInclude Include="CDialogToolTip.h" />
     <ClInclude Include="Config\AdbPathConfig.h" />
     <ClInclude Include="Config\ApkDirectoryConfig.h" />
     <ClInclude Include="Config\ConfigKeyDefine.h" />

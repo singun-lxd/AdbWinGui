@@ -29,14 +29,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DdmLibWrapper.h"
 #include "MessageDefine.h"
 #include "CDialogColor.h"
+#include "CDialogToolTip.h"
 
-class MainTab : public CDialogImpl<MainTab>, 
-				public CDialogResize<MainTab>, public CDialogColor<MainTab>
+class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>,
+				public CDialogColor<MainTab>, public CDialogToolTip<MainTab>
 {
 public:
 	enum
 	{
-		IDD = IDD_MAIN_TAB
+		IDD = IDD_MAIN_TAB,
 	};
 
 	DdmLibWrapper& m_ddmLibWrapper;
@@ -59,6 +60,7 @@ public:
 
 public:
 	BEGIN_MSG_MAP(MainTab)
+		CHAIN_MSG_MAP(CDialogToolTip<MainTab>)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DROPFILES(OnDropFiles)
 		COMMAND_HANDLER_EX(IDC_EDIT_APK_FILTER, EN_CHANGE, OnEditFilterChange)

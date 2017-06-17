@@ -449,6 +449,11 @@ BEGIN
     IDS_DELETE_FILE_FAILED  "Failed to delete file."
 END
 
+STRINGTABLE
+BEGIN
+    IDC_BUTTON_REFRESH      "Refresh Apk File Directory"
+END
+
 #endif    // Ó¢Óï(ÃÀ¹ú) resources
 /////////////////////////////////////////////////////////////////////////////
 

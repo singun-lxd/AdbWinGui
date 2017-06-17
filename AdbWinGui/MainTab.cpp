@@ -50,8 +50,7 @@ MainTab::~MainTab()
 
 BOOL MainTab::PreTranslateMessage(MSG* pMsg)
 {
-	pMsg;
-	return FALSE;
+	return IsDialogMessage(pMsg);
 }
 
 BOOL MainTab::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
@@ -220,6 +219,7 @@ void MainTab::InitControls()
 	m_stcFilter.Attach(GetDlgItem(IDC_STATIC_FILTER));
 	m_ediFilter.Attach(GetDlgItem(IDC_EDIT_APK_FILTER));
 	m_btnRefresh.Attach(GetDlgItem(IDC_BUTTON_REFRESH));
+
 	m_pgbInstall.Attach(GetDlgItem(IDC_PROGRESS_INSTALL));
 	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
 	m_chkReistall.Attach(GetDlgItem(IDC_CHECK_REINSTALL));

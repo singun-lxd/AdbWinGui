@@ -35,6 +35,8 @@
 #define IDS_FILE_EXISTS                 155
 #define IDS_REPLACE_FILE                156
 #define IDS_DELETE_FILE_FAILED          157
+#define IDS_REFRESH                     158
+#define IDS_REFRESH_APK                 158
 #define IDB_DEVICE                      207
 #define IDB_BITMAP_REFRESH              208
 #define IDB_BITMAP_APK                  209

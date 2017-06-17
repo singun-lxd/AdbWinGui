@@ -26,7 +26,7 @@ class CDialogColor : public CMessageMap
 private:
 	CBrush m_brushBkgnd;
 
-public:
+protected:
 	CDialogColor(COLORREF clrBg= RGB(255, 255, 255))
 	{
 		m_brushBkgnd.CreateSolidBrush(clrBg);
@@ -64,6 +64,7 @@ protected:
 	LRESULT OnEraseBackground(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 	{
 		T* pThis = static_cast<T*>(this);
+		ATLASSERT(::IsWindow(*pThis));
 		HDC hDc = (HDC)wParam;
 		RECT rcRect;
 		pThis->GetClientRect(&rcRect);

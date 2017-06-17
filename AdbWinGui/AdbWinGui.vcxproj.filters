@@ -155,6 +155,9 @@
     <ClInclude Include="CDialogColor.h">
       <Filter>Tabs</Filter>
     </ClInclude>
+    <ClInclude Include="CDialogToolTip.h">
+      <Filter>Tabs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AdbWinGui.rc">
