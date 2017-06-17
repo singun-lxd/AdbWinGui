@@ -4,6 +4,7 @@
 //
 #define IDD_ABOUTBOX                    100
 #define IDD_SETTING_TAB                 101
+#define IDD_MAIN_TAB                    102
 #define IDR_MAINFRAME                   128
 #define IDS_NOT_ASK_ME                  129
 #define IDS_ADB_PATH_INVALID            130
@@ -34,9 +35,9 @@
 #define IDS_FILE_EXISTS                 155
 #define IDS_REPLACE_FILE                156
 #define IDS_DELETE_FILE_FAILED          157
-#define IDD_MAIN_TAB                    205
 #define IDB_DEVICE                      207
-#define IDI_ICON_REFRESH                208
+#define IDB_BITMAP_REFRESH              208
+#define IDB_BITMAP_APK                  209
 #define IDC_RADIO_AUTO                  1000
 #define IDC_RADIO_MANUAL                1001
 #define IDC_EDIT_PATH                   1002
@@ -64,7 +65,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        209
+#define _APS_NEXT_RESOURCE_VALUE        210
 #define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101

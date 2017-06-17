@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "InstallNotifyDlg.h"
 #include "FileExistsDlg.h"
 
-#define SMALL_ICON_SIZE 16
+#define SMALL_ICON_SIZE 24
 
 MainTab::MainTab() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
@@ -227,16 +227,16 @@ void MainTab::InitControls()
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
 
 	m_bmpApkIco = (HBITMAP)::LoadImage(ModuleHelper::GetResourceInstance(),
-		MAKEINTRESOURCE(IDB_DEVICE), IMAGE_BITMAP, SMALL_ICON_SIZE, SMALL_ICON_SIZE, NULL);
+		MAKEINTRESOURCE(IDB_BITMAP_APK), IMAGE_BITMAP, SMALL_ICON_SIZE, SMALL_ICON_SIZE, NULL);
 	m_ilApkIcon.Create(SMALL_ICON_SIZE, SMALL_ICON_SIZE, ILC_COLOR32 | ILC_HIGHQUALITYSCALE, 1, 1);
 	m_ilApkIcon.Add(m_bmpApkIco);
 	m_lvApkDir.SetImageList(m_ilApkIcon, LVSIL_SMALL);
 
 	::SetWindowTheme(m_lvApkDir, _T("Explorer"), NULL);
 
-	m_icoRefresh = (HICON)::LoadImage(ModuleHelper::GetResourceInstance(),
-		MAKEINTRESOURCE(IDI_ICON_REFRESH), IMAGE_ICON, SMALL_ICON_SIZE, SMALL_ICON_SIZE, NULL);
-	m_btnRefresh.SetIcon(m_icoRefresh);
+	m_bmpRefresh = (HBITMAP)::LoadImage(ModuleHelper::GetResourceInstance(),
+		MAKEINTRESOURCE(IDB_BITMAP_REFRESH), IMAGE_BITMAP, SMALL_ICON_SIZE, SMALL_ICON_SIZE, NULL);
+	m_btnRefresh.SetBitmap(m_bmpRefresh);
 
 	m_chkReistall.SetCheck(TRUE);
 

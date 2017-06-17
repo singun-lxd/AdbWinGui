@@ -54,7 +54,7 @@ public:
 	CImageList m_ilApkIcon;
 
 	CBitmapHandle m_bmpApkIco;
-	CIconHandle m_icoRefresh;
+	CBitmapHandle m_bmpRefresh;
 	CSimpleArray<CString> m_arrApkPath;
 
 public:

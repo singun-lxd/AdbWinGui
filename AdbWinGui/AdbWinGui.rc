@@ -25,9 +25,13 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Bitmap
 //
 
+IDB_BITMAP_REFRESH      BITMAP                  "res\\refresh.bmp"
+
 IDB_DEVICE              BITMAP                  "res\\device.bmp"
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+IDB_BITMAP_APK          BITMAP                  "res\\apk.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -215,8 +219,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\AdbWinGui.ico"
-
-IDI_ICON_REFRESH        ICON                    "res\\icon_refresh.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -438,7 +440,7 @@ BEGIN
     IDS_CONNECT_AND_RETRY   "Please connect to a device and try again."
     IDS_THREAD_EXCEPTION    "Failed to run task."
     IDS_INSTALL_FAILED      "Failed to install apk file"
-    IDS_NOTICE_DRAG_DROP    "Or drag and drop apk file here to install."
+    IDS_NOTICE_DRAG_DROP    "Or drop an apk file here to install."
     IDS_NOTICE_COPYING      "Copying apk to target directory..."
     IDS_NOTICE_INSTALLING   "Installing apk to selected device..."
     IDS_INSTALL_SUCCESS     "Apk file is installed successfully."
