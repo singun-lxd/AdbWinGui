@@ -36,7 +36,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
 	if (CRibbonFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
+	{
 		return TRUE;
+	}
 
 	return m_MainTabView.PreTranslateMessage(pMsg);
 }

@@ -137,9 +137,9 @@
                     <Group CommandName="GroupDevice" SizeDefinition="OneInRibbonGallery">
                       <InRibbonGallery CommandName="wtl_ADB_DEVICES"
                                        Type="Items"
-                                       ItemHeight="32"
-                                       ItemWidth="32"
-                                       TextPosition="Bottom"
+                                       ItemHeight="48"
+                                       ItemWidth="48"
+                                       TextPosition="Right"
                                        MaxColumns="4"
                                        MaxRows="1"
                                        MinColumnsMedium="1">
