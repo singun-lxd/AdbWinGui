@@ -31,12 +31,13 @@
 #define IDS_NOTICE_DRAG_DROP            151
 #define IDS_NOTICE_COPYING              152
 #define IDS_NOTICE_INSTALLING           153
-#define IDS_INSTALL_SUCCESS             154
-#define IDS_FILE_EXISTS                 155
-#define IDS_REPLACE_FILE                156
-#define IDS_DELETE_FILE_FAILED          157
+#define IDS_NOTICE_PUSHING              154
+#define IDS_INSTALL_SUCCESS             155
+#define IDS_FILE_EXISTS                 156
+#define IDS_REPLACE_FILE                157
 #define IDS_REFRESH                     158
 #define IDS_REFRESH_APK                 158
+#define IDS_DELETE_FILE_FAILED          159
 #define IDB_DEVICE                      207
 #define IDB_BITMAP_REFRESH              208
 #define IDB_BITMAP_APK                  209

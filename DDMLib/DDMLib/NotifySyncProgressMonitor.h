@@ -18,18 +18,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define MSG_MAIN_ADB_PATH			WM_USER + 100
-#define MSG_MAIN_NOTIFY_EXIT			WM_USER + 101
-#define MSG_MAIN_PREPARE_ADB			WM_USER + 102
-#define MSG_MAIN_ADB_FINISH			WM_USER + 103
+#include "SyncService.h"
 
-#define MSG_SETTING_SELECT_ADB		WM_USER + 200
+class NotifySyncProgressMonitor : public SyncService::ISyncProgressMonitor
+{
+private:
+	IDevice::ISyncNotify* m_pNotify;
+	int m_nTotalWork;
+	long m_lPushed;
+public:
+	NotifySyncProgressMonitor(IDevice::ISyncNotify* pNotify)
+	{
+		m_nTotalWork = 0;
+		m_lPushed = 0;
+		m_pNotify = pNotify;
+	}
 
-#define MSG_RIBBON_DEVICE_LIST		WM_USER + 300
-#define MSG_RIBBON_DEVICE_SELECT		WM_USER + 301
+	void Advance(int work) override
+	{
+		m_lPushed += work;
+		int nProgress = m_lPushed * 100 / m_nTotalWork;
+		m_pNotify->OnProgress(nProgress);
+	}
 
-#define MSG_INSTALL_COPY_APK			WM_USER + 400
-#define MSG_INSTALL_APK				WM_USER + 401
-#define MSG_INSTALL_STEP_PUSH		WM_USER + 402
-#define MSG_INSTALL_STEP_PROGRESS	WM_USER + 403
-#define MSG_INSTALL_STEP_INSTALL		WM_USER + 404
+	bool IsCanceled() override
+	{
+		return m_pNotify->IsCancelled();
+	}
+
+	void Start(int totalWork) override
+	{
+		m_nTotalWork = totalWork;
+	}
+
+	void StartSubTask(const TString name) override
+	{
+	}
+
+	void Stop() override
+	{
+	}
+};

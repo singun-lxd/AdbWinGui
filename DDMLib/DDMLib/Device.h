@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "DeviceMonnitor.h"
 #include "../System/SocketClient.h"
 #include "MultiLineReceiver.h"
+#include "SyncService.h"
 
 // define class
 class DeviceMonitor;
@@ -40,7 +41,9 @@ private:
 		#define SUCCESS_OUTPUT  "Success"
 		#define FAILURE_PATTERN "Failure\\s+\\[(.*)\\]"
 		std::tstring m_strErrorMessage;
-
+		IInstallNotify* m_pNotify;
+	public:
+		InstallReceiver(IInstallNotify* pNotify = NULL);
 	public:
 		virtual void ProcessNewLines(const std::vector<std::string>& vecArray) override;
 		virtual bool IsCancelled() override;
@@ -78,11 +81,13 @@ public:
 	SyncService* GetSyncService();
 	virtual int PushFile(const TString local, const TString remote) override;
 	virtual int PullFile(const TString remote, const TString local) override;
-	virtual int InstallPackage(const TString packageFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) override;
+	virtual int InstallPackage(const TString packageFilePath, bool reinstall,
+		const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) override;
 	virtual int InstallPackages(const TString apkFilePaths[], int apkCount, int timeOutInMs, bool reinstall,
-		const TString args[] = NULL, int argCount = 0) override;
-	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath) override;
-	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) override;
+		const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) override;
+	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath, ISyncNotify* pNotify = NULL) override;
+	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall,
+		const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) override;
 	virtual int RemoveRemotePackage(const TString remoteFilePath) override;
 	virtual int UninstallPackage(const TString packageName) override;
 

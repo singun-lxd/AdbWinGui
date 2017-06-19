@@ -226,6 +226,10 @@ int AdbHelper::ExecuteRemoteCommand(const SocketAddress& adbSockAddr, AdbService
 			// send data to receiver if present
 			if (rcvr != NULL)
 			{
+				if (count < bufferLen - 1)
+				{
+					data[count] = '\0';
+				}
 				rcvr->AddOutput(data, 0, count);
 			}
 		}

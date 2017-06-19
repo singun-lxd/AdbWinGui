@@ -34,6 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 MainTab::MainTab() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
+	m_bIsCancelled = FALSE;
 }
 
 MainTab::~MainTab()
@@ -114,6 +115,11 @@ void MainTab::OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl)
 	RefreshApkDirectory();
 }
 
+void MainTab::OnBtnStopInstallClick(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	m_bIsCancelled = TRUE;
+}
+
 LRESULT MainTab::OnListKeyDown(LPNMHDR pnmh)
 {
 	LPNMLVKEYDOWN pnkd = (LPNMLVKEYDOWN)pnmh;
@@ -162,15 +168,21 @@ LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	TCHAR* szApkPath = (TCHAR*)lParam;
 	int nRet = (int)wParam;
 	SwitchToIdleMode();
-	if (nRet == 0)
+	if (nRet == 0 && m_strErrMsg.IsEmpty())
 	{
 		// install success
 		MessageTaskDlg dlg(IDS_INSTALL_SUCCESS, szApkPath, MB_ICONINFORMATION);
 		dlg.DoModal();
 	}
-	else
+	else if (!m_bIsCancelled)
 	{
-		MessageTaskDlg dlg(IDS_INSTALL_FAILED, szApkPath, MB_ICONERROR);
+		CString strMsg;
+		strMsg.LoadString(IDS_INSTALL_FAILED);
+		if (!m_strErrMsg.IsEmpty())
+		{
+			strMsg.AppendFormat(_T("\r\n[%s]"), m_strErrMsg);
+		}
+		MessageTaskDlg dlg(strMsg, szApkPath, MB_ICONERROR);
 		dlg.DoModal();
 	}
 	// need to free string here
@@ -207,6 +219,76 @@ LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT MainTab::OnInstallPush(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	CString strWinText;
+	strWinText.LoadString(IDS_NOTICE_PUSHING);
+	m_stcNoticeApk.SetWindowText(strWinText);
+	m_pgbInstall.ModifyStyle(PBS_MARQUEE, 0);
+	m_pgbInstall.SetMarquee(FALSE);
+	m_pgbInstall.SetRange(0, 100);
+	m_pgbInstall.Invalidate();
+	return 0;
+}
+
+LRESULT MainTab::OnInstallProgress(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	int progress = (int)wParam;
+	int nPos = m_pgbInstall.GetPos();
+	if (progress - nPos >= 1)
+	{
+		CString strWinText;
+		strWinText.LoadString(IDS_NOTICE_PUSHING);
+		strWinText.AppendFormat(_T("%d%%"), progress);
+		m_stcNoticeApk.SetWindowText(strWinText);
+
+		m_pgbInstall.SetPos(progress);
+		m_pgbInstall.Invalidate();
+	}
+	return 0;
+}
+
+LRESULT MainTab::OnInstallRun(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	CString strWinText;
+	strWinText.LoadString(IDS_NOTICE_INSTALLING);
+	m_stcNoticeApk.SetWindowText(strWinText);
+	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
+	m_pgbInstall.SetMarquee(TRUE, 10);
+	m_btnInstallApk.EnableWindow(FALSE);
+	return 0;
+}
+
+void MainTab::OnPush()
+{
+	PostMessage(MSG_INSTALL_STEP_PUSH);
+}
+
+void MainTab::OnProgress(int progress)
+{
+	PostMessage(MSG_INSTALL_STEP_PROGRESS, (WPARAM)progress);
+}
+
+void MainTab::OnInstall()
+{
+	PostMessage(MSG_INSTALL_STEP_INSTALL);
+}
+
+void MainTab::OnRemove()
+{
+	// nothing to do
+}
+
+void MainTab::OnErrorMessage(const TString errMsg)
+{
+	m_strErrMsg = errMsg;
+}
+
+bool MainTab::IsCancelled()
+{
+	return m_bIsCancelled ? true : false;
+}
+
 void MainTab::PrepareAdb()
 {
 	GetParent().PostMessage(MSG_MAIN_PREPARE_ADB);
@@ -221,7 +303,6 @@ void MainTab::InitControls()
 	m_btnRefresh.Attach(GetDlgItem(IDC_BUTTON_REFRESH));
 
 	m_pgbInstall.Attach(GetDlgItem(IDC_PROGRESS_INSTALL));
-	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
 	m_chkReistall.Attach(GetDlgItem(IDC_CHECK_REINSTALL));
 	m_stcListInstall.Attach(GetDlgItem(IDC_STATIC_NOTICE_LIST));
 	m_lvApkDir.Attach(GetDlgItem(IDC_LIST_APK));
@@ -271,6 +352,9 @@ void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 
 void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 {
+	m_bIsCancelled = FALSE;
+	m_strErrMsg.Empty();
+
 	TCHAR* szApkPath = new TCHAR[MAX_PATH];
 	_tcsncpy_s(szApkPath, MAX_PATH, lpszApkPath, MAX_PATH);
 
@@ -281,12 +365,10 @@ void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 		BOOL bReInstall = m_chkReistall.GetCheck();
 		HWND& hWnd = m_hWnd;
 		// create a thread to run install task
-		std::packaged_task<int(TCHAR*, IDevice*, BOOL)> ptInstall([&hWnd](TCHAR* szApkPath, IDevice* pDevice, BOOL bReInstall)
+		IDevice::IInstallNotify* pNotify = this;
+		std::packaged_task<int(TCHAR*, IDevice*, BOOL)> ptInstall([&hWnd, pNotify](TCHAR* szApkPath, IDevice* pDevice, BOOL bReInstall)
 		{
-			int nRet = pDevice->InstallPackage(szApkPath, bReInstall ? true : false);
-			if (nRet == 0)
-			{
-			}
+			int nRet = pDevice->InstallPackage(szApkPath, bReInstall ? true : false, NULL, 0, pNotify);
 			::PostMessage(hWnd, MSG_INSTALL_APK, (WPARAM)nRet, (LPARAM)szApkPath);
 			return nRet;
 		});
@@ -304,6 +386,9 @@ void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 
 void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 {
+	m_bIsCancelled = FALSE;
+	m_strErrMsg.Empty();
+
 	TCHAR* szSrcPath = new TCHAR[MAX_PATH];
 	_tcsncpy_s(szSrcPath, MAX_PATH, lpszApkPath, MAX_PATH);
 
@@ -339,11 +424,7 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 	{
 		DWORD dwErrCode = 0;
 		BOOL bRet = ::CopyFile(lpszSrc, lpszDesc, FALSE);
-		if (bRet)
-		{
-
-		}
-		else
+		if (!bRet)
 		{
 			dwErrCode = ::GetLastError();
 		}
@@ -406,13 +487,16 @@ void MainTab::SwitchToCopyingMode()
 	CString strWinText;
 	strWinText.LoadString(IDS_NOTICE_COPYING);
 	m_stcNoticeApk.SetWindowText(strWinText);
+	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
 	m_pgbInstall.SetMarquee(TRUE, 10);
 	m_pgbInstall.ShowWindow(SW_SHOW);
 	m_pgbInstall.Invalidate();
+	m_btnInstallApk.EnableWindow(TRUE);
 	m_btnInstallApk.ShowWindow(SW_SHOW);
 	m_chkReistall.EnableWindow(FALSE);
 	m_stcFilter.EnableWindow(FALSE);
 	m_ediFilter.EnableWindow(FALSE);
+	m_btnRefresh.EnableWindow(FALSE);
 	m_stcListInstall.EnableWindow(FALSE);
 	m_lvApkDir.EnableWindow(FALSE);
 	DragAcceptFiles(FALSE);
@@ -420,16 +504,16 @@ void MainTab::SwitchToCopyingMode()
 
 void MainTab::SwitchToInstallingMode()
 {
-	CString strWinText;
-	strWinText.LoadString(IDS_NOTICE_INSTALLING);
-	m_stcNoticeApk.SetWindowText(strWinText);
+	m_pgbInstall.ModifyStyle(0, PBS_MARQUEE);
 	m_pgbInstall.SetMarquee(TRUE, 10);
 	m_pgbInstall.ShowWindow(SW_SHOW);
 	m_pgbInstall.Invalidate();
+	m_btnInstallApk.EnableWindow(TRUE);
 	m_btnInstallApk.ShowWindow(SW_SHOW);
 	m_chkReistall.EnableWindow(FALSE);
 	m_stcFilter.EnableWindow(FALSE);
 	m_ediFilter.EnableWindow(FALSE);
+	m_btnRefresh.EnableWindow(FALSE);
 	m_stcListInstall.EnableWindow(FALSE);
 	m_lvApkDir.EnableWindow(FALSE);
 	DragAcceptFiles(FALSE);
@@ -440,12 +524,14 @@ void MainTab::SwitchToIdleMode()
 	CString strWinText;
 	strWinText.LoadString(IDS_NOTICE_DRAG_DROP);
 	m_stcNoticeApk.SetWindowText(strWinText);
+	m_pgbInstall.ModifyStyle(PBS_MARQUEE, 0);
 	m_pgbInstall.SetMarquee(FALSE);
 	m_pgbInstall.ShowWindow(SW_HIDE);
 	m_btnInstallApk.ShowWindow(SW_HIDE);
 	m_chkReistall.EnableWindow(TRUE);
 	m_stcFilter.EnableWindow(TRUE);
 	m_ediFilter.EnableWindow(TRUE);
+	m_btnRefresh.EnableWindow(TRUE);
 	m_stcListInstall.EnableWindow(TRUE);
 	m_lvApkDir.EnableWindow(TRUE);
 	DragAcceptFiles(TRUE);

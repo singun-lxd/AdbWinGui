@@ -43,6 +43,20 @@ public:
 		UNAUTHORIZED,
 	};
 
+	interface ISyncNotify
+	{
+		virtual bool IsCancelled() = 0;
+		virtual void OnProgress(int progress) = 0;
+	};
+
+	interface IInstallNotify : public ISyncNotify
+	{
+		virtual void OnPush() = 0;
+		virtual void OnInstall() = 0;
+		virtual void OnRemove() = 0;
+		virtual void OnErrorMessage(const TString errMsg) = 0;
+	};
+
 public:
 	static DeviceState GetState(const TString state);
 
@@ -57,11 +71,13 @@ public:
 
 	virtual int PushFile(const TString local, const TString remote) = 0;
 	virtual int PullFile(const TString remote, const TString local) = 0;
-	virtual int InstallPackage(const TString packageFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
+	virtual int InstallPackage(const TString packageFilePath, bool reinstall,
+		const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) = 0;
 	virtual int InstallPackages(const TString apkFilePaths[], int apkCount, int timeOutInMs,
-		bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
-	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath) = 0;
-	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[] = NULL, int argCount = 0) = 0;
+		bool reinstall, const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) = 0;
+	virtual int SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath, ISyncNotify* pNotify = NULL) = 0;
+	virtual int InstallRemotePackage(const TString remoteFilePath, bool reinstall,
+		const TString args[] = NULL, int argCount = 0, IInstallNotify* pNotify = NULL) = 0;
 	virtual int RemoveRemotePackage(const TString remoteFilePath) = 0;
 	virtual int UninstallPackage(const TString packageName) = 0;
 };

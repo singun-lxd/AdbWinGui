@@ -27,7 +27,6 @@ class MultiLineReceiver : public IShellOutputReceiver
 {
 private:
 	bool m_bTrimLines = true;
-	std::vector<std::string> m_vecArray;
 
 public:
 	void SetTrimLine(bool trim)
@@ -47,7 +46,7 @@ public:
 			iss << pData + offset;
 
 			// now we split the lines
-			m_vecArray.clear();
+			std::vector<std::string> vecArray;
 
 			std::string line;
 			while (std::getline(iss, line))
@@ -56,18 +55,16 @@ public:
 				{
 					StringUtils::TrimString(line);
 				}
-				m_vecArray.push_back(line);
+				OutputDebugStringA(">>>>>>>>>>>>>>>>>>>>>>\r\n");
+				OutputDebugStringA(line.c_str());
+				OutputDebugStringA("\r\n");
+				vecArray.push_back(line);
 			}
 
-			if (!m_vecArray.empty())
+			if (!vecArray.empty())
 			{
-				// at this point we've split all the lines.
-				// copy the array
-				std::vector<std::string> vecResult;
-				vecResult.assign(m_vecArray.begin(), m_vecArray.end());
-
 				// send it for final processing
-				ProcessNewLines(vecResult);
+				ProcessNewLines(vecArray);
 			}
 		}
 	}

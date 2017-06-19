@@ -168,6 +168,7 @@
     <ClInclude Include="DDMLib\IShellOutputReceiver.h" />
     <ClInclude Include="DDMLib\Log.h" />
     <ClInclude Include="DDMLib\MultiLineReceiver.h" />
+    <ClInclude Include="DDMLib\NotifySyncProgressMonitor.h" />
     <ClInclude Include="DDMLib\NullOutputReceiver.h" />
     <ClInclude Include="DDMLib\StringUtils.h" />
     <ClInclude Include="DDMLib\SyncService.h" />

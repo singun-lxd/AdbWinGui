@@ -123,6 +123,9 @@
     <ClInclude Include="System\StreamWriter.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="DDMLib\NotifySyncProgressMonitor.h">
+      <Filter>DDMLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

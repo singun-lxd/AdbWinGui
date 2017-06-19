@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Log.h"
 #include "AdbHelper.h"
 #include "NullOutputReceiver.h"
+#include "NotifySyncProgressMonitor.h"
 
 #define GET_PROP_TIMEOUT_MS				100
 #define INSTALL_TIMEOUT_MINUTES			Device::s_lInstallTimeOut
@@ -168,23 +169,33 @@ int Device::PullFile(const TString remote, const TString local)
 	return 0;
 }
 
-int Device::InstallPackage(const TString packageFilePath, bool reinstall, const TString args[], int argCount)
+int Device::InstallPackage(const TString packageFilePath, bool reinstall,
+	const TString args[], int argCount, IInstallNotify* pNotify)
 {
 	int nRetCode = -1;
+	if (pNotify != NULL)
+	{
+		pNotify->OnPush();
+	}
 	std::tstring remoteFilePath;
-	nRetCode = SyncPackageToDevice(packageFilePath, remoteFilePath);
+	nRetCode = SyncPackageToDevice(packageFilePath, remoteFilePath, pNotify);
 	if (nRetCode == 0)
 	{
-		nRetCode = InstallRemotePackage(remoteFilePath.c_str(), reinstall, args, argCount);
+		nRetCode = InstallRemotePackage(remoteFilePath.c_str(), reinstall, args, argCount, pNotify);
 		if (nRetCode == 0)
 		{
+			if (pNotify != NULL)
+			{
+				pNotify->OnRemove();
+			}
 			RemoveRemotePackage(remoteFilePath.c_str());
 		}
 	}
 	return nRetCode;
 }
 
-int Device::InstallPackages(const TString apkFilePaths[], int count, int timeOutInMs, bool reinstall, const TString args[], int argCount)
+int Device::InstallPackages(const TString apkFilePaths[], int count, int timeOutInMs, bool reinstall,
+	const TString args[], int argCount, IInstallNotify* pNotify)
 {
 	if (GetApiLevel() < 21)
 	{
@@ -243,7 +254,7 @@ int Device::InstallPackages(const TString apkFilePaths[], int count, int timeOut
 	return 0;
 }
 
-int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath)
+int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remotePath, ISyncNotify* pNotify)
 {
 	const TString packageFileName = GetFileName(localFilePath);
 	std::tostringstream oss;
@@ -256,8 +267,24 @@ int Device::SyncPackageToDevice(const TString localFilePath, std::tstring& remot
 	std::unique_ptr<SyncService> sync(GetSyncService());
 	if (sync)
 	{
+		NotifySyncProgressMonitor* pNotifyMonitor = NULL;
+		SyncService::ISyncProgressMonitor* pMonitor = NULL;
+		if (pNotify == NULL)
+		{
+			pMonitor = SyncService::GetNullProgressMonitor();
+		}
+		else
+		{
+			pNotifyMonitor = new NotifySyncProgressMonitor(pNotify);
+			pMonitor = pNotifyMonitor;
+		}
+
 		LogDEx(DEVICE, _T("Uploading file onto device '%s'"), GetSerialNumber());
-		bool bSync = sync->PushFile(localFilePath, remoteFilePath, SyncService::GetNullProgressMonitor());
+		bool bSync = sync->PushFile(localFilePath, remoteFilePath, pMonitor);
+		if (pNotifyMonitor != NULL)
+		{
+			delete pNotifyMonitor;
+		}
 		sync->Close();
 		if (!bSync)
 		{
@@ -271,9 +298,14 @@ const TString Device::GetFileName(const TString filePath) {
 	return File::GetName(filePath);
 }
 
-int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, const TString args[], int argCount)
+int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall,
+	const TString args[], int argCount, IInstallNotify* pNotify)
 {
-	InstallReceiver receiver;
+	if (pNotify != NULL)
+	{
+		pNotify->OnInstall();
+	}
+	InstallReceiver receiver(pNotify);
 	std::tostringstream oss;
 	oss << _T("pm install");
 	if (reinstall)
@@ -291,7 +323,10 @@ int Device::InstallRemotePackage(const TString remoteFilePath, bool reinstall, c
 	std::tstring& cmd = oss.str();
 	int nRet = ExecuteShellCommand(cmd.c_str(), &receiver, timeout);
 	const TString errMsg = receiver.GetErrorMessage();
-	// todo error code
+	if (_tcslen(errMsg) > 0 && pNotify != NULL)
+	{
+		pNotify->OnErrorMessage(errMsg);
+	}
 	return nRet;
 }
 
@@ -375,6 +410,11 @@ void Device::Update(int changeMask)
 //////////////////////////////////////////////////////////////////////////
 // implements for InstallReceiver
 
+Device::InstallReceiver::InstallReceiver(IInstallNotify* pNotify)
+{
+	m_pNotify = pNotify;
+}
+
 void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& vecArray)
 {
 	for (const std::string& line : vecArray)
@@ -383,9 +423,13 @@ void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& ve
 		{
 			continue;
 		}
+		OutputDebugStringA("===================\r\n");
+		OutputDebugStringA(line.c_str());
+		OutputDebugStringA("\r\n");
 		if (strncmp(SUCCESS_OUTPUT, line.c_str(), sizeof(SUCCESS_OUTPUT)) == 0)
 		{
 			m_strErrorMessage.clear();
+			break;
 		}
 		else
 		{
@@ -398,6 +442,7 @@ void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& ve
 #else
 				m_strErrorMessage = results[1].str();
 #endif
+				break;
 			}
 			else
 			{
@@ -409,7 +454,7 @@ void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& ve
 
 bool Device::InstallReceiver::IsCancelled()
 {
-	return false;
+	return m_pNotify == NULL ? false : m_pNotify->IsCancelled();
 }
 
 const TString Device::InstallReceiver::GetErrorMessage()

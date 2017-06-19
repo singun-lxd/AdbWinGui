@@ -30,9 +30,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "MessageDefine.h"
 #include "CDialogColor.h"
 #include "CDialogToolTip.h"
+#include "../DDMLib/DDMLib/IDevice.h"
 
 class MainTab : public CDialogImpl<MainTab>, public CDialogResize<MainTab>,
-				public CDialogColor<MainTab>, public CDialogToolTip<MainTab>
+				public CDialogColor<MainTab>, public CDialogToolTip<MainTab>,
+				public IDevice::IInstallNotify
 {
 public:
 	enum
@@ -58,6 +60,9 @@ public:
 	CBitmapHandle m_bmpRefresh;
 	CSimpleArray<CString> m_arrApkPath;
 
+	BOOL m_bIsCancelled;
+	CString m_strErrMsg;
+
 public:
 	BEGIN_MSG_MAP(MainTab)
 		CHAIN_MSG_MAP(CDialogToolTip<MainTab>)
@@ -65,10 +70,14 @@ public:
 		MSG_WM_DROPFILES(OnDropFiles)
 		COMMAND_HANDLER_EX(IDC_EDIT_APK_FILTER, EN_CHANGE, OnEditFilterChange)
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REFRESH, OnBtnRefreshClick)
+		COMMAND_ID_HANDLER_EX(IDC_BUTTON_INSTALL, OnBtnStopInstallClick)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, LVN_KEYDOWN, OnListKeyDown)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_PUSH, OnInstallPush)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_PROGRESS, OnInstallProgress)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_INSTALL, OnInstallRun)
 		CHAIN_MSG_MAP(CDialogResize<MainTab>)
 		CHAIN_MSG_MAP(CDialogColor<MainTab>)
 	END_MSG_MAP()
@@ -93,10 +102,22 @@ public:
 	void OnDropFiles(HDROP hDropInfo);
 	void OnEditFilterChange(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnBtnRefreshClick(UINT uNotifyCode, int nID, CWindow wndCtl);
+	void OnBtnStopInstallClick(UINT uNotifyCode, int nID, CWindow wndCtl);
 	LRESULT OnListKeyDown(LPNMHDR pnmh);
 	LRESULT OnListDblClick(LPNMHDR pnmh);
 	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT OnInstallPush(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT OnInstallProgress(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT OnInstallRun(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	// IDevice::IInstallNotify
+	virtual void OnPush() override;
+	virtual void OnProgress(int progress) override;
+	virtual void OnInstall() override;
+	virtual void OnRemove() override;
+	virtual void OnErrorMessage(const TString errMsg);
+	virtual bool IsCancelled() override;
 
 private:
 	void PrepareAdb();
