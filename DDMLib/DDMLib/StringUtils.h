@@ -19,21 +19,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "CommonDefine.h"
+#include <locale>
+#include <xfunctional>
+#include <algorithm>
 
 class StringUtils
 {
 public:
 	template <class T>
-	static std::basic_string<T>& TrimString(std::basic_string<T>& s)
+	inline static void TrimString(std::basic_string<T> &s)
 	{
-		if (s.empty())
+		auto wsfront = std::find_if_not(s.begin(), s.end(), [](int c) { std::locale loc; return std::isspace(c, loc); });
+		auto wsback = std::find_if_not(s.rbegin(), s.rend(), [](int c) {	std::locale loc; return std::isspace(c, loc); }).base();
+		if (wsback <= wsfront)
 		{
-			return s;
+			s.clear();
 		}
-		std::basic_string<T>::iterator c;
-		for (c = s.begin(); c != s.end() && iswspace(*c++);); s.erase(s.begin(), --c);
-		for (c = s.end(); c != s.begin() && iswspace(*--c);); s.erase(++c, s.end());
-		return s;
+		else
+		{
+			s.erase(wsback, s.end());
+			s.erase(s.begin(), wsfront);
+		}
 	}
 
 	template <class T>

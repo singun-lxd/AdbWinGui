@@ -88,7 +88,7 @@ void MainTab::OnDropFiles(HDROP hDropInfo)
 	else
 	{
 		MessageTaskDlg dlg(IDS_NOT_SUPPORTED_FILE, IDS_ONLY_APK_SUPPORTED, MB_ICONWARNING);
-		dlg.DoModal();
+		dlg.DoModal(m_hWnd);
 	}
 }
 
@@ -172,7 +172,7 @@ LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		// install success
 		MessageTaskDlg dlg(IDS_INSTALL_SUCCESS, szApkPath, MB_ICONINFORMATION);
-		dlg.DoModal();
+		dlg.DoModal(m_hWnd);
 	}
 	else if (!m_bIsCancelled)
 	{
@@ -183,7 +183,7 @@ LRESULT MainTab::OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			strMsg.AppendFormat(_T("\r\n[%s]"), m_strErrMsg);
 		}
 		MessageTaskDlg dlg(strMsg, szApkPath, MB_ICONERROR);
-		dlg.DoModal();
+		dlg.DoModal(m_hWnd);
 	}
 	// need to free string here
 	delete[] szApkPath;
@@ -212,7 +212,7 @@ LRESULT MainTab::OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		SwitchToIdleMode();
 		MessageTaskDlg dlg(IDS_FILE_COPY_FAILED, IDS_THREAD_EXCEPTION, MB_ICONERROR);
-		dlg.DoModal();
+		dlg.DoModal(m_hWnd);
 	}
 	// need to free string here
 	delete[] lpszDesc;
@@ -379,7 +379,7 @@ void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 	{
 		SwitchToIdleMode();
 		MessageTaskDlg dlg(IDS_NO_AVAILABLE_DEVICE, IDS_CONNECT_AND_RETRY, MB_ICONERROR);
-		dlg.DoModal();
+		dlg.DoModal(m_hWnd);
 		delete[] szApkPath;
 	}
 }
@@ -441,7 +441,7 @@ void MainTab::ShowFileOperationFailDialog(int nId, DWORD dwErrCode)
 {
 	LPCTSTR lpszErrMsg = ShellHelper::GetErrorMessage(dwErrCode);
 	MessageTaskDlg dlg(nId, lpszErrMsg, MB_ICONERROR);
-	dlg.DoModal();
+	dlg.DoModal(m_hWnd);
 }
 
 void MainTab::ShowCopyFailDialog(DWORD dwErrCode)

@@ -55,9 +55,6 @@ public:
 				{
 					StringUtils::TrimString(line);
 				}
-				OutputDebugStringA(">>>>>>>>>>>>>>>>>>>>>>\r\n");
-				OutputDebugStringA(line.c_str());
-				OutputDebugStringA("\r\n");
 				vecArray.push_back(line);
 			}
 

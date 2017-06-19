@@ -423,9 +423,6 @@ void Device::InstallReceiver::ProcessNewLines(const std::vector<std::string>& ve
 		{
 			continue;
 		}
-		OutputDebugStringA("===================\r\n");
-		OutputDebugStringA(line.c_str());
-		OutputDebugStringA("\r\n");
 		if (strncmp(SUCCESS_OUTPUT, line.c_str(), sizeof(SUCCESS_OUTPUT)) == 0)
 		{
 			m_strErrorMessage.clear();

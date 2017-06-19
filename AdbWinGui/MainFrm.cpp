@@ -188,7 +188,7 @@ void CMainFrame::OnViewRibbon(UINT uNotifyCode, int nID, CWindow wndCtl)
 void CMainFrame::OnAppAbout(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	CAboutDlg dlg;
-	dlg.DoModal();
+	dlg.DoModal(m_hWnd);
 }
 
 void CMainFrame::InitRibbonUI()

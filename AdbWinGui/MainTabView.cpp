@@ -68,7 +68,7 @@ void MainTabView::OnTimer(UINT_PTR nIDEvent)
 		if (!m_bPrepareFinish)
 		{
 			m_dwDlgStartTime = ::GetTickCount();
-			int nRet = m_dlgPreparing.DoModal();
+			int nRet = m_dlgPreparing.DoModal(m_hWnd);
 			if (nRet == IDCANCEL)
 			{
 				// todo dialog canceled
@@ -242,7 +242,7 @@ void MainTabView::HandleAdbPathError(HWND hWndSetting)
 		m_dlgPreparing.EndDialog(IDOK);
 	}
 	AdbPathErrorDlg dlg;
-	int nRet = dlg.DoModal();
+	int nRet = dlg.DoModal(m_hWnd);
 	if (nRet == IDOK)
 	{
 		::PostMessage(hWndSetting, MSG_SETTING_SELECT_ADB, 0, 0);
