@@ -3,7 +3,7 @@
 <Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
 
     <Application.Commands>
-        <Command Name="RecentFiles" Symbol="ID_RIBBON_RECENT_FILES" LabelTitle="Recent Apk" />
+        <Command Name="RecentFiles" Symbol="ID_RIBBON_RECENT_FILES" Id="0xE200" />
       
         <!-- AdbWinGui.rc Commands -->
         <Command Name="wtl_FILE_NEW" Symbol="ID_FILE_NEW" Id="0xE100"/>
@@ -41,21 +41,17 @@
         <Command Name="wtl_VIEW_STATUS_BAR" Symbol="ID_VIEW_STATUS_BAR" Id="0xE801"/>
         <Command Name="wtl_VIEW_RIBBON" Symbol="ID_VIEW_RIBBON" Id="0xE804"/>
 
-        <Command Name="wtl_ADB_DEVICES" Symbol="ID_VIEW_DEVICES" Id="0xE200"/>
-        <Command Name="wtl_ADB_DEVICES_LIST" Symbol="ID_DEVICE_DEVICELIST" Id="0xE201"/>
-        <Command Name="wtl_ADB_DEVICES_REFRESH" Symbol="ID_DEVICE_REFRESH" Id="0xE202"/>
+        <Command Name="wtl_ADB_DEVICES" Symbol="ID_VIEW_DEVICES" Id="0xE230"/>
+        <Command Name="wtl_ADB_DEVICES_LIST" Symbol="ID_DEVICE_DEVICELIST" Id="0xE231"/>
+        <Command Name="wtl_ADB_DEVICES_REFRESH" Symbol="ID_DEVICE_REFRESH" Id="0xE232"/>
 
         <!-- Tabs -->
-        <Command Name="TabHome" Symbol="ID_TAB_HOME"
-                 LabelTitle="Home" />
+        <Command Name="TabHome" Symbol="ID_RIBBON_TAB_HOME" Id="0xE210" />
 
         <!-- Groups -->
-        <Command Name="GroupDevice" Symbol="ID_GROUP_DEVICE"
-                 LabelTitle="Device" />
-        <Command Name="GroupClipboard" Symbol="ID_GROUP_CLIPBOARD"
-                 LabelTitle="Clipboard" />
-        <Command Name="GroupView" Symbol="ID_GROUP_VIEW"
-                 LabelTitle="View" />
+        <Command Name="GroupDevice" Symbol="ID_RIBBON_GROUP_DEVICE" Id="0xE220" />
+        <Command Name="GroupClipboard" Symbol="ID_RIBBON_GROUP_CLIPBOARD" Id="0xE221" />
+        <Command Name="GroupView" Symbol="ID_RIBBON_GROUP_VIEW" Id="0xE222" />
 
         <!-- App Menu, MRU list, Help button and Quick Access Toolbar -->
         <Command Name="AppMenu" Symbol="ID_RIBBON_APP_MENU"/>

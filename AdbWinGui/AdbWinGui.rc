@@ -208,6 +208,20 @@ BEGIN
     BEGIN
         MENUITEM "&About AdbWinGui",            ID_APP_ABOUT
     END
+    POPUP "AdbWinGui", GRAYED
+    BEGIN
+        MENUITEM "Recent Apk",                  ID_RIBBON_RECENT_FILES
+        POPUP "Tab"
+        BEGIN
+            MENUITEM "Main",                        ID_RIBBON_TAB_HOME
+        END
+        POPUP "Group"
+        BEGIN
+            MENUITEM "Device",                      ID_RIBBON_GROUP_DEVICE
+            MENUITEM "Clipboard",                   ID_RIBBON_GROUP_CLIPBOARD
+            MENUITEM "View",                        ID_RIBBON_GROUP_VIEW
+        END
+    END
 END
 
 
