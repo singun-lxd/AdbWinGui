@@ -42,12 +42,13 @@ public:
 	CCommandBarCtrl m_CmdBar;
 
 	// Declare ribbon controls
+	CRibbonRecentItemsCtrl<ID_RIBBON_RECENT_FILES> m_recItems;
 	CRibbonItemGalleryCtrl<ID_VIEW_DEVICES, MAX_UI_DEVICE_LIST_COUNNT> m_glyDevices;
 	CBitmap m_bmpDevice;
 
 	// Ribbon control map
 	BEGIN_RIBBON_CONTROL_MAP(CMainFrame)
-		//RIBBON_CONTROL(m_btnCopy)
+		RIBBON_CONTROL(m_recItems)
 		RIBBON_CONTROL(m_glyDevices)
 	END_RIBBON_CONTROL_MAP()
 
@@ -66,12 +67,14 @@ public:
 		MSG_WM_TIMER(OnTimer)
 		MSG_WM_GETMINMAXINFO(OnGetMinMaxInfo)
 		MESSAGE_HANDLER_EX(MSG_RIBBON_DEVICE_LIST, OnDeviceUpdate)
+		MESSAGE_HANDLER_EX(MSG_RIBBON_INSTALL_APK, OnInstallApk)
 		COMMAND_ID_HANDLER_EX(ID_APP_EXIT, OnFileExit)
 		COMMAND_ID_HANDLER_EX(ID_FILE_NEW, OnFileNew)
 		COMMAND_ID_HANDLER_EX(ID_VIEW_TOOLBAR, OnViewToolBar)
 		COMMAND_ID_HANDLER_EX(ID_VIEW_STATUS_BAR, OnViewStatusBar)
 		COMMAND_ID_HANDLER_EX(ID_VIEW_RIBBON, OnViewRibbon)
 		COMMAND_ID_HANDLER_EX(ID_APP_ABOUT, OnAppAbout)
+		COMMAND_RANGE_HANDLER_EX(ID_FILE_MRU_FIRST, ID_FILE_MRU_LAST, OnRibbonApkRecent)
 		RIBBON_GALLERY_CONTROL_HANDLER(ID_VIEW_DEVICES, OnRibbonGalleryCtrl)
 		REFLECT_NOTIFICATIONS()
 		CHAIN_MSG_MAP(CRibbonFrameWindowImpl<CMainFrame>)
@@ -88,6 +91,7 @@ public:
 	void OnTimer(UINT_PTR nIDEvent);
 	void OnGetMinMaxInfo(LPMINMAXINFO lpMMI);
 	LRESULT OnDeviceUpdate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnInstallApk(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 
 	void OnFileExit(UINT uNotifyCode, int nID, CWindow wndCtl);
 	void OnFileNew(UINT uNotifyCode, int nID, CWindow wndCtl);
@@ -97,6 +101,7 @@ public:
 	void OnAppAbout(UINT uNotifyCode, int nID, CWindow wndCtl);
 
 	void InitRibbonUI();
+	void OnRibbonApkRecent(UINT uNotifyCode, int nID, CWindow wndCtl);
 	LRESULT OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled);
 
 private:

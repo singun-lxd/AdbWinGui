@@ -33,6 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define	 MIN_REFRESH_TIME		500
 #define	 REFRESH_TIMER_ID		0x10
 
+#define SOFT_REG_KEY			_T("Software\\singun\\AdbWiGui")
+
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 {
 	if (CRibbonFrameWindowImpl<CMainFrame>::PreTranslateMessage(pMsg))
@@ -149,6 +151,14 @@ LRESULT CMainFrame::OnDeviceUpdate(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT CMainFrame::OnInstallApk(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam)
+{
+	LPCTSTR lpszApkPath = (LPCTSTR) lParam;
+	m_recItems.AddToList(lpszApkPath);
+	m_recItems.WriteToRegistry(SOFT_REG_KEY);
+	return 0;
+}
+
 void CMainFrame::OnFileExit(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	PostMessage(WM_CLOSE);
@@ -193,9 +203,27 @@ void CMainFrame::OnAppAbout(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 void CMainFrame::InitRibbonUI()
 {
+	m_recItems.ReadFromRegistry(SOFT_REG_KEY);
 	HBITMAP hbm = DefRibbonQueryImage(IDB_DEVICE);
 	m_bmpDevice.Attach(hbm);
 	UpdateNoneDevice();
+}
+
+void CMainFrame::OnRibbonApkRecent(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	// get file name from the MRU list
+	TCHAR szFile[MAX_PATH];
+	if (m_recItems.GetFromList(nID, szFile, MAX_PATH))
+	{
+		// install apk
+		m_MainTabView.InstallApk(szFile);
+		m_recItems.MoveToTop(nID);
+		m_recItems.WriteToRegistry(SOFT_REG_KEY);
+	}
+	else
+	{
+		::MessageBeep(MB_ICONERROR);
+	}
 }
 
 LRESULT CMainFrame::OnRibbonGalleryCtrl(UI_EXECUTIONVERB verb, WORD wID, UINT uSel, BOOL& bHandled)

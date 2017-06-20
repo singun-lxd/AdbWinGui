@@ -448,11 +448,17 @@ BEGIN
     IDS_FILE_EXISTS         "File exists in target directory."
     IDS_REPLACE_FILE        "Replace target file with:"
     IDS_DELETE_FILE_FAILED  "Failed to delete file."
+    IDS_INSTALL_NOT_IDLE    "Install task is running."
 END
 
 STRINGTABLE
 BEGIN
     IDC_BUTTON_REFRESH      "Refresh Apk File Directory"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_WAIT_INSTALL_FINISH "Please wait for current task or cancel it."
 END
 
 #endif    // Ó¢Óï(ÃÀ¹ú) resources

@@ -35,6 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 MainTab::MainTab() : m_ddmLibWrapper(DdmLibWrapper::GetInstance())
 {
 	m_bIsCancelled = FALSE;
+	m_emStatus = em_Status_Idle;
 }
 
 MainTab::~MainTab()
@@ -160,6 +161,21 @@ LRESULT MainTab::OnListDblClick(LPNMHDR pnmh)
 		}
 	}
 
+	return 0;
+}
+
+LRESULT MainTab::OnRequestApkInstall(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	LPCTSTR lpszApkPath = (LPCTSTR)lParam;
+	if (m_emStatus == em_Status_Idle)
+	{
+		OnInstallApkDirect(lpszApkPath, FALSE);
+	}
+	else
+	{
+		MessageTaskDlg dlg(IDS_INSTALL_NOT_IDLE, IDS_WAIT_INSTALL_FINISH, MB_ICONERROR);
+		dlg.DoModal(m_hWnd);
+	}
 	return 0;
 }
 
@@ -350,13 +366,18 @@ void MainTab::OnDefaultInstallDialog(LPCTSTR lpszApkPath)
 	}
 }
 
-void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
+void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath, BOOL bNotifyMainFrame)
 {
 	m_bIsCancelled = FALSE;
 	m_strErrMsg.Empty();
 
 	TCHAR* szApkPath = new TCHAR[MAX_PATH];
 	_tcsncpy_s(szApkPath, MAX_PATH, lpszApkPath, MAX_PATH);
+	if (bNotifyMainFrame)
+	{
+		// notify main frame
+		GetParent().SendMessage(MSG_MAIN_INSTALL_APK, 0, (LPARAM)szApkPath);
+	}
 
 	IDevice* pDevice = m_ddmLibWrapper.GetSelectedDevice();
 	if (pDevice != NULL)
@@ -369,7 +390,7 @@ void MainTab::OnInstallApkDirect(LPCTSTR lpszApkPath)
 		std::packaged_task<int(TCHAR*, IDevice*, BOOL)> ptInstall([&hWnd, pNotify](TCHAR* szApkPath, IDevice* pDevice, BOOL bReInstall)
 		{
 			int nRet = pDevice->InstallPackage(szApkPath, bReInstall ? true : false, NULL, 0, pNotify);
-			::PostMessage(hWnd, MSG_INSTALL_APK, (WPARAM)nRet, (LPARAM)szApkPath);
+			::PostMessage(hWnd, MSG_INSTALL_APK_FIISH, (WPARAM)nRet, (LPARAM)szApkPath);
 			return nRet;
 		});
 		m_taskInstall = ptInstall.get_future();
@@ -417,6 +438,8 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 		}
 	}
 
+	// notify main frame
+	GetParent().SendMessage(MSG_MAIN_INSTALL_APK, 0, (LPARAM)szDescPath);
 	SwitchToCopyingMode();
 	HWND& hWnd = m_hWnd;
 	// create a thread to run copy task
@@ -428,7 +451,7 @@ void MainTab::OnCopyAndInstallApk(LPCTSTR lpszApkPath)
 		{
 			dwErrCode = ::GetLastError();
 		}
-		::PostMessage(hWnd, MSG_INSTALL_COPY_APK, (WPARAM)dwErrCode, (LPARAM)lpszDesc);
+		::PostMessage(hWnd, MSG_INSTALL_APK_COPYED, (WPARAM)dwErrCode, (LPARAM)lpszDesc);
 		// need to free string here
 		delete[] lpszSrc;
 		return bRet;
@@ -500,6 +523,8 @@ void MainTab::SwitchToCopyingMode()
 	m_stcListInstall.EnableWindow(FALSE);
 	m_lvApkDir.EnableWindow(FALSE);
 	DragAcceptFiles(FALSE);
+
+	m_emStatus = em_Status_Copying;
 }
 
 void MainTab::SwitchToInstallingMode()
@@ -517,6 +542,8 @@ void MainTab::SwitchToInstallingMode()
 	m_stcListInstall.EnableWindow(FALSE);
 	m_lvApkDir.EnableWindow(FALSE);
 	DragAcceptFiles(FALSE);
+
+	m_emStatus = em_Status_Installing;
 }
 
 void MainTab::SwitchToIdleMode()
@@ -535,6 +562,8 @@ void MainTab::SwitchToIdleMode()
 	m_stcListInstall.EnableWindow(TRUE);
 	m_lvApkDir.EnableWindow(TRUE);
 	DragAcceptFiles(TRUE);
+
+	m_emStatus = em_Status_Idle;
 }
 
 BOOL MainTab::RefreshApkDirectory()

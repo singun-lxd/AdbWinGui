@@ -37,7 +37,9 @@
 #define IDS_REPLACE_FILE                157
 #define IDS_REFRESH                     158
 #define IDS_REFRESH_APK                 158
-#define IDS_DELETE_FILE_FAILED          159
+#define IDS_DELETE_FILE_FAILED          158
+#define IDS_INSTALL_NOT_IDLE            159
+#define IDS_WAIT_INSTALL_FINISH         160
 #define IDB_DEVICE                      207
 #define IDB_BITMAP_REFRESH              208
 #define IDB_BITMAP_APK                  209

@@ -3,6 +3,7 @@
 <Application xmlns="http://schemas.microsoft.com/windows/2009/Ribbon">
 
     <Application.Commands>
+        <Command Name="RecentFiles" Symbol="ID_RIBBON_RECENT_FILES" LabelTitle="Recent Apk" />
       
         <!-- AdbWinGui.rc Commands -->
         <Command Name="wtl_FILE_NEW" Symbol="ID_FILE_NEW" Id="0xE100"/>
@@ -69,6 +70,9 @@
             <!-- Application Menu -->
             <Ribbon.ApplicationMenu >
                 <ApplicationMenu CommandName="AppMenu" >
+                    <ApplicationMenu.RecentItems>
+                      <RecentItems CommandName="RecentFiles" MaxCount="16" EnablePinning="false"/>
+                    </ApplicationMenu.RecentItems>
                     <MenuGroup Class="StandardItems" >
                         <Button CommandName="wtl_FILE_NEW"/>
                         <Button CommandName="wtl_FILE_OPEN"/>

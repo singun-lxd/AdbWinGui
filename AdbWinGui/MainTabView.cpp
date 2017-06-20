@@ -153,6 +153,13 @@ LRESULT MainTabView::OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
 	return 0;
 }
 
+LRESULT MainTabView::OnInstallApk(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam)
+{
+	// notify main frame
+	GetParent().SendMessage(MSG_RIBBON_INSTALL_APK, 0, lParam);
+	return 0;
+}
+
 void MainTabView::InitFinish()
 {
 	// adb init finish
@@ -214,6 +221,11 @@ void MainTabView::DestroyTabs()
 		}
 	}
 	m_arrWnd.RemoveAll();
+}
+
+void MainTabView::InstallApk(LPCTSTR lpszApkPath)
+{
+	m_arrWnd[TAB_MAIN - 1]->SendMessage(MSG_INSTALL_APK_REQUEST, 0, (LPARAM)lpszApkPath);
 }
 
 void MainTabView::AddMainTab()

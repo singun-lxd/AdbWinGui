@@ -59,6 +59,7 @@ public:
 		MESSAGE_HANDLER_EX(MSG_MAIN_ADB_PATH, OnAdbPath)
 		MESSAGE_HANDLER_EX(MSG_MAIN_PREPARE_ADB, OnPrepareAdb)
 		MESSAGE_HANDLER_EX(MSG_MAIN_ADB_FINISH, OnAdbPrepareFinish)
+		MESSAGE_HANDLER_EX(MSG_MAIN_INSTALL_APK, OnInstallApk)
 		ALT_MSG_MAP(1)   // tab control
 	END_MSG_MAP()
 
@@ -71,6 +72,7 @@ public:
 	LRESULT OnAdbPath(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnPrepareAdb(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 	LRESULT OnAdbPrepareFinish(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
+	LRESULT OnInstallApk(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/);
 
 public:
 	virtual void InitFinish() override;
@@ -81,6 +83,7 @@ public:
 	void UpdateLayout();
 	void InitTabs();
 	void DestroyTabs();
+	void InstallApk(LPCTSTR lpszApkPath);
 
 protected:
 	void AddMainTab();

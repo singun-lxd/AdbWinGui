@@ -42,6 +42,13 @@ public:
 		IDD = IDD_MAIN_TAB,
 	};
 
+	enum InstallStatus
+	{
+		em_Status_Idle,
+		em_Status_Copying,
+		em_Status_Installing,
+	};
+
 	DdmLibWrapper& m_ddmLibWrapper;
 	std::future<BOOL> m_taskInstall;
 	std::future<BOOL> m_taskCopy;
@@ -60,6 +67,7 @@ public:
 	CBitmapHandle m_bmpRefresh;
 	CSimpleArray<CString> m_arrApkPath;
 
+	InstallStatus m_emStatus;
 	BOOL m_bIsCancelled;
 	CString m_strErrMsg;
 
@@ -72,9 +80,10 @@ public:
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_REFRESH, OnBtnRefreshClick)
 		COMMAND_ID_HANDLER_EX(IDC_BUTTON_INSTALL, OnBtnStopInstallClick)
 		NOTIFY_HANDLER_EX(IDC_LIST_APK, LVN_KEYDOWN, OnListKeyDown)
-		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)
-		MESSAGE_HANDLER_EX(MSG_INSTALL_APK, OnApkInstalled)
-		MESSAGE_HANDLER_EX(MSG_INSTALL_COPY_APK, OnApkCopied)
+		NOTIFY_HANDLER_EX(IDC_LIST_APK, NM_DBLCLK, OnListDblClick)		
+		MESSAGE_HANDLER_EX(MSG_INSTALL_APK_REQUEST, OnRequestApkInstall)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_APK_FIISH, OnApkInstalled)
+		MESSAGE_HANDLER_EX(MSG_INSTALL_APK_COPYED, OnApkCopied)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_PUSH, OnInstallPush)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_PROGRESS, OnInstallProgress)
 		MESSAGE_HANDLER_EX(MSG_INSTALL_STEP_INSTALL, OnInstallRun)
@@ -105,6 +114,7 @@ public:
 	void OnBtnStopInstallClick(UINT uNotifyCode, int nID, CWindow wndCtl);
 	LRESULT OnListKeyDown(LPNMHDR pnmh);
 	LRESULT OnListDblClick(LPNMHDR pnmh);
+	LRESULT OnRequestApkInstall(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnApkInstalled(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnApkCopied(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT OnInstallPush(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -123,7 +133,7 @@ private:
 	void PrepareAdb();
 	void InitControls();
 	void OnDefaultInstallDialog(LPCTSTR lpszApkPath);
-	void OnInstallApkDirect(LPCTSTR lpszApkPath);
+	void OnInstallApkDirect(LPCTSTR lpszApkPath, BOOL bNotifyMainFrame = TRUE);
 	void OnCopyAndInstallApk(LPCTSTR lpszApkPath);
 	void ShowFileOperationFailDialog(int nId, DWORD dwErrCode);
 	void inline ShowCopyFailDialog(DWORD dwErrCode);
