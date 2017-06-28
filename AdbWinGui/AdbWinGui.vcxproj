@@ -272,9 +272,7 @@
   <ItemGroup>
     <Image Include="res\AdbWinGui.ico" />
     <Image Include="res\apk.bmp" />
-    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\device.bmp" />
-    <Image Include="res\icon1.ico" />
     <Image Include="res\icon_refresh.ico" />
     <Image Include="res\refresh.bmp" />
     <Image Include="res\toolbar.bmp" />

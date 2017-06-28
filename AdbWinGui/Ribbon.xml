@@ -18,14 +18,9 @@
         <Command Name="wtl_FILE_PRINT_DIRECT" Symbol="ID_FILE_PRINT_DIRECT" Id="0xE108"/>
         <Command Name="wtl_FILE_PRINT_PREVIEW" Symbol="ID_FILE_PRINT_PREVIEW" Id="0xE109"/>
 
-        <Command Name="wtl_EDIT_COPY" Symbol="ID_EDIT_COPY" Id="0xE122"/>
-        <Command Name="wtl_EDIT_CUT" Symbol="ID_EDIT_CUT" Id="0xE123"/>
-        <Command Name="wtl_EDIT_FIND" Symbol="ID_EDIT_FIND" Id="0xE124"/>
-        <Command Name="wtl_EDIT_PASTE" Symbol="ID_EDIT_PASTE" Id="0xE125"/>
-        
-        <Command Name="wtl_EDIT_SELECT_ALL" Symbol="ID_EDIT_SELECT_ALL" Id="0xE12A"/>
-        <Command Name="wtl_EDIT_UNDO" Symbol="ID_EDIT_UNDO" Id="0xE12B"/>
-        <Command Name="wtl_EDIT_REDO" Symbol="ID_EDIT_REDO" Id="0xE12C"/>
+        <Command Name="wtl_ADB_START" Symbol="ID_ADB_START" Id="0xE122"/>
+        <Command Name="wtl_ADB_STOP" Symbol="ID_ADB_STOP" Id="0xE123"/>
+        <Command Name="wtl_ADB_RESTART" Symbol="ID_ADB_RESTART" Id="0xE124"/>
 
         <Command Name="wtl_WINDOW_NEW" Symbol="ID_WINDOW_NEW" Id="0xE130"/>
         <Command Name="wtl_WINDOW_SPLIT" Symbol="ID_WINDOW_SPLIT" Id="0xE135"/>
@@ -50,7 +45,7 @@
 
         <!-- Groups -->
         <Command Name="GroupDevice" Symbol="ID_RIBBON_GROUP_DEVICE" Id="0xE220" />
-        <Command Name="GroupClipboard" Symbol="ID_RIBBON_GROUP_CLIPBOARD" Id="0xE221" />
+        <Command Name="GroupAdb" Symbol="ID_RIBBON_GROUP_ADB" Id="0xE221" />
         <Command Name="GroupView" Symbol="ID_RIBBON_GROUP_VIEW" Id="0xE222" />
 
         <!-- App Menu, MRU list, Help button and Quick Access Toolbar -->
@@ -128,7 +123,7 @@
                         <ScalingPolicy>
                             <ScalingPolicy.IdealSizes>
                                 <Scale Group="GroupDevice" Size="Large"/>
-                                <Scale Group="GroupClipboard" Size="Medium"/>
+                                <Scale Group="GroupAdb" Size="Medium"/>
                                 <Scale Group="GroupView" Size="Large"/>
                             </ScalingPolicy.IdealSizes>
                         </ScalingPolicy>
@@ -157,10 +152,10 @@
                       </InRibbonGallery>
                     </Group>
                   
-                    <Group CommandName="GroupClipboard" SizeDefinition="ThreeButtons">
-                        <Button CommandName="wtl_EDIT_PASTE"/>
-                        <Button CommandName="wtl_EDIT_CUT"/>
-                        <Button CommandName="wtl_EDIT_COPY"/>
+                    <Group CommandName="GroupAdb" SizeDefinition="ThreeButtons">
+                        <Button CommandName="wtl_ADB_START"/>
+                        <Button CommandName="wtl_ADB_STOP"/>
+                        <Button CommandName="wtl_ADB_RESTART"/>
                     </Group>
 
                     <Group CommandName="GroupView">
